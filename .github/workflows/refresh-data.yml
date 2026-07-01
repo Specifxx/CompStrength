@@ -4,12 +4,16 @@ name: Refresh Data
 # the Python pipeline on a schedule and pushing any changes back to the
 # default branch. Vercel watches this branch, so a push here triggers an
 # automatic redeploy of the site with fresh data.
+#
+# Runs against --source leaguepedia (real, current pro match data fetched
+# live from Leaguepedia's Cargo API) rather than the bundled synthetic
+# fixture -- this only works from an environment with normal network
+# access (GitHub Actions), not the dev sandbox this was built in.
 
 on:
   schedule:
     # 04:17 UTC daily — off-peak, and offset from the hour to avoid the
     # top-of-hour crunch on GitHub Actions' shared cron scheduler.
-    # Oracle's Elixir typically finishes its daily update well before this.
     - cron: "17 4 * * *"
   workflow_dispatch: {}
 
@@ -37,8 +41,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e packages/pipeline
 
-      - name: Run data pipeline
-        run: python -m compstrength_pipeline.build
+      - name: Run data pipeline (real, live match data from Leaguepedia)
+        run: python -m compstrength_pipeline.build --source leaguepedia
 
       - name: Check for data changes
         id: git-check

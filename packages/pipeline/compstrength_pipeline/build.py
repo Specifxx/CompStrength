@@ -7,13 +7,18 @@ Usage:
     python -m compstrength_pipeline.build --oracles-elixir-path tests/fixtures/sample_oracleselixir.csv \\
         --soloqueue-fixture tests/fixtures/sample_soloqueue.json
     python -m compstrength_pipeline.build --oracles-elixir-url https://.../2026_LoL_esports_match_data...csv
+    python -m compstrength_pipeline.build --source leaguepedia
 
 By default, this points at the bundled small synthetic fixtures under
 ``tests/fixtures/`` so the pipeline can run fully offline (e.g. in this
 sandbox, or for a quick local demo). Pass ``--oracles-elixir-url`` (or set
-the ``ORACLES_ELIXIR_URL`` env var) to fetch live data instead -- this is
-the mode intended for GitHub Actions, where network egress to
-oracleselixir.com is not blocked.
+the ``ORACLES_ELIXIR_URL`` env var) to fetch live Oracle's Elixir data
+instead, or ``--source leaguepedia`` to fetch real, current match data
+directly from Leaguepedia's Cargo API (``sources/leaguepedia.py``) -- this
+is the mode used by the scheduled GitHub Actions refresh, where network
+egress is not blocked (both this sandbox's dev network policy and
+oracleselixir.com/lol.fandom.com being blocked from it are the reason
+fixtures are the default here).
 """
 
 from __future__ import annotations
@@ -29,11 +34,12 @@ import pandas as pd
 
 from compstrength_pipeline import backtest, etl, features, pairwise, train_model
 from compstrength_pipeline.config import DEFAULT_CONFIG, PipelineConfig
+from compstrength_pipeline.sources import leaguepedia as leaguepedia_source
 from compstrength_pipeline.sources.oracles_elixir import (
     extract_bans,
     fetch_oracles_elixir,
 )
-from compstrength_pipeline.sources.soloqueue import StaticSoloQueueSource
+from compstrength_pipeline.sources.soloqueue import NullSoloQueueSource, StaticSoloQueueSource
 
 PACKAGE_DIR = Path(__file__).resolve().parent.parent
 REPO_ROOT = PACKAGE_DIR.parent.parent
@@ -44,6 +50,19 @@ DEFAULT_OUTPUT_DIR = REPO_ROOT / "data"
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--source",
+        choices=["fixture", "leaguepedia"],
+        default=os.environ.get("COMPSTRENGTH_SOURCE", "fixture"),
+        help=(
+            "Which pro-match data source to use. 'fixture' (default) reads "
+            "--oracles-elixir-path/--oracles-elixir-url (a bundled synthetic "
+            "fixture unless one of those is overridden). 'leaguepedia' "
+            "ignores those and fetches real, current data live from "
+            "Leaguepedia's Cargo API instead (requires unblocked network "
+            "egress to lol.fandom.com, e.g. GitHub Actions)."
+        ),
+    )
     parser.add_argument(
         "--oracles-elixir-path",
         default=os.environ.get("ORACLES_ELIXIR_PATH", str(DEFAULT_FIXTURE_CSV)),
@@ -105,21 +124,45 @@ def load_games_and_bans(
     return games_df, bans_df
 
 
-def run_pipeline(
+def load_raw_games_and_bans(
+    source: str,
     oracles_elixir_path: str,
     oracles_elixir_url: str | None,
-    soloqueue_fixture: str,
+    target_games: int,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Dispatch to the requested data source's raw fetch.
+
+    ``source == "leaguepedia"`` fetches real, current data live from
+    Leaguepedia's Cargo API (see ``sources/leaguepedia.py``); anything else
+    falls back to the Oracle's-Elixir-shaped fixture/URL path (default:
+    the bundled synthetic fixture).
+    """
+    if source == "leaguepedia":
+        return leaguepedia_source.fetch_recent_games(target_games=target_games)
+    return load_games_and_bans(oracles_elixir_path, oracles_elixir_url)
+
+
+def run_pipeline_on_data(
+    raw_games_df: pd.DataFrame,
+    raw_bans_df: pd.DataFrame,
+    soloqueue_source,
     patch: str | None,
     config: PipelineConfig = DEFAULT_CONFIG,
 ) -> tuple[dict, dict, dict]:
-    """Run ETL -> features -> pairwise -> train_model and return the output dicts.
+    """Run ETL -> features -> pairwise -> train_model on already-fetched data.
+
+    This is the pure/reusable core: it takes raw (not yet ETL-cleaned)
+    games/bans DataFrames and an already-constructed ``SoloQueueSource``
+    rather than fetching/constructing them itself, so ``main()`` can fetch
+    once and reuse the same snapshot for both the live build and the
+    backtest (important for the ``leaguepedia`` source, where fetching is
+    several rate-limited network round-trips and shouldn't be repeated).
 
     Returns:
         ``(champion_ratings_payload, model_payload, synergy_payload)``
         matching the exact JSON schemas documented in the project spec /
         README.
     """
-    raw_games_df, raw_bans_df = load_games_and_bans(oracles_elixir_path, oracles_elixir_url)
     games_df, bans_df = etl.build_raw_tables(raw_games_df, raw_bans_df)
 
     if games_df.empty:
@@ -142,8 +185,6 @@ def run_pipeline(
         )
 
     resolved_patch = patch or _most_recent_patch(games_df)
-
-    soloqueue_source = StaticSoloQueueSource(soloqueue_fixture)
     solo_winrates = soloqueue_source.get_champion_winrates(resolved_patch)
 
     reference_date = games_df["date"].max()
@@ -179,6 +220,27 @@ def run_pipeline(
     )
 
     return champion_ratings_payload, model_payload, synergy_payload
+
+
+def run_pipeline(
+    oracles_elixir_path: str,
+    oracles_elixir_url: str | None,
+    soloqueue_fixture: str,
+    patch: str | None,
+    config: PipelineConfig = DEFAULT_CONFIG,
+    source: str = "fixture",
+) -> tuple[dict, dict, dict]:
+    """Fetch from ``source`` and run the full pipeline. See
+    :func:`run_pipeline_on_data` for the reusable, already-fetched-data core
+    (used by ``main()`` so the backtest doesn't re-fetch).
+    """
+    raw_games_df, raw_bans_df = load_raw_games_and_bans(
+        source, oracles_elixir_path, oracles_elixir_url, config.target_training_games
+    )
+    soloqueue_source = (
+        NullSoloQueueSource() if source == "leaguepedia" else StaticSoloQueueSource(soloqueue_fixture)
+    )
+    return run_pipeline_on_data(raw_games_df, raw_bans_df, soloqueue_source, patch, config)
 
 
 def _most_recent_patch(games_df: pd.DataFrame) -> str:
@@ -287,16 +349,32 @@ def write_outputs(
     return ratings_path, model_path, synergy_path
 
 
-def write_backtest_report(
-    oracles_elixir_path: str,
-    oracles_elixir_url: str | None,
-    soloqueue_fixture: str,
+def _degraded_backtest_report(exc: Exception) -> dict:
+    return {
+        "generatedAt": datetime.now(timezone.utc).isoformat(),
+        "folds": 0,
+        "testGames": 0,
+        "metrics": {
+            "accuracy": float("nan"),
+            "logLoss": float("nan"),
+            "brierScore": float("nan"),
+            "baselineAccuracy": float("nan"),
+            "coinFlipLogLoss": float("nan"),
+        },
+        "calibration": [],
+        "note": f"Backtest could not be run: {exc!r}",
+    }
+
+
+def write_backtest_report_on_data(
+    raw_games_df: pd.DataFrame,
+    raw_bans_df: pd.DataFrame,
+    soloqueue_source,
     output_dir: str,
     config: PipelineConfig = DEFAULT_CONFIG,
 ) -> Path:
-    """Run the walk-forward backtest and write ``data/backtest_report.json``.
-
-    Degrades gracefully: any exception while running the backtest (e.g.
+    """Run the walk-forward backtest on already-fetched data and write
+    ``data/backtest_report.json``. Degrades gracefully: any exception (e.g.
     too little data) is caught and results in a report with an explanatory
     ``note`` rather than crashing the overall build.
     """
@@ -305,26 +383,11 @@ def write_backtest_report(
     report_path = out_dir / "backtest_report.json"
 
     try:
-        raw_games_df, raw_bans_df = load_games_and_bans(oracles_elixir_path, oracles_elixir_url)
         games_df, bans_df = etl.build_raw_tables(raw_games_df, raw_bans_df)
-        soloqueue_source = StaticSoloQueueSource(soloqueue_fixture)
         report = backtest.run_backtest(games_df, bans_df, soloqueue_source, config)
     except Exception as exc:  # noqa: BLE001 - build must never crash on backtest failure
         warnings.warn(f"Backtest failed, writing a degraded report instead: {exc!r}")
-        report = {
-            "generatedAt": datetime.now(timezone.utc).isoformat(),
-            "folds": 0,
-            "testGames": 0,
-            "metrics": {
-                "accuracy": float("nan"),
-                "logLoss": float("nan"),
-                "brierScore": float("nan"),
-                "baselineAccuracy": float("nan"),
-                "coinFlipLogLoss": float("nan"),
-            },
-            "calibration": [],
-            "note": f"Backtest could not be run: {exc!r}",
-        }
+        report = _degraded_backtest_report(exc)
 
     with report_path.open("w", encoding="utf-8") as f:
         json.dump(report, f, indent=2, sort_keys=False)
@@ -333,14 +396,47 @@ def write_backtest_report(
     return report_path
 
 
+def write_backtest_report(
+    oracles_elixir_path: str,
+    oracles_elixir_url: str | None,
+    soloqueue_fixture: str,
+    output_dir: str,
+    config: PipelineConfig = DEFAULT_CONFIG,
+    source: str = "fixture",
+) -> Path:
+    """Fetch from ``source`` and run the backtest. See
+    :func:`write_backtest_report_on_data` for the reusable,
+    already-fetched-data core (used by ``main()`` so this doesn't re-fetch).
+    """
+    raw_games_df, raw_bans_df = load_raw_games_and_bans(
+        source, oracles_elixir_path, oracles_elixir_url, config.target_training_games
+    )
+    soloqueue_source = (
+        NullSoloQueueSource() if source == "leaguepedia" else StaticSoloQueueSource(soloqueue_fixture)
+    )
+    return write_backtest_report_on_data(
+        raw_games_df, raw_bans_df, soloqueue_source, output_dir, config
+    )
+
+
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
+    config = DEFAULT_CONFIG
 
-    champion_ratings, model, synergy = run_pipeline(
-        oracles_elixir_path=args.oracles_elixir_path,
-        oracles_elixir_url=args.oracles_elixir_url,
-        soloqueue_fixture=args.soloqueue_fixture,
-        patch=args.patch,
+    # Fetch once and reuse for both the live build and the backtest -- for
+    # the `leaguepedia` source this avoids repeating several rate-limited
+    # network round-trips.
+    raw_games_df, raw_bans_df = load_raw_games_and_bans(
+        args.source, args.oracles_elixir_path, args.oracles_elixir_url, config.target_training_games
+    )
+    soloqueue_source = (
+        NullSoloQueueSource()
+        if args.source == "leaguepedia"
+        else StaticSoloQueueSource(args.soloqueue_fixture)
+    )
+
+    champion_ratings, model, synergy = run_pipeline_on_data(
+        raw_games_df, raw_bans_df, soloqueue_source, args.patch, config
     )
 
     ratings_path, model_path, synergy_path = write_outputs(
@@ -359,11 +455,8 @@ def main(argv: list[str] | None = None) -> None:
         f"matchup pairs={len(synergy['matchup'])})"
     )
 
-    report_path = write_backtest_report(
-        oracles_elixir_path=args.oracles_elixir_path,
-        oracles_elixir_url=args.oracles_elixir_url,
-        soloqueue_fixture=args.soloqueue_fixture,
-        output_dir=args.output_dir,
+    report_path = write_backtest_report_on_data(
+        raw_games_df, raw_bans_df, soloqueue_source, args.output_dir, config
     )
     print(f"Wrote {report_path}")
 

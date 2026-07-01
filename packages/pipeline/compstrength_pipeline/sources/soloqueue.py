@@ -155,6 +155,21 @@ class LolalyticsSoloQueueSource(SoloQueueSource):
         return result
 
 
+class NullSoloQueueSource(SoloQueueSource):
+    """Always returns no data (every champion falls back to ``GLOBAL_MEAN``).
+
+    Used when running against real pro-match data without a working live
+    solo-queue adapter wired up yet: rather than blending real pro results
+    with the *synthetic* fixture's made-up solo-queue numbers, this keeps
+    the prior an honest, data-free neutral baseline (50%) until a real
+    solo-queue source (e.g. ``LolalyticsSoloQueueSource``, once its
+    endpoint/params are confirmed working) is available.
+    """
+
+    def get_champion_winrates(self, patch: str) -> ChampionWinrates:
+        return {}
+
+
 class StaticSoloQueueSource(SoloQueueSource):
     """Reads solo-queue win rates from a local JSON fixture.
 
