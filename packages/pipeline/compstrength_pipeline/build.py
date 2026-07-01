@@ -191,8 +191,21 @@ def load_raw_games_and_bans(
     """
     if source == "oracles-elixir":
         resolved_year = _resolve_oe_year(year)
-        csv_path = oracles_elixir_source.download_oracles_elixir_csv(resolved_year)
-        return _games_and_bans_from_csv_path(str(csv_path))
+        try:
+            csv_path = oracles_elixir_source.download_oracles_elixir_csv(resolved_year)
+            return _games_and_bans_from_csv_path(str(csv_path))
+        except oracles_elixir_source.DataSourceUnavailableError as exc:
+            # The shared 2026 Drive file is heavily used and can hit Google's
+            # per-file public-download quota ("too many users..."). That's an
+            # independent failure mode from Leaguepedia's API rate limit, so
+            # fall back to the live Leaguepedia fetch rather than failing the
+            # whole refresh -- both are real sources; we just want whichever
+            # is reachable this run.
+            warnings.warn(
+                f"Oracle's Elixir Drive download failed ({exc}); "
+                "falling back to the live Leaguepedia Cargo fetch."
+            )
+            return leaguepedia_source.fetch_recent_games(target_games=target_games)
     if source == "leaguepedia":
         return leaguepedia_source.fetch_recent_games(target_games=target_games)
     return load_games_and_bans(oracles_elixir_path, oracles_elixir_url)

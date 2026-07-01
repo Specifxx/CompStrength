@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import io
 import tempfile
+import warnings
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -213,8 +214,9 @@ def download_oracles_elixir_csv(year: int, dest: str | Path | None = None) -> Pa
 
 def _download_via_gdown(file_id: str, dest: Path) -> bool:
     """Best-effort download using the ``gdown`` package. Returns True on
-    success, False if gdown isn't installed (so the caller can fall back).
-    Network/Drive failures propagate as ``DataSourceUnavailableError``."""
+    success, False on ANY failure (gdown not installed, or a Drive
+    error such as the shared-file "too many users / quota" block) so the
+    caller can fall through to the next strategy rather than aborting."""
     try:
         import gdown
     except ImportError:
@@ -222,23 +224,21 @@ def _download_via_gdown(file_id: str, dest: Path) -> bool:
     try:
         gdown.download(id=file_id, output=str(dest), quiet=True)
     except Exception as exc:  # pragma: no cover - network path
-        raise DataSourceUnavailableError(
-            f"gdown failed to download Drive id {file_id!r}: {exc!r}"
-        ) from exc
-    return dest.exists() and dest.stat().st_size > 0
+        warnings.warn(f"gdown could not download Drive id {file_id!r}: {exc!r}")
+        return False
+    return dest.exists() and dest.stat().st_size > _MIN_CSV_BYTES
 
 
 def _download_via_requests(file_id: str, dest: Path) -> bool:
     """Fallback download via the drive.usercontent direct-download endpoint
     (``confirm=t`` skips the >25MB virus-scan interstitial). Returns True on
-    success; raises ``DataSourceUnavailableError`` on network failure."""
+    success, False on any failure (so the caller can fall through). A too-
+    small response is treated as failure (Drive serves a small HTML quota/
+    interstitial page instead of the file when over quota)."""
     try:
         import requests
-    except ImportError as exc:  # pragma: no cover
-        raise DataSourceUnavailableError(
-            "Neither 'gdown' nor 'requests' is available to download Oracle's "
-            "Elixir data. Install one via `pip install gdown`."
-        ) from exc
+    except ImportError:  # pragma: no cover
+        return False
 
     url = ORACLES_ELIXIR_DRIVE_DOWNLOAD_URL.format(file_id=file_id)
     try:
@@ -249,10 +249,9 @@ def _download_via_requests(file_id: str, dest: Path) -> bool:
                     if chunk:
                         fh.write(chunk)
     except Exception as exc:  # pragma: no cover - network path
-        raise DataSourceUnavailableError(
-            f"requests failed to download Drive id {file_id!r} from {url!r}: {exc!r}"
-        ) from exc
-    return dest.exists() and dest.stat().st_size > 0
+        warnings.warn(f"requests could not download Drive id {file_id!r} from {url!r}: {exc!r}")
+        return False
+    return dest.exists() and dest.stat().st_size > _MIN_CSV_BYTES
 
 
 def _validate_downloaded_csv(path: Path, year: int, file_id: str) -> None:
