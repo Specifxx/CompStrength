@@ -15,30 +15,38 @@ in between:
 
 ```
 packages/pipeline (Python)          data/*.json (committed)         apps/web (Next.js on Vercel)
-  fetch pro match data      --->      champion_ratings.json   --->    API route computes win %
-  fetch solo-queue stats               model.json                    at request time from JSON
-  fit model, write JSON                                              static-ish pages read JSON
+  fetch pro match data      --->      champion_ratings.json  --->    prediction computed
+  fetch solo-queue stats               model.json                    entirely in the browser,
+  fit model, backtest it               synergy.json                  zero network round-trip
+  write JSON + report                  backtest_report.json          (API route also available)
 ```
 
 1. **`packages/pipeline`** — a Python job that pulls recent professional match
-   data and solo-queue win rates, fits a small statistical model, and writes
-   the results as two plain JSON files.
-2. **`data/champion_ratings.json`** and **`data/model.json`** — the *only*
+   data (restricted to the last few patches) and solo-queue win rates, fits a
+   small statistical model — including champion-pair synergy and lane-matchup
+   effects — backtests it, and writes the results as plain JSON files.
+2. **`data/champion_ratings.json`**, **`data/model.json`**,
+   **`data/synergy.json`**, and **`data/backtest_report.json`** — the *only*
    data store. These files are committed to the repo (not a database), so the
    entire "backend" is version-controlled, diffable, and free to host.
-3. **`apps/web`** — a Next.js 14 App Router site deployed on Vercel. A Next.js
-   API route reads the two JSON files at request time and computes the
-   win-probability math directly in TypeScript — no external API calls, no
-   database queries, no persistent server process.
+3. **`apps/web`** — a Next.js 16 App Router site deployed on Vercel. The win
+   probability is computed **directly in the browser** the instant a draft is
+   filled in — the champion ratings, model coefficients, and synergy/matchup
+   tables are loaded once and the (pure, dependency-free) scoring function
+   runs client-side, so there is no network latency on the "Predict Winner"
+   click at all. The same scoring function backs a `/api/predict` route for
+   programmatic use, so both paths always agree.
 
-**Why this design:** win-probability math over a couple of small JSON files
-is cheap enough to do per-request in a serverless function, so there's no
-need to stand up and pay for a database or a long-running backend. Data
-freshness is handled by re-running the pipeline on a schedule and committing
-the output — Git itself becomes the data store and its history. This keeps
-the whole project inside free tiers (Vercel + GitHub Actions) and easy for a
-single hobbyist to reason about: if something looks wrong, the entire "state
-of the world" is two JSON files you can open and read.
+**Why this design:** win-probability math over a few small JSON files is
+cheap enough to run instantly in a browser tab, so there's no need to stand
+up and pay for a database, a long-running backend, or even a network round
+trip per prediction — which matters if you're using this live while watching
+a draft. Data freshness is handled by re-running the pipeline on a schedule
+and committing the output — Git itself becomes the data store and its
+history. This keeps the whole project inside free tiers (Vercel + GitHub
+Actions) and easy for a single hobbyist to reason about: if something looks
+wrong, the entire "state of the world" is a handful of JSON files you can
+open and read.
 
 ## How accurate is this, really?
 
@@ -101,14 +109,20 @@ point the pipeline at, and keep request volume low.
 ## How the model works
 
 At a high level, the pipeline turns raw match history into a single blue-side
-win probability estimate via four steps:
+win probability estimate via five steps:
 
-1. **Patch-recency weighting.** Older games matter less, since champion
-   balance and the overall meta shift patch to patch. Each historical game is
-   weighted by an exponential decay based on how long ago its patch was
-   played, controlled by a `PATCH_HALF_LIFE_DAYS` hyperparameter — a game
-   from one half-life ago counts for half as much as a game played today.
-2. **Empirical-Bayes shrinkage toward solo queue.** Many champions have a
+1. **Recent-patches-only cutoff.** Only the `NUM_RECENT_PATCHES` most recent
+   patches (default 3) that actually appear in the match data are considered
+   at all — anything older is excluded outright, not just down-weighted, since
+   older patches can reflect a meaningfully different game. Patches are
+   ordered by the actual date of play, not by sorting the patch string.
+2. **Patch-recency weighting *within* that window.** Older games still matter
+   less than newer ones inside the recent-patch window. Each historical game
+   is weighted by an exponential decay based on how long ago it was played,
+   controlled by a `PATCH_HALF_LIFE_DAYS` hyperparameter — a game from one
+   half-life ago counts for half as much as a game played today, so the most
+   recent patch dominates the rating.
+3. **Empirical-Bayes shrinkage toward solo queue.** Many champions have a
    small sample of professional games on the current patch. Rather than
    trusting a noisy small-sample pro win rate outright, the pipeline blends
    it with the champion's solo-queue win rate as a prior, shrinking harder
@@ -118,18 +132,50 @@ win probability estimate via four steps:
    relative to observed pro games) and `PRIOR_GAMES` (the effective sample
    size, in pro games, at which the prior and observed pro data carry roughly
    equal weight).
-3. **Additive log-odds (Bradley-Terry-style) rating.** Each champion gets a
-   single learned strength rating in log-odds space. A team's (side's) total
-   strength is the sum of its five champions' ratings; the difference between
-   blue side's and red side's totals is the raw signal for who's favored.
-4. **Logistic calibration.** That raw log-odds difference is passed through a
-   logistic regression fit against actual historical pro game outcomes, which
-   maps it to a final, calibrated blue-side win probability (a number between
-   0 and 1) — and also corrects for blue side's known small structural
-   advantage (first pick/ban, dragon side, etc.).
+4. **Additive log-odds (Bradley-Terry-style) rating, plus synergy and
+   matchup history.** Each champion gets a learned strength rating in
+   log-odds space (from step 3). On top of that, the pipeline mines the same
+   match history for two more historical signals, each shrunk toward "no
+   effect" the same empirical-Bayes way when sample size is small:
+   - **Synergy** — how much better or worse a *specific pair* of champions on
+     the same team performs together, beyond what their individual ratings
+     already predict.
+   - **Matchup** — how a champion's team has historically fared specifically
+     when that champion faces a given opposing champion in the same role
+     (a coarse proxy for lane-matchup history).
+   A side's total score is its five champions' ratings, plus the synergy
+   terms for all pairs on that side, plus the matchup terms for each lane.
+5. **Logistic calibration.** The blue-minus-red score differential (across
+   all three signals above) is passed through a logistic regression fit
+   against actual historical pro game outcomes, which maps it to a final,
+   calibrated blue-side win probability (a number between 0 and 1) — and also
+   corrects for blue side's known small structural advantage (first pick/ban,
+   dragon side, etc.).
 
 The fitted champion ratings and calibration parameters are exactly what's
-written to `data/champion_ratings.json` and `data/model.json`.
+written to `data/champion_ratings.json`, `data/synergy.json`, and
+`data/model.json`.
+
+## Backtesting
+
+Because "how accurate is this, really?" deserves a real answer, not just a
+promise, the pipeline includes a **walk-forward backtest**
+(`compstrength_pipeline/backtest.py`, run automatically at the end of every
+`python -m compstrength_pipeline.build`, or standalone via
+`python -m compstrength_pipeline.backtest`). It's chronological, not random:
+for each fold, the *entire* pipeline (ratings, synergy/matchup tables, model
+fit) is recomputed using only games strictly before that fold's start date,
+then evaluated against the held-out games that actually happened after —
+exactly mirroring how the model would have been used in real time, with no
+leakage from the future. It reports accuracy, log-loss, Brier score, and a
+calibration table (predicted win probability vs. actual win rate, bucketed),
+against a coin-flip and majority-class baseline, and writes
+`data/backtest_report.json`. The live site's [`/methodology`](#) page
+surfaces these numbers. **Today, this runs against a small synthetic fixture
+dataset** (see `packages/pipeline/tests/fixtures/README.md`) — the reported
+numbers are illustrative of the *methodology*, not a real accuracy claim,
+until the pipeline is pointed at real historical Oracle's Elixir data (see
+"Local development" below for how to do that).
 
 ## Local development
 
@@ -199,10 +245,10 @@ This is the important part — follow these steps in order.
    needed for this same-repo case.
 
 5. **Let it auto-deploy.**
-   Every time the workflow refreshes `data/champion_ratings.json` and/or
-   `data/model.json` and pushes that commit, Vercel — which watches your
-   default branch — will automatically kick off a new deployment with the
-   fresh data. There's nothing to click; this happens on its own.
+   Every time the workflow refreshes any of the `data/*.json` files and
+   pushes that commit, Vercel — which watches your default branch — will
+   automatically kick off a new deployment with the fresh data. There's
+   nothing to click; this happens on its own.
 
 6. **Custom domain (optional).**
    In your Vercel project, go to **Settings → Domains**, add your domain, and
@@ -215,11 +261,6 @@ This is the important part — follow these steps in order.
 
 ## Roadmap / future ideas
 
-- Pairwise champion **synergy** adjustments (some champions perform better or
-  worse specifically alongside certain teammates, beyond their individual
-  rating).
-- **Role-specific matchup effects**, e.g. modeling lane matchups (top vs top,
-  mid vs mid) rather than only whole-team aggregate strength.
 - **Side-specific (blue/red) champion win-rate deltas** — some champions may
   perform meaningfully differently on blue vs. red side beyond the generic
   side-advantage term.

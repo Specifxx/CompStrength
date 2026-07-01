@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { DataNotReadyError, loadChampionRatings, loadModel } from "@/lib/data";
+import { DataNotReadyError, loadChampionRatings, loadModel, loadSynergy } from "@/lib/data";
 import {
   IncompleteDraftError,
   UnknownChampionError,
@@ -34,7 +34,8 @@ export async function POST(request: NextRequest) {
   try {
     const ratings = loadChampionRatings();
     const model = loadModel();
-    const result = predictMatchup(body.blue, body.red, ratings, model);
+    const synergy = loadSynergy();
+    const result = predictMatchup(body.blue, body.red, ratings, model, synergy);
     return NextResponse.json(result);
   } catch (err) {
     if (err instanceof DataNotReadyError) {

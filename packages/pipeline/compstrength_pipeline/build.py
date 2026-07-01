@@ -27,7 +27,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from compstrength_pipeline import etl, features, train_model
+from compstrength_pipeline import backtest, etl, features, pairwise, train_model
 from compstrength_pipeline.config import DEFAULT_CONFIG, PipelineConfig
 from compstrength_pipeline.sources.oracles_elixir import (
     extract_bans,
@@ -111,12 +111,13 @@ def run_pipeline(
     soloqueue_fixture: str,
     patch: str | None,
     config: PipelineConfig = DEFAULT_CONFIG,
-) -> tuple[dict, dict]:
-    """Run ETL -> features -> train_model and return the two output dicts.
+) -> tuple[dict, dict, dict]:
+    """Run ETL -> features -> pairwise -> train_model and return the output dicts.
 
     Returns:
-        ``(champion_ratings_payload, model_payload)`` matching the exact
-        JSON schemas documented in the project spec / README.
+        ``(champion_ratings_payload, model_payload, synergy_payload)``
+        matching the exact JSON schemas documented in the project spec /
+        README.
     """
     raw_games_df, raw_bans_df = load_games_and_bans(oracles_elixir_path, oracles_elixir_url)
     games_df, bans_df = etl.build_raw_tables(raw_games_df, raw_bans_df)
@@ -125,6 +126,19 @@ def run_pipeline(
         raise ValueError(
             "No complete games survived ETL cleaning; cannot compute features. "
             "Check the input data source."
+        )
+
+    # Hard-restrict to the most recent patches up front so every downstream
+    # computation (resolved patch, champion features, pairwise synergy/
+    # matchup, and the training frame for the model) operates on exactly
+    # the same patch-restricted window.
+    games_df, bans_df, patches_used = features.restrict_to_recent_patches(
+        games_df, bans_df, config.num_recent_patches
+    )
+    if games_df.empty:
+        raise ValueError(
+            "No games remain after restricting to the most recent patches; "
+            "cannot compute features. Check the input data source."
         )
 
     resolved_patch = patch or _most_recent_patch(games_df)
@@ -142,14 +156,29 @@ def run_pipeline(
     )
 
     champion_strength = champion_features_df["strengthScore"].to_dict()
-    model_result = train_model.train_model(games_df, champion_strength)
+
+    synergy_table = pairwise.compute_synergy_table(
+        games_df, champion_strength, config, reference_date=reference_date
+    )
+    matchup_table = pairwise.compute_matchup_table(
+        games_df, champion_strength, config, reference_date=reference_date
+    )
+    synergy_residuals = pairwise.synergy_lookup(synergy_table)
+    matchup_residuals = pairwise.matchup_lookup(matchup_table)
+
+    model_result = train_model.train_model(
+        games_df, champion_strength, synergy_residuals, matchup_residuals
+    )
 
     champion_ratings_payload = _build_champion_ratings_payload(
-        champion_features_df, resolved_patch, config
+        champion_features_df, resolved_patch, patches_used, config
     )
     model_payload = _build_model_payload(model_result)
+    synergy_payload = _build_synergy_payload(
+        synergy_table, matchup_table, resolved_patch, patches_used, config
+    )
 
-    return champion_ratings_payload, model_payload
+    return champion_ratings_payload, model_payload, synergy_payload
 
 
 def _most_recent_patch(games_df: pd.DataFrame) -> str:
@@ -159,7 +188,10 @@ def _most_recent_patch(games_df: pd.DataFrame) -> str:
 
 
 def _build_champion_ratings_payload(
-    champion_features_df: pd.DataFrame, patch: str, config: PipelineConfig
+    champion_features_df: pd.DataFrame,
+    patch: str,
+    patches_used: list[str],
+    config: PipelineConfig,
 ) -> dict:
     champions_payload = {}
     for champion, row in champion_features_df.iterrows():
@@ -179,6 +211,7 @@ def _build_champion_ratings_payload(
     return {
         "generatedAt": datetime.now(timezone.utc).isoformat(),
         "patch": patch,
+        "patchesUsed": list(patches_used),
         "params": {
             "patchHalfLifeDays": config.patch_half_life_days,
             "soloQueueWeight": config.solo_queue_weight,
@@ -200,12 +233,44 @@ def _build_model_payload(model_result: train_model.ModelResult) -> dict:
     }
 
 
-def write_outputs(champion_ratings: dict, model: dict, output_dir: str) -> tuple[Path, Path]:
+def _build_synergy_payload(
+    synergy_table: dict[str, pairwise.PairStat],
+    matchup_table: dict[str, pairwise.PairStat],
+    patch: str,
+    patches_used: list[str],
+    config: PipelineConfig,
+) -> dict:
+    synergy_payload = {
+        key: {"gamesDecayed": stat.games_decayed, "residual": stat.residual}
+        for key, stat in synergy_table.items()
+    }
+    matchup_payload = {
+        key: {"gamesDecayed": stat.games_decayed, "residual": stat.residual}
+        for key, stat in matchup_table.items()
+    }
+
+    return {
+        "generatedAt": datetime.now(timezone.utc).isoformat(),
+        "patch": patch,
+        "patchesUsed": list(patches_used),
+        "params": {
+            "synergyPriorGames": config.synergy_prior_games,
+            "matchupPriorGames": config.matchup_prior_games,
+        },
+        "synergy": synergy_payload,
+        "matchup": matchup_payload,
+    }
+
+
+def write_outputs(
+    champion_ratings: dict, model: dict, synergy: dict, output_dir: str
+) -> tuple[Path, Path, Path]:
     out_dir = Path(output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     ratings_path = out_dir / "champion_ratings.json"
     model_path = out_dir / "model.json"
+    synergy_path = out_dir / "synergy.json"
 
     with ratings_path.open("w", encoding="utf-8") as f:
         json.dump(champion_ratings, f, indent=2, sort_keys=False)
@@ -215,27 +280,92 @@ def write_outputs(champion_ratings: dict, model: dict, output_dir: str) -> tuple
         json.dump(model, f, indent=2, sort_keys=False)
         f.write("\n")
 
-    return ratings_path, model_path
+    with synergy_path.open("w", encoding="utf-8") as f:
+        json.dump(synergy, f, indent=2, sort_keys=False)
+        f.write("\n")
+
+    return ratings_path, model_path, synergy_path
+
+
+def write_backtest_report(
+    oracles_elixir_path: str,
+    oracles_elixir_url: str | None,
+    soloqueue_fixture: str,
+    output_dir: str,
+    config: PipelineConfig = DEFAULT_CONFIG,
+) -> Path:
+    """Run the walk-forward backtest and write ``data/backtest_report.json``.
+
+    Degrades gracefully: any exception while running the backtest (e.g.
+    too little data) is caught and results in a report with an explanatory
+    ``note`` rather than crashing the overall build.
+    """
+    out_dir = Path(output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    report_path = out_dir / "backtest_report.json"
+
+    try:
+        raw_games_df, raw_bans_df = load_games_and_bans(oracles_elixir_path, oracles_elixir_url)
+        games_df, bans_df = etl.build_raw_tables(raw_games_df, raw_bans_df)
+        soloqueue_source = StaticSoloQueueSource(soloqueue_fixture)
+        report = backtest.run_backtest(games_df, bans_df, soloqueue_source, config)
+    except Exception as exc:  # noqa: BLE001 - build must never crash on backtest failure
+        warnings.warn(f"Backtest failed, writing a degraded report instead: {exc!r}")
+        report = {
+            "generatedAt": datetime.now(timezone.utc).isoformat(),
+            "folds": 0,
+            "testGames": 0,
+            "metrics": {
+                "accuracy": float("nan"),
+                "logLoss": float("nan"),
+                "brierScore": float("nan"),
+                "baselineAccuracy": float("nan"),
+                "coinFlipLogLoss": float("nan"),
+            },
+            "calibration": [],
+            "note": f"Backtest could not be run: {exc!r}",
+        }
+
+    with report_path.open("w", encoding="utf-8") as f:
+        json.dump(report, f, indent=2, sort_keys=False)
+        f.write("\n")
+
+    return report_path
 
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
 
-    champion_ratings, model = run_pipeline(
+    champion_ratings, model, synergy = run_pipeline(
         oracles_elixir_path=args.oracles_elixir_path,
         oracles_elixir_url=args.oracles_elixir_url,
         soloqueue_fixture=args.soloqueue_fixture,
         patch=args.patch,
     )
 
-    ratings_path, model_path = write_outputs(champion_ratings, model, args.output_dir)
+    ratings_path, model_path, synergy_path = write_outputs(
+        champion_ratings, model, synergy, args.output_dir
+    )
 
     n_champions = len(champion_ratings["champions"])
     print(f"Wrote {ratings_path} ({n_champions} champions, patch={champion_ratings['patch']!r})")
+    print(f"  patchesUsed={champion_ratings['patchesUsed']!r}")
     print(
         f"Wrote {model_path} (trainingGames={model['trainingGames']}, "
         f"accuracy={model['metrics'].get('accuracy')!r})"
     )
+    print(
+        f"Wrote {synergy_path} (synergy pairs={len(synergy['synergy'])}, "
+        f"matchup pairs={len(synergy['matchup'])})"
+    )
+
+    report_path = write_backtest_report(
+        oracles_elixir_path=args.oracles_elixir_path,
+        oracles_elixir_url=args.oracles_elixir_url,
+        soloqueue_fixture=args.soloqueue_fixture,
+        output_dir=args.output_dir,
+    )
+    print(f"Wrote {report_path}")
 
 
 if __name__ == "__main__":

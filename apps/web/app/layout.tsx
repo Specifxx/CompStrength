@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { DDragonVersionProvider } from "@/lib/ddragon";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col bg-slate-950 text-slate-100">
-        {children}
+        <DDragonVersionProvider>{children}</DDragonVersionProvider>
       </body>
     </html>
   );

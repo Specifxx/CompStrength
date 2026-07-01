@@ -35,6 +35,20 @@ class PipelineConfig:
             patches to find more data (see ``features.py``).
         global_mean: The assumed baseline win rate for any champion in a
             balanced 5v5 game with no other information (50%).
+        num_recent_patches: The number of most-recent distinct patches
+            (ordered by the max game date on that patch, not lexicographic/
+            semver order) to hard-restrict all feature computation to.
+            Games on any older patch are dropped entirely before any
+            window selection, decay, or pick/ban-rate computation happens.
+            This enforces "only look at the last few patches at all" on
+            top of (not instead of) the day-based exponential recency
+            decay, per explicit product requirement.
+        synergy_prior_games: Empirical-Bayes shrinkage strength (in
+            decayed "pseudo-games") for the within-team pairwise synergy
+            residual computed in ``pairwise.py``.
+        matchup_prior_games: Empirical-Bayes shrinkage strength (in
+            decayed "pseudo-games") for the cross-team same-role matchup
+            residual computed in ``pairwise.py``.
     """
 
     patch_half_life_days: int = 21
@@ -42,6 +56,9 @@ class PipelineConfig:
     prior_games: int = 15
     pro_window_days: int = 90
     global_mean: float = 0.5
+    num_recent_patches: int = 3
+    synergy_prior_games: int = 8
+    matchup_prior_games: int = 10
 
     def __post_init__(self) -> None:
         if not (0.0 <= self.solo_queue_weight <= 1.0):
@@ -54,6 +71,12 @@ class PipelineConfig:
             raise ValueError("pro_window_days must be positive")
         if not (0.0 < self.global_mean < 1.0):
             raise ValueError("global_mean must be in (0, 1)")
+        if self.num_recent_patches < 1:
+            raise ValueError("num_recent_patches must be >= 1")
+        if self.synergy_prior_games < 0:
+            raise ValueError("synergy_prior_games must be non-negative")
+        if self.matchup_prior_games < 0:
+            raise ValueError("matchup_prior_games must be non-negative")
 
 
 # Module-level default instance, importable directly as

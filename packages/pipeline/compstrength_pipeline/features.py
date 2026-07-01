@@ -273,6 +273,54 @@ def _select_pro_window(
     return selected
 
 
+def select_recent_patches(games_df: pd.DataFrame, num_recent_patches: int) -> list[str]:
+    """Return the ``num_recent_patches`` most-recent distinct patches present.
+
+    Patches are ordered by the max ``date`` of games on that patch (not by
+    lexicographic/semver sort, since patch strings like "14.2" vs "14.10"
+    aren't reliably sortable as text). Returned most-recent-first.
+
+    If ``games_df`` is empty or has no ``patch``/``date`` columns, returns
+    an empty list.
+    """
+    if games_df.empty or "patch" not in games_df.columns:
+        return []
+
+    patch_max_dates = games_df.groupby("patch")["date"].max().sort_values(ascending=False)
+    return list(patch_max_dates.index[:num_recent_patches])
+
+
+def restrict_to_recent_patches(
+    games_df: pd.DataFrame, bans_df: pd.DataFrame, num_recent_patches: int
+) -> tuple[pd.DataFrame, pd.DataFrame, list[str]]:
+    """Hard-filter ``games_df``/``bans_df`` to only the most recent patches.
+
+    Args:
+        games_df: Cleaned per-player-game table with a ``patch`` column.
+        bans_df: Cleaned bans table (filtered to the same surviving
+            gameids as ``games_df``).
+        num_recent_patches: See ``PipelineConfig.num_recent_patches``.
+
+    Returns:
+        ``(restricted_games_df, restricted_bans_df, patches_used)`` where
+        ``patches_used`` is the most-recent-first list of patch strings
+        that survived the filter (see :func:`select_recent_patches`).
+    """
+    patches_used = select_recent_patches(games_df, num_recent_patches)
+    if not patches_used:
+        return games_df, bans_df, patches_used
+
+    restricted_games = games_df[games_df["patch"].isin(patches_used)].reset_index(drop=True)
+
+    if bans_df is None or bans_df.empty:
+        restricted_bans = bans_df
+    else:
+        surviving_gameids = set(restricted_games["gameid"])
+        restricted_bans = bans_df[bans_df["gameid"].isin(surviving_gameids)].reset_index(drop=True)
+
+    return restricted_games, restricted_bans, patches_used
+
+
 def compute_champion_features(
     games_df: pd.DataFrame,
     bans_df: pd.DataFrame,
@@ -284,7 +332,12 @@ def compute_champion_features(
 
     Args:
         games_df: Cleaned per-player-game table (post ``etl.build_raw_tables``),
-            with at least [gameid, date, champion, result] columns.
+            with at least [gameid, date, patch, champion, result] columns.
+            Before anything else, this is hard-restricted to games on the
+            ``config.num_recent_patches`` most recent distinct patches
+            (see :func:`restrict_to_recent_patches`) -- window selection,
+            decay, and pick/ban rates are all computed over that
+            patch-restricted set only.
         bans_df: Cleaned bans table (post ``etl.build_raw_tables``), with
             at least [gameid, champion] columns.
         solo_winrates: ``{champion: (winrate, games)}`` for the current
@@ -294,7 +347,7 @@ def compute_champion_features(
         config: Hyperparameters (see ``config.PipelineConfig``).
         reference_date: The "as of" date for recency decay and the
             trailing pro-games window. Defaults to the max date present
-            in ``games_df``.
+            in the patch-restricted ``games_df``.
 
     Returns:
         A DataFrame indexed by champion name with columns: primaryRole,
@@ -302,6 +355,19 @@ def compute_champion_features(
         soloWinRate, blendedWinRate, strengthScore, pickRate, banRate,
         sampleConfidence.
     """
+    if games_df.empty:
+        return pd.DataFrame(
+            columns=[
+                "primaryRole", "proGames", "proWinRate", "soloGames",
+                "soloWinRate", "blendedWinRate", "strengthScore", "pickRate",
+                "banRate", "sampleConfidence",
+            ]
+        )
+
+    games_df, bans_df, _patches_used = restrict_to_recent_patches(
+        games_df, bans_df, config.num_recent_patches
+    )
+
     if games_df.empty:
         return pd.DataFrame(
             columns=[

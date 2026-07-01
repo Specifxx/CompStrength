@@ -4,12 +4,24 @@ import {
   type ChampionRatingsFile,
   type DraftTeam,
   type ModelFile,
+  type NotablePair,
   type PredictResponse,
   type Role,
+  type SynergyFile,
 } from "./types";
 
 function sigmoid(x: number): number {
   return 1 / (1 + Math.exp(-x));
+}
+
+/** Key into synergy.synergy: two champion names sorted alphabetically, joined with "|". */
+export function synergyKey(a: string, b: string): string {
+  return [a, b].sort((x, y) => x.localeCompare(y)).join("|");
+}
+
+/** Key into synergy.matchup: directional, "{attacker}>{opponent}". */
+export function matchupKey(a: string, b: string): string {
+  return `${a}>${b}`;
 }
 
 export class UnknownChampionError extends Error {
@@ -47,11 +59,34 @@ function buildSide(
   });
 }
 
+/** Sum of synergy.synergy[...].residual over all 10 unordered pairs among 5 champions. */
+function teamSynergySum(champions: string[], synergy: SynergyFile): number {
+  let sum = 0;
+  for (let i = 0; i < champions.length; i++) {
+    for (let j = i + 1; j < champions.length; j++) {
+      const key = synergyKey(champions[i], champions[j]);
+      sum += synergy.synergy[key]?.residual ?? 0;
+    }
+  }
+  return sum;
+}
+
+function topNotablePairs(
+  pairs: { pair: [string, string]; residual: number }[],
+  n: number,
+): NotablePair[] {
+  return pairs
+    .filter((p) => p.residual !== 0)
+    .sort((a, b) => Math.abs(b.residual) - Math.abs(a.residual))
+    .slice(0, n);
+}
+
 export function predictMatchup(
   blue: DraftTeam,
   red: DraftTeam,
   ratings: ChampionRatingsFile,
   model: ModelFile,
+  synergy: SynergyFile,
 ): PredictResponse {
   const blueBreakdown = buildSide("blue", blue, ratings);
   const redBreakdown = buildSide("red", red, ratings);
@@ -59,9 +94,54 @@ export function predictMatchup(
   const blueTeamScore = blueBreakdown.reduce((sum, c) => sum + c.strengthScore, 0);
   const redTeamScore = redBreakdown.reduce((sum, c) => sum + c.strengthScore, 0);
 
-  const { scoreDiffWeight, blueSideBias, intercept } = model.coefficients;
+  const blueChampions = blueBreakdown.map((c) => c.champion);
+  const redChampions = redBreakdown.map((c) => c.champion);
+
+  const synergyDiff =
+    teamSynergySum(blueChampions, synergy) - teamSynergySum(redChampions, synergy);
+
+  const notableSynergyCandidates: { pair: [string, string]; residual: number }[] = [];
+  for (let i = 0; i < blueChampions.length; i++) {
+    for (let j = i + 1; j < blueChampions.length; j++) {
+      const a = blueChampions[i];
+      const b = blueChampions[j];
+      const residual = synergy.synergy[synergyKey(a, b)]?.residual ?? 0;
+      if (residual !== 0) notableSynergyCandidates.push({ pair: [a, b], residual });
+    }
+  }
+  for (let i = 0; i < redChampions.length; i++) {
+    for (let j = i + 1; j < redChampions.length; j++) {
+      const a = redChampions[i];
+      const b = redChampions[j];
+      const residual = synergy.synergy[synergyKey(a, b)]?.residual ?? 0;
+      if (residual !== 0) notableSynergyCandidates.push({ pair: [a, b], residual });
+    }
+  }
+
+  let matchupDiff = 0;
+  const notableMatchupCandidates: { pair: [string, string]; residual: number }[] = [];
+  for (const role of ROLES) {
+    const blueChamp = blue[role];
+    const redChamp = red[role];
+    if (!blueChamp || !redChamp) continue;
+    const residual = synergy.matchup[matchupKey(blueChamp, redChamp)]?.residual ?? 0;
+    matchupDiff += residual;
+    if (residual !== 0) notableMatchupCandidates.push({ pair: [blueChamp, redChamp], residual });
+  }
+
+  const {
+    scoreDiffWeight,
+    blueSideBias,
+    intercept,
+    synergyWeight = 0,
+    matchupWeight = 0,
+  } = model.coefficients;
   const logit =
-    intercept + scoreDiffWeight * (blueTeamScore - redTeamScore) + blueSideBias;
+    intercept +
+    scoreDiffWeight * (blueTeamScore - redTeamScore) +
+    synergyWeight * synergyDiff +
+    matchupWeight * matchupDiff +
+    blueSideBias;
   const blueWinProbability = sigmoid(logit);
 
   return {
@@ -70,7 +150,13 @@ export function predictMatchup(
     redWinProbability: 1 - blueWinProbability,
     blueTeamScore,
     redTeamScore,
+    synergyDiff,
+    matchupDiff,
     breakdown: { blue: blueBreakdown, red: redBreakdown },
     modelMetrics: model.metrics,
+    notablePairs: {
+      synergy: topNotablePairs(notableSynergyCandidates, 3),
+      matchup: topNotablePairs(notableMatchupCandidates, 3),
+    },
   };
 }

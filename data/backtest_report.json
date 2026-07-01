@@ -1,0 +1,45 @@
+{
+  "generatedAt": "2026-07-01T08:58:48.505221+00:00",
+  "folds": 3,
+  "testGames": 58,
+  "metrics": {
+    "accuracy": 0.46551724137931033,
+    "logLoss": 1.0185649198088127,
+    "brierScore": 0.3385133520636572,
+    "baselineAccuracy": 0.5689655172413793,
+    "coinFlipLogLoss": 0.6931471805599453
+  },
+  "calibration": [
+    {
+      "bucket": "0.0-0.2",
+      "predictedMean": 0.08937897979032347,
+      "actualWinRate": 0.5,
+      "count": 8
+    },
+    {
+      "bucket": "0.2-0.4",
+      "predictedMean": 0.2886516508732024,
+      "actualWinRate": 0.1111111111111111,
+      "count": 9
+    },
+    {
+      "bucket": "0.4-0.6",
+      "predictedMean": 0.5155680301849408,
+      "actualWinRate": 0.6666666666666666,
+      "count": 21
+    },
+    {
+      "bucket": "0.6-0.8",
+      "predictedMean": 0.702149027891397,
+      "actualWinRate": 0.4166666666666667,
+      "count": 12
+    },
+    {
+      "bucket": "0.8-1.0",
+      "predictedMean": 0.9011843738116603,
+      "actualWinRate": 0.125,
+      "count": 8
+    }
+  ],
+  "note": "Fold 1/4 skipped: insufficient train/test data (train_games=0, test_games=20). This backtest ran on a small synthetic fixture (see tests/fixtures/README.md), not real historical Oracle's Elixir data -- treat all numbers here as illustrative of the *methodology* (walk-forward validation), not as a real-world accuracy claim."
+}

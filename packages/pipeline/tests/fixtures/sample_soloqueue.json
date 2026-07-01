@@ -1,368 +1,778 @@
 {
   "14.1": {
     "Aatrox": {
-      "winrate": 0.4859,
-      "games": 14886
+      "winrate": 0.4789,
+      "games": 13886
     },
     "Ahri": {
-      "winrate": 0.4916,
-      "games": 8164
+      "winrate": 0.4874,
+      "games": 7164
     },
     "Akali": {
-      "winrate": 0.4658,
-      "games": 40119
+      "winrate": 0.4487,
+      "games": 39119
     },
     "Aphelios": {
-      "winrate": 0.4675,
-      "games": 43193
+      "winrate": 0.4513,
+      "games": 42193
     },
     "Azir": {
-      "winrate": 0.4646,
-      "games": 38255
+      "winrate": 0.447,
+      "games": 37255
     },
     "Braum": {
-      "winrate": 0.4772,
-      "games": 10632
+      "winrate": 0.4658,
+      "games": 9632
+    },
+    "Caitlyn": {
+      "winrate": 0.492,
+      "games": 8578
     },
     "Camille": {
-      "winrate": 0.4947,
-      "games": 9578
+      "winrate": 0.4689,
+      "games": 40113
+    },
+    "Corki": {
+      "winrate": 0.4909,
+      "games": 58188
+    },
+    "Elise": {
+      "winrate": 0.5079,
+      "games": 18630
     },
     "Ezreal": {
-      "winrate": 0.4793,
-      "games": 41113
+      "winrate": 0.5157,
+      "games": 42207
+    },
+    "Fiora": {
+      "winrate": 0.5537,
+      "games": 41821
     },
     "Gnar": {
-      "winrate": 0.494,
-      "games": 59188
+      "winrate": 0.5103,
+      "games": 7249
+    },
+    "Graves": {
+      "winrate": 0.5572,
+      "games": 7052
+    },
+    "Jarvan Iv": {
+      "winrate": 0.5068,
+      "games": 12727
     },
     "Jax": {
-      "winrate": 0.5052,
-      "games": 19630
+      "winrate": 0.4748,
+      "games": 13453
     },
     "Jinx": {
-      "winrate": 0.5105,
-      "games": 43207
+      "winrate": 0.5049,
+      "games": 41415
     },
     "K'Sante": {
-      "winrate": 0.5358,
-      "games": 42821
+      "winrate": 0.477,
+      "games": 57485
     },
     "Kai'Sa": {
-      "winrate": 0.5068,
-      "games": 8249
+      "winrate": 0.5218,
+      "games": 10753
     },
     "Karma": {
-      "winrate": 0.5381,
-      "games": 8052
+      "winrate": 0.5098,
+      "games": 45871
+    },
+    "Kindred": {
+      "winrate": 0.4625,
+      "games": 10385
+    },
+    "Leblanc": {
+      "winrate": 0.5057,
+      "games": 8114
     },
     "Lee Sin": {
-      "winrate": 0.5045,
-      "games": 13727
+      "winrate": 0.5077,
+      "games": 44567
     },
     "Lulu": {
-      "winrate": 0.4832,
-      "games": 14453
+      "winrate": 0.4647,
+      "games": 48590
+    },
+    "Nami": {
+      "winrate": 0.5038,
+      "games": 54936
     },
     "Nautilus": {
-      "winrate": 0.5033,
-      "games": 42415
+      "winrate": 0.4777,
+      "games": 42375
     },
     "Nidalee": {
-      "winrate": 0.4847,
-      "games": 58485
+      "winrate": 0.5508,
+      "games": 27696
     },
     "Orianna": {
-      "winrate": 0.5146,
-      "games": 11753
+      "winrate": 0.476,
+      "games": 56060
+    },
+    "Ornn": {
+      "winrate": 0.4616,
+      "games": 55106
     },
     "Rakan": {
-      "winrate": 0.5065,
-      "games": 46871
+      "winrate": 0.4693,
+      "games": 41645
     },
     "Renata Glasc": {
-      "winrate": 0.475,
-      "games": 11385
+      "winrate": 0.476,
+      "games": 36447
     },
     "Renekton": {
-      "winrate": 0.5038,
-      "games": 9114
+      "winrate": 0.545,
+      "games": 51804
+    },
+    "Rumble": {
+      "winrate": 0.4939,
+      "games": 43908
+    },
+    "Samira": {
+      "winrate": 0.5576,
+      "games": 11737
     },
     "Sejuani": {
-      "winrate": 0.5051,
-      "games": 45567
+      "winrate": 0.5014,
+      "games": 14810
+    },
+    "Sion": {
+      "winrate": 0.5309,
+      "games": 13960
     },
     "Sylas": {
-      "winrate": 0.4765,
-      "games": 49590
+      "winrate": 0.552,
+      "games": 31636
     },
     "Syndra": {
-      "winrate": 0.5025,
-      "games": 55936
+      "winrate": 0.4447,
+      "games": 47792
+    },
+    "Taliyah": {
+      "winrate": 0.4493,
+      "games": 40574
+    },
+    "Thresh": {
+      "winrate": 0.5088,
+      "games": 57631
+    },
+    "Varus": {
+      "winrate": 0.4776,
+      "games": 49566
     },
     "Vi": {
-      "winrate": 0.4851,
-      "games": 43375
+      "winrate": 0.482,
+      "games": 36550
     },
     "Viego": {
-      "winrate": 0.5339,
-      "games": 28696
+      "winrate": 0.5096,
+      "games": 33897
     },
     "Wukong": {
-      "winrate": 0.484,
-      "games": 57060
+      "winrate": 0.4483,
+      "games": 10133
     },
     "Xayah": {
-      "winrate": 0.4744,
-      "games": 56106
+      "winrate": 0.5534,
+      "games": 35070
+    },
+    "Yuumi": {
+      "winrate": 0.5236,
+      "games": 8259
     },
     "Zeri": {
-      "winrate": 0.4795,
-      "games": 42645
+      "winrate": 0.4473,
+      "games": 49972
+    },
+    "Zoe": {
+      "winrate": 0.4772,
+      "games": 41876
     }
   },
   "14.2": {
     "Aatrox": {
-      "winrate": 0.484,
-      "games": 37447
+      "winrate": 0.5592,
+      "games": 57865
     },
     "Ahri": {
-      "winrate": 0.53,
-      "games": 52804
+      "winrate": 0.4935,
+      "games": 50964
     },
     "Akali": {
-      "winrate": 0.4959,
-      "games": 44908
+      "winrate": 0.4863,
+      "games": 47820
     },
     "Aphelios": {
-      "winrate": 0.5384,
-      "games": 12737
+      "winrate": 0.4816,
+      "games": 34257
     },
     "Azir": {
-      "winrate": 0.501,
-      "games": 15810
+      "winrate": 0.4827,
+      "games": 44037
     },
     "Braum": {
-      "winrate": 0.5206,
-      "games": 14960
+      "winrate": 0.4541,
+      "games": 7863
+    },
+    "Caitlyn": {
+      "winrate": 0.4662,
+      "games": 22837
     },
     "Camille": {
-      "winrate": 0.5347,
-      "games": 32636
+      "winrate": 0.4555,
+      "games": 20227
+    },
+    "Corki": {
+      "winrate": 0.4877,
+      "games": 36539
+    },
+    "Elise": {
+      "winrate": 0.4497,
+      "games": 33437
     },
     "Ezreal": {
-      "winrate": 0.4631,
-      "games": 48792
+      "winrate": 0.4882,
+      "games": 22208
+    },
+    "Fiora": {
+      "winrate": 0.546,
+      "games": 57692
     },
     "Gnar": {
-      "winrate": 0.4662,
-      "games": 41574
+      "winrate": 0.4917,
+      "games": 40059
+    },
+    "Graves": {
+      "winrate": 0.4734,
+      "games": 31216
+    },
+    "Jarvan Iv": {
+      "winrate": 0.5584,
+      "games": 48742
     },
     "Jax": {
-      "winrate": 0.5058,
-      "games": 58631
+      "winrate": 0.5461,
+      "games": 19122
     },
     "Jinx": {
-      "winrate": 0.4851,
-      "games": 50566
+      "winrate": 0.4581,
+      "games": 15548
     },
     "K'Sante": {
-      "winrate": 0.488,
-      "games": 37550
+      "winrate": 0.4582,
+      "games": 47156
     },
     "Kai'Sa": {
-      "winrate": 0.5064,
-      "games": 34897
+      "winrate": 0.468,
+      "games": 35782
     },
     "Karma": {
-      "winrate": 0.4655,
-      "games": 11133
+      "winrate": 0.5397,
+      "games": 15950
+    },
+    "Kindred": {
+      "winrate": 0.4715,
+      "games": 4268
+    },
+    "Leblanc": {
+      "winrate": 0.4575,
+      "games": 39034
     },
     "Lee Sin": {
-      "winrate": 0.5356,
-      "games": 36070
+      "winrate": 0.4843,
+      "games": 41115
     },
     "Lulu": {
-      "winrate": 0.5158,
-      "games": 9259
+      "winrate": 0.4782,
+      "games": 12224
+    },
+    "Nami": {
+      "winrate": 0.5229,
+      "games": 37783
     },
     "Nautilus": {
-      "winrate": 0.4649,
-      "games": 50972
+      "winrate": 0.554,
+      "games": 46923
     },
     "Nidalee": {
-      "winrate": 0.4848,
-      "games": 42876
+      "winrate": 0.5211,
+      "games": 7538
     },
     "Orianna": {
-      "winrate": 0.5394,
-      "games": 58865
+      "winrate": 0.4948,
+      "games": 55116
+    },
+    "Ornn": {
+      "winrate": 0.5542,
+      "games": 48602
     },
     "Rakan": {
-      "winrate": 0.4957,
-      "games": 51964
+      "winrate": 0.5357,
+      "games": 29714
     },
     "Renata Glasc": {
-      "winrate": 0.4909,
-      "games": 48820
+      "winrate": 0.4878,
+      "games": 29829
     },
     "Renekton": {
-      "winrate": 0.4878,
-      "games": 35257
+      "winrate": 0.4524,
+      "games": 45568
+    },
+    "Rumble": {
+      "winrate": 0.4881,
+      "games": 16491
+    },
+    "Samira": {
+      "winrate": 0.4481,
+      "games": 17681
     },
     "Sejuani": {
-      "winrate": 0.4884,
-      "games": 45037
+      "winrate": 0.4929,
+      "games": 11204
+    },
+    "Sion": {
+      "winrate": 0.4808,
+      "games": 7445
     },
     "Sylas": {
-      "winrate": 0.4694,
-      "games": 8863
+      "winrate": 0.4523,
+      "games": 41144
     },
     "Syndra": {
-      "winrate": 0.4775,
-      "games": 23837
+      "winrate": 0.4582,
+      "games": 10649
+    },
+    "Taliyah": {
+      "winrate": 0.5539,
+      "games": 44221
+    },
+    "Thresh": {
+      "winrate": 0.4431,
+      "games": 17628
+    },
+    "Varus": {
+      "winrate": 0.5137,
+      "games": 13735
     },
     "Vi": {
-      "winrate": 0.4703,
-      "games": 21227
+      "winrate": 0.5161,
+      "games": 26766
     },
     "Viego": {
-      "winrate": 0.4918,
-      "games": 37539
+      "winrate": 0.5123,
+      "games": 35073
     },
     "Wukong": {
-      "winrate": 0.4664,
-      "games": 34437
+      "winrate": 0.4547,
+      "games": 59635
     },
     "Xayah": {
-      "winrate": 0.4921,
-      "games": 23208
+      "winrate": 0.4986,
+      "games": 34539
+    },
+    "Yuumi": {
+      "winrate": 0.4976,
+      "games": 24437
     },
     "Zeri": {
-      "winrate": 0.5307,
-      "games": 58692
+      "winrate": 0.4503,
+      "games": 10696
+    },
+    "Zoe": {
+      "winrate": 0.53,
+      "games": 52519
     }
   },
   "14.3": {
     "Aatrox": {
-      "winrate": 0.4944,
-      "games": 41059
+      "winrate": 0.4718,
+      "games": 58319
     },
     "Ahri": {
-      "winrate": 0.4823,
-      "games": 32216
+      "winrate": 0.523,
+      "games": 37838
     },
     "Akali": {
-      "winrate": 0.5389,
-      "games": 49742
+      "winrate": 0.4428,
+      "games": 38619
     },
     "Aphelios": {
-      "winrate": 0.5307,
-      "games": 20122
+      "winrate": 0.4834,
+      "games": 49224
     },
     "Azir": {
-      "winrate": 0.4721,
-      "games": 16548
+      "winrate": 0.5052,
+      "games": 5772
     },
     "Braum": {
-      "winrate": 0.4721,
-      "games": 48156
+      "winrate": 0.531,
+      "games": 23535
+    },
+    "Caitlyn": {
+      "winrate": 0.5574,
+      "games": 9964
     },
     "Camille": {
-      "winrate": 0.4787,
-      "games": 36782
+      "winrate": 0.5235,
+      "games": 21112
+    },
+    "Corki": {
+      "winrate": 0.5022,
+      "games": 14947
+    },
+    "Elise": {
+      "winrate": 0.4827,
+      "games": 18600
     },
     "Ezreal": {
-      "winrate": 0.5265,
-      "games": 16950
+      "winrate": 0.5039,
+      "games": 55056
+    },
+    "Fiora": {
+      "winrate": 0.5003,
+      "games": 45709
     },
     "Gnar": {
-      "winrate": 0.481,
-      "games": 5268
+      "winrate": 0.4668,
+      "games": 57183
+    },
+    "Graves": {
+      "winrate": 0.5346,
+      "games": 53697
+    },
+    "Jarvan Iv": {
+      "winrate": 0.5423,
+      "games": 56827
     },
     "Jax": {
-      "winrate": 0.4717,
-      "games": 40034
+      "winrate": 0.4687,
+      "games": 30259
     },
     "Jinx": {
-      "winrate": 0.4895,
-      "games": 42115
+      "winrate": 0.5288,
+      "games": 18859
     },
     "K'Sante": {
-      "winrate": 0.4855,
-      "games": 13224
+      "winrate": 0.464,
+      "games": 36294
     },
     "Kai'Sa": {
-      "winrate": 0.5152,
-      "games": 38783
+      "winrate": 0.4827,
+      "games": 5899
     },
     "Karma": {
-      "winrate": 0.536,
-      "games": 47923
+      "winrate": 0.5588,
+      "games": 55780
+    },
+    "Kindred": {
+      "winrate": 0.4735,
+      "games": 20985
+    },
+    "Leblanc": {
+      "winrate": 0.4632,
+      "games": 43658
     },
     "Lee Sin": {
-      "winrate": 0.5141,
-      "games": 8538
+      "winrate": 0.5548,
+      "games": 33309
     },
     "Lulu": {
-      "winrate": 0.4965,
-      "games": 56116
+      "winrate": 0.537,
+      "games": 51390
+    },
+    "Nami": {
+      "winrate": 0.5586,
+      "games": 27896
     },
     "Nautilus": {
-      "winrate": 0.5362,
-      "games": 49602
+      "winrate": 0.4497,
+      "games": 10694
     },
     "Nidalee": {
-      "winrate": 0.5238,
-      "games": 30714
+      "winrate": 0.4672,
+      "games": 16891
     },
     "Orianna": {
-      "winrate": 0.4918,
-      "games": 30829
+      "winrate": 0.4805,
+      "games": 35631
+    },
+    "Ornn": {
+      "winrate": 0.5149,
+      "games": 43994
     },
     "Rakan": {
-      "winrate": 0.4683,
-      "games": 46568
+      "winrate": 0.5409,
+      "games": 35422
     },
     "Renata Glasc": {
-      "winrate": 0.492,
-      "games": 17491
+      "winrate": 0.5491,
+      "games": 26544
     },
     "Renekton": {
-      "winrate": 0.4654,
-      "games": 18681
+      "winrate": 0.536,
+      "games": 9556
+    },
+    "Rumble": {
+      "winrate": 0.5402,
+      "games": 11858
+    },
+    "Samira": {
+      "winrate": 0.5492,
+      "games": 55269
     },
     "Sejuani": {
-      "winrate": 0.4953,
-      "games": 12204
+      "winrate": 0.5254,
+      "games": 17062
+    },
+    "Sion": {
+      "winrate": 0.4974,
+      "games": 15699
     },
     "Sylas": {
-      "winrate": 0.4872,
-      "games": 8445
+      "winrate": 0.4921,
+      "games": 45670
     },
     "Syndra": {
-      "winrate": 0.4682,
-      "games": 42144
+      "winrate": 0.4799,
+      "games": 56482
+    },
+    "Taliyah": {
+      "winrate": 0.5535,
+      "games": 51305
+    },
+    "Thresh": {
+      "winrate": 0.4875,
+      "games": 30305
+    },
+    "Varus": {
+      "winrate": 0.5292,
+      "games": 9565
     },
     "Vi": {
-      "winrate": 0.4721,
-      "games": 11649
+      "winrate": 0.527,
+      "games": 15141
     },
     "Viego": {
-      "winrate": 0.5359,
-      "games": 45221
+      "winrate": 0.5592,
+      "games": 5805
     },
     "Wukong": {
-      "winrate": 0.462,
-      "games": 18628
+      "winrate": 0.4581,
+      "games": 34497
     },
     "Xayah": {
-      "winrate": 0.5091,
-      "games": 14735
+      "winrate": 0.5368,
+      "games": 13579
+    },
+    "Yuumi": {
+      "winrate": 0.5134,
+      "games": 43050
     },
     "Zeri": {
-      "winrate": 0.5108,
-      "games": 27766
+      "winrate": 0.5576,
+      "games": 47074
+    },
+    "Zoe": {
+      "winrate": 0.5525,
+      "games": 14217
+    }
+  },
+  "14.4": {
+    "Aatrox": {
+      "winrate": 0.5058,
+      "games": 12584
+    },
+    "Ahri": {
+      "winrate": 0.4426,
+      "games": 56386
+    },
+    "Akali": {
+      "winrate": 0.5565,
+      "games": 46577
+    },
+    "Aphelios": {
+      "winrate": 0.4523,
+      "games": 53118
+    },
+    "Azir": {
+      "winrate": 0.552,
+      "games": 32430
+    },
+    "Braum": {
+      "winrate": 0.5584,
+      "games": 16766
+    },
+    "Caitlyn": {
+      "winrate": 0.5391,
+      "games": 17830
+    },
+    "Camille": {
+      "winrate": 0.4434,
+      "games": 17944
+    },
+    "Corki": {
+      "winrate": 0.4752,
+      "games": 19763
+    },
+    "Elise": {
+      "winrate": 0.5316,
+      "games": 25364
+    },
+    "Ezreal": {
+      "winrate": 0.4711,
+      "games": 31460
+    },
+    "Fiora": {
+      "winrate": 0.5401,
+      "games": 7991
+    },
+    "Gnar": {
+      "winrate": 0.5492,
+      "games": 27185
+    },
+    "Graves": {
+      "winrate": 0.5477,
+      "games": 47415
+    },
+    "Jarvan Iv": {
+      "winrate": 0.51,
+      "games": 37866
+    },
+    "Jax": {
+      "winrate": 0.4905,
+      "games": 36876
+    },
+    "Jinx": {
+      "winrate": 0.4557,
+      "games": 13950
+    },
+    "K'Sante": {
+      "winrate": 0.5028,
+      "games": 5225
+    },
+    "Kai'Sa": {
+      "winrate": 0.5447,
+      "games": 54889
+    },
+    "Karma": {
+      "winrate": 0.462,
+      "games": 4257
+    },
+    "Kindred": {
+      "winrate": 0.5331,
+      "games": 13817
+    },
+    "Leblanc": {
+      "winrate": 0.4607,
+      "games": 35030
+    },
+    "Lee Sin": {
+      "winrate": 0.5143,
+      "games": 11886
+    },
+    "Lulu": {
+      "winrate": 0.5068,
+      "games": 25363
+    },
+    "Nami": {
+      "winrate": 0.5219,
+      "games": 38781
+    },
+    "Nautilus": {
+      "winrate": 0.5067,
+      "games": 55398
+    },
+    "Nidalee": {
+      "winrate": 0.5332,
+      "games": 40719
+    },
+    "Orianna": {
+      "winrate": 0.4468,
+      "games": 16537
+    },
+    "Ornn": {
+      "winrate": 0.4732,
+      "games": 54610
+    },
+    "Rakan": {
+      "winrate": 0.4517,
+      "games": 33633
+    },
+    "Renata Glasc": {
+      "winrate": 0.5074,
+      "games": 53806
+    },
+    "Renekton": {
+      "winrate": 0.5473,
+      "games": 8152
+    },
+    "Rumble": {
+      "winrate": 0.4932,
+      "games": 44142
+    },
+    "Samira": {
+      "winrate": 0.5568,
+      "games": 43723
+    },
+    "Sejuani": {
+      "winrate": 0.5015,
+      "games": 49398
+    },
+    "Sion": {
+      "winrate": 0.4733,
+      "games": 37302
+    },
+    "Sylas": {
+      "winrate": 0.504,
+      "games": 35328
+    },
+    "Syndra": {
+      "winrate": 0.5009,
+      "games": 20230
+    },
+    "Taliyah": {
+      "winrate": 0.5239,
+      "games": 21012
+    },
+    "Thresh": {
+      "winrate": 0.5507,
+      "games": 17276
+    },
+    "Varus": {
+      "winrate": 0.5408,
+      "games": 12987
+    },
+    "Vi": {
+      "winrate": 0.49,
+      "games": 29713
+    },
+    "Viego": {
+      "winrate": 0.4931,
+      "games": 8754
+    },
+    "Wukong": {
+      "winrate": 0.5205,
+      "games": 32071
+    },
+    "Xayah": {
+      "winrate": 0.4488,
+      "games": 47874
+    },
+    "Yuumi": {
+      "winrate": 0.4763,
+      "games": 12018
+    },
+    "Zeri": {
+      "winrate": 0.5476,
+      "games": 14121
+    },
+    "Zoe": {
+      "winrate": 0.5527,
+      "games": 46169
     }
   }
 }

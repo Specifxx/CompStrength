@@ -1,14 +1,48 @@
 import { DraftBuilder } from "@/components/DraftBuilder";
-import { DataNotReadyError, loadChampionRatings } from "@/lib/data";
-import type { ChampionListItem } from "@/lib/types";
+import {
+  DataNotReadyError,
+  loadChampionRatings,
+  loadModel,
+  loadSynergy,
+} from "@/lib/data";
+import type {
+  ChampionListItem,
+  ChampionRatingsFile,
+  ModelFile,
+  SynergyFile,
+} from "@/lib/types";
 
-function loadHomeData(): { champions: ChampionListItem[]; patch: string } | null {
+function loadHomeData(): {
+  champions: ChampionListItem[];
+  ratings: ChampionRatingsFile;
+  patch: string;
+  model: ModelFile;
+  synergy: SynergyFile;
+} | null {
   try {
     const ratings = loadChampionRatings();
     const champions: ChampionListItem[] = Object.entries(ratings.champions).map(
       ([name, rating]) => ({ name, ...rating }),
     );
-    return { champions, patch: ratings.patch };
+    const model = loadModel();
+    // synergy.json may not exist yet (pipeline still being extended) —
+    // fall back to an empty synergy file so the app still renders and
+    // predictMatchup treats every pair as a neutral (0) residual.
+    let synergy: SynergyFile;
+    try {
+      synergy = loadSynergy();
+    } catch (err) {
+      if (!(err instanceof DataNotReadyError)) throw err;
+      synergy = {
+        generatedAt: "",
+        patch: ratings.patch,
+        patchesUsed: [],
+        params: { synergyPriorGames: 0, matchupPriorGames: 0 },
+        synergy: {},
+        matchup: {},
+      };
+    }
+    return { champions, ratings, patch: ratings.patch, model, synergy };
   } catch (err) {
     if (err instanceof DataNotReadyError) return null;
     throw err;
@@ -35,5 +69,13 @@ export default function HomePage() {
     );
   }
 
-  return <DraftBuilder champions={data.champions} patch={data.patch} />;
+  return (
+    <DraftBuilder
+      champions={data.champions}
+      ratings={data.ratings}
+      patch={data.patch}
+      model={data.model}
+      synergy={data.synergy}
+    />
+  );
 }

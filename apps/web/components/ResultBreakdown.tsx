@@ -1,3 +1,4 @@
+import { ChampionIcon } from "./ChampionIcon";
 import type { ChampionContribution } from "@/lib/types";
 
 function pct(x: number) {
@@ -31,7 +32,12 @@ export function ResultBreakdown({
       <tbody>
         {contributions.map((c) => (
           <tr key={c.champion} className="border-t border-slate-800">
-            <td className="py-1 pr-2 font-medium">{c.champion}</td>
+            <td className="py-1 pr-2 font-medium">
+              <span className="flex items-center gap-2">
+                <ChampionIcon champion={c.champion} size={18} />
+                {c.champion}
+              </span>
+            </td>
             <td className="py-1 pr-2 text-slate-400">{c.role}</td>
             <td className="py-1 pr-2">{pct(c.blendedWinRate)}</td>
             <td className="py-1 pr-2 text-slate-400">

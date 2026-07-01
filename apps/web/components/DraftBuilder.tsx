@@ -1,10 +1,25 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ChampionPicker } from "./ChampionPicker";
 import { ResultBreakdown } from "./ResultBreakdown";
+import { NotablePairs } from "./NotablePairs";
 import { WinBar } from "./WinBar";
-import { ROLES, type ChampionListItem, type DraftTeam, type PredictResponse } from "@/lib/types";
+import {
+  IncompleteDraftError,
+  UnknownChampionError,
+  predictMatchup,
+} from "@/lib/predict";
+import {
+  ROLES,
+  type ChampionListItem,
+  type ChampionRatingsFile,
+  type DraftTeam,
+  type ModelFile,
+  type PredictResponse,
+  type SynergyFile,
+} from "@/lib/types";
 
 const EMPTY_TEAM: DraftTeam = {
   TOP: null,
@@ -16,16 +31,21 @@ const EMPTY_TEAM: DraftTeam = {
 
 export function DraftBuilder({
   champions,
+  ratings,
   patch,
+  model,
+  synergy,
 }: {
   champions: ChampionListItem[];
+  ratings: ChampionRatingsFile;
   patch: string;
+  model: ModelFile;
+  synergy: SynergyFile;
 }) {
   const [blue, setBlue] = useState<DraftTeam>({ ...EMPTY_TEAM });
   const [red, setRed] = useState<DraftTeam>({ ...EMPTY_TEAM });
   const [result, setResult] = useState<PredictResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
   const blueTaken = useMemo(
     () => new Set(Object.values(blue).filter((v): v is string => !!v)),
@@ -41,26 +61,21 @@ export function DraftBuilder({
   const redComplete = ROLES.every((r) => red[r]);
   const canPredict = blueComplete && redComplete;
 
-  async function handlePredict() {
-    setLoading(true);
+  function handlePredict() {
     setError(null);
     try {
-      const res = await fetch("/api/predict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ blue, red }),
-      });
-      const body = await res.json();
-      if (!res.ok) {
-        setError(body.error ?? "Prediction failed");
-        setResult(null);
+      // Computed entirely client-side — no network round-trip. lib/predict.ts
+      // is pure/isomorphic TS, so it runs identically here and on the
+      // /api/predict route (which stays available for programmatic use).
+      const prediction = predictMatchup(blue, red, ratings, model, synergy);
+      setResult(prediction);
+    } catch (err) {
+      if (err instanceof IncompleteDraftError || err instanceof UnknownChampionError) {
+        setError(err.message);
       } else {
-        setResult(body);
+        setError("Prediction failed");
       }
-    } catch {
-      setError("Network error contacting prediction API");
-    } finally {
-      setLoading(false);
+      setResult(null);
     }
   }
 
@@ -74,9 +89,17 @@ export function DraftBuilder({
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-8 px-4 pb-16 pt-10">
       <header>
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          Comp<span className="text-sky-400">Strength</span>
-        </h1>
+        <div className="flex items-baseline justify-between gap-4">
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            Comp<span className="text-sky-400">Strength</span>
+          </h1>
+          <Link
+            href="/methodology"
+            className="whitespace-nowrap text-xs font-medium text-sky-400 hover:text-sky-300 hover:underline"
+          >
+            Methodology &amp; backtest &rarr;
+          </Link>
+        </div>
         <p className="mt-1 max-w-2xl text-sm text-slate-400">
           Build a blue-side and red-side draft and estimate win probability
           from recent, patch-weighted pro play blended with solo queue
@@ -130,11 +153,11 @@ export function DraftBuilder({
       <div className="flex items-center gap-3">
         <button
           type="button"
-          disabled={!canPredict || loading}
+          disabled={!canPredict}
           onClick={handlePredict}
           className="rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 transition disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400"
         >
-          {loading ? "Predicting..." : "Predict Winner"}
+          Predict Winner
         </button>
         <button
           type="button"
@@ -163,6 +186,7 @@ export function DraftBuilder({
             <ResultBreakdown side="blue" contributions={result.breakdown.blue} />
             <ResultBreakdown side="red" contributions={result.breakdown.red} />
           </div>
+          <NotablePairs notablePairs={result.notablePairs} />
           <p className="text-xs text-slate-500">
             Model log-loss {result.modelMetrics.logLoss.toFixed(3)}, accuracy{" "}
             {(result.modelMetrics.accuracy * 100).toFixed(1)}% vs.{" "}
