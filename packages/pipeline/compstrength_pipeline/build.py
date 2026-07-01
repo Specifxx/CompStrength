@@ -343,6 +343,16 @@ def run_pipeline(
 
 
 def _most_recent_patch(games_df: pd.DataFrame) -> str:
+    # The "current patch" is the numerically-newest patch present, NOT the
+    # patch of whatever row has the latest timestamp: regions move patches on
+    # different days, so an older patch can carry a later-dated game. Using the
+    # newest patch number keeps the displayed patch and solo-queue lookup key
+    # aligned with the newest patch actually in the data (see
+    # features.newest_patch / _patches_by_recency).
+    newest = features.newest_patch(games_df)
+    if newest is not None:
+        return str(newest)
+    # Degenerate fallback (no parseable patches at all): latest-dated row.
     latest_date = games_df["date"].max()
     latest_rows = games_df[games_df["date"] == latest_date]
     return str(latest_rows["patch"].iloc[0])

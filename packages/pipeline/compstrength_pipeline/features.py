@@ -383,15 +383,46 @@ def _select_pro_window(
 
 
 def _patches_by_recency(games_df: pd.DataFrame) -> list[str]:
-    """Distinct patches present in ``games_df``, ordered by the max ``date``
-    of games on that patch (not lexicographic/semver sort, since patch
-    strings like "14.2" vs "14.10" aren't reliably sortable as text),
-    most-recent-first.
+    """Distinct patches present in ``games_df``, ordered newest-first by patch
+    NUMBER (parsed ``(major, minor)`` -- see :func:`parse_patch`), not by
+    lexicographic/semver text sort and not by max game date.
+
+    Ordering by patch number (rather than by the max game *date* of each
+    patch) matters because pro regions do not all move to a new patch on the
+    same calendar day: an older patch can carry games with later timestamps
+    than a newer patch (e.g. one region still on 16.11 plays after another has
+    started 16.12). Date-ranking would then rank the older patch as "newest"
+    and hand it distance 0 / full patch-decay weight -- the exact opposite of
+    the intended "latest patch weighted most". Numeric patch order is the
+    correct notion of "which patch is newer". Patches whose string doesn't
+    parse to a number are sorted last (by max date among themselves) so they
+    never masquerade as the newest patch.
     """
     if games_df.empty or "patch" not in games_df.columns:
         return []
-    patch_max_dates = games_df.groupby("patch")["date"].max().sort_values(ascending=False)
-    return list(patch_max_dates.index)
+    patch_max_dates = games_df.groupby("patch")["date"].max()
+    # Sort by (parsed patch tuple, max date) descending. Unparseable patches
+    # get a -inf sentinel so they rank after every real patch.
+    def _key(patch: object) -> tuple:
+        parsed = parse_patch(patch)
+        max_date = patch_max_dates[patch]
+        date_ord = max_date.value if pd.notna(max_date) else -1
+        if parsed is None:
+            return (0, -1, -1, date_ord)
+        return (1, parsed[0], parsed[1], date_ord)
+
+    return sorted(patch_max_dates.index, key=_key, reverse=True)
+
+
+def newest_patch(games_df: pd.DataFrame) -> str | None:
+    """Return the numerically-newest patch present in ``games_df`` (the one
+    used as the "current patch" label and solo-queue lookup key), or ``None``
+    if there are no patches. This is ``_patches_by_recency(...)[0]`` -- i.e.
+    the newest by patch NUMBER, so it never reports an older patch as current
+    just because that patch happens to have a later-dated game (see
+    :func:`_patches_by_recency`)."""
+    ordered = _patches_by_recency(games_df)
+    return ordered[0] if ordered else None
 
 
 def patch_ordinal_distances(games_df: pd.DataFrame) -> dict[str, int]:

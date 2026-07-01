@@ -9,6 +9,7 @@ import pytest
 from compstrength_pipeline.config import PipelineConfig
 from compstrength_pipeline.features import (
     compute_decayed_pro_stats,
+    newest_patch,
     patch_ordinal_distances,
     patch_weight_series,
 )
@@ -18,9 +19,9 @@ def _games(rows):
     return pd.DataFrame(rows)
 
 
-def test_patch_ordinal_distances_orders_by_date_not_lexically():
-    # "14.10" is chronologically newer than "14.2" but sorts BEFORE it as a
-    # string -- distances must come from dates, not string/semver order.
+def test_patch_ordinal_distances_orders_by_number_not_lexically():
+    # "14.10" is numerically newer than "14.2" but sorts BEFORE it as a
+    # string -- distances must come from parsed (major, minor), not text order.
     df = _games(
         [
             {"gameid": "g1", "patch": "14.2", "date": pd.Timestamp("2026-01-01", tz="UTC")},
@@ -30,6 +31,25 @@ def test_patch_ordinal_distances_orders_by_date_not_lexically():
     )
     distances = patch_ordinal_distances(df)
     assert distances == {"14.10": 0, "14.9": 1, "14.2": 2}
+
+
+def test_patch_ordinal_distances_orders_by_number_even_when_dates_disagree():
+    # Regression for the shipped bug: an OLDER patch (16.11) carries a game
+    # dated AFTER every game on the NEWER patch (16.12) -- e.g. one region
+    # still on 16.11 while another started 16.12. Ordering must follow patch
+    # NUMBER (16.12 newest, distance 0), NOT max game date (which would give
+    # 16.11 distance 0 and halve the true-newest patch's weight).
+    df = _games(
+        [
+            {"gameid": "g1", "patch": "16.12", "date": pd.Timestamp("2026-06-01", tz="UTC")},
+            {"gameid": "g2", "patch": "16.11", "date": pd.Timestamp("2026-06-10", tz="UTC")},
+            {"gameid": "g3", "patch": "16.10", "date": pd.Timestamp("2026-05-01", tz="UTC")},
+        ]
+    )
+    distances = patch_ordinal_distances(df)
+    assert distances == {"16.12": 0, "16.11": 1, "16.10": 2}
+    # ...and the "current patch" label is the numerically-newest, not 16.11.
+    assert newest_patch(df) == "16.12"
 
 
 def test_patch_weight_series_geometric_decay():

@@ -14,26 +14,57 @@ cross-check) and produces cleaned tables ready for feature computation:
 
 from __future__ import annotations
 
+import functools
+
 import pandas as pd
+
+from compstrength_pipeline.champions import get_full_champion_roster
 
 EXPECTED_PLAYER_ROWS_PER_GAME = 10
 
 
-def _standardize_champion_name(series: pd.Series) -> pd.Series:
-    """Standardize champion name casing/whitespace.
+@functools.lru_cache(maxsize=1)
+def _canonical_name_by_casefold() -> dict[str, str]:
+    """Map each known champion's casefolded name -> its canonical spelling.
 
-    We title-case the name but special-case apostrophe-containing names
-    (Kai'Sa, Kog'Maw, Cho'Gath, Vel'Koz, Kha'Zix, Rek'Sai) so the letter
-    right after the apostrophe is also capitalized, matching Riot's
-    official spelling.
+    Built from the full champion roster (Data Dragon live, else the static
+    fallback in ``champions.py``), which uses Riot's official casing
+    ("Jarvan IV", "LeBlanc", "Kai'Sa", "Dr. Mundo", ...). This is the single
+    source of truth we canonicalize raw champion strings against.
     """
+    return {name.casefold(): name for name in get_full_champion_roster()}
+
+
+def _standardize_champion_name(series: pd.Series) -> pd.Series:
+    """Canonicalize champion name spelling/casing.
+
+    Oracle's Elixir already uses Riot's official spellings, but naive
+    ``str.title()`` corrupts irregular names -- "Jarvan IV" -> "Jarvan Iv",
+    "LeBlanc" -> "Leblanc" -- which would then fail to match the roster's
+    canonical spelling and split ALL of that champion's game/synergy/matchup
+    data under a mangled key (while the correctly-spelled roster entry gets
+    zero data). To avoid that, we first map each name (case-insensitively)
+    onto the known roster's canonical spelling; only names the roster doesn't
+    know fall back to title-casing, with the apostrophe special-case
+    (Kai'Sa, Kog'Maw, Cho'Gath, Vel'Koz, Kha'Zix, Rek'Sai) preserved.
+    """
+    canonical = _canonical_name_by_casefold()
+
     def _fix(name: object) -> object:
         # Real Oracle's Elixir data has NaN/None champions in empty ban slots
         # ("No Ban" games), so this must be non-string-safe -- the synthetic
         # fixture never exercised that path.
         if not isinstance(name, str):
             return name
-        titled = name.strip().title()
+        stripped = name.strip()
+        # 1. Canonical roster match (case-insensitive) -- the common path for
+        #    real data, and the fix for "Jarvan IV"/"LeBlanc"-style names.
+        canon = canonical.get(stripped.casefold())
+        if canon is not None:
+            return canon
+        # 2. Unknown champion (e.g. a brand-new release not yet in the roster):
+        #    title-case with apostrophe fixup so casing is at least consistent.
+        titled = stripped.title()
         if "'" in titled:
             parts = titled.split("'")
             parts = [parts[0]] + [p[:1].upper() + p[1:] if p else p for p in parts[1:]]

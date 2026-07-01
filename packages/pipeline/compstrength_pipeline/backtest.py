@@ -54,8 +54,14 @@ CALIBRATION_BUCKET_EDGES = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
 
 
 def _resolve_patch_for_snapshot(games_df: pd.DataFrame) -> str:
-    """Same logic as ``build._most_recent_patch``, duplicated to avoid an
-    import cycle (``build.py`` imports this module)."""
+    """Same logic as ``build._most_recent_patch``: the numerically-newest
+    patch present (NOT the patch of the latest-dated row), so a snapshot's
+    "current patch" / solo-queue key matches the newest patch in that fold.
+    Kept as a thin wrapper here to avoid an import cycle (``build.py`` imports
+    this module)."""
+    newest = features.newest_patch(games_df)
+    if newest is not None:
+        return str(newest)
     latest_date = games_df["date"].max()
     latest_rows = games_df[games_df["date"] == latest_date]
     return str(latest_rows["patch"].iloc[0])
