@@ -95,60 +95,67 @@ meta actually resolves at the top level — worth more than an equivalent
 regional-split game. `PipelineConfig.international_weight_multiplier`
 (default `1.5x`) boosts these games' weight in every stat this pipeline
 computes (champion ratings, synergy, matchup), on top of the normal
-patch-recency decay. **A note on MSI 2026 specifically**: as of this
-writing MSI 2026 is still in progress (Play-In just concluded, Bracket Stage
-runs into mid-July), and this sandbox's network policy blocks the
-structured data sources (Oracle's Elixir, Leaguepedia) that would let the
-pipeline actually ingest it — search-engine snippets are not a reliable
-substitute (results for an in-progress tournament are prone to
-speculative/fabricated content, and no full per-game draft data was
-recoverable that way). Once deployed with real network access, the daily
-refresh workflow will pick up MSI 2026 games automatically the moment
-Oracle's Elixir publishes them — nothing else needs to change.
+patch-recency decay. MSI/Worlds games that have actually been played (e.g.
+the 2026 MSI Play-In stage) flow in automatically through the live data
+source below like any other game — no special-casing needed.
 
 ## Data sources
 
-- **[Oracle's Elixir](https://oracleselixir.com/)** — the primary source of
-  professional match data (games, results, picks, patches, dates). This is
-  the backbone dataset used to compute recent pro-play performance per
-  champion and comp.
 - **[Leaguepedia Cargo API](https://lol.fandom.com/wiki/Special:CargoTables)**
-  — used to cross-check picks/bans and match metadata against Oracle's
-  Elixir, to catch gaps or discrepancies in either source.
-- **Solo-queue win-rate source** (e.g. a public champion stats aggregator) —
-  used as a secondary prior for champions with limited professional sample
-  size. The specific provider is an implementation detail of the pipeline and
-  may change.
+  (`sources/leaguepedia.py`) — the **primary, live** source of professional
+  match data: `ScoreboardGames` for game/patch/date metadata,
+  `ScoreboardPlayers` for picks/side/result, `PicksAndBansS7` for bans. This
+  is a real, public, community-maintained structured database (the same one
+  many esports stats sites are built on), queried directly — no
+  screen-scraping. It rate-limits aggressively, so the fetcher batches
+  requests (chunked `GameId IN (...)` queries rather than one request per
+  game) and retries with backoff.
+- **[Oracle's Elixir](https://oracleselixir.com/)** (`sources/oracles_elixir.py`)
+  — an alternative CSV-based source, useful if you have a downloaded/URL
+  snapshot (its exact current download link isn't scriptable without
+  loading its JS-rendered downloads page, which this project doesn't
+  automate yet — see the Roadmap).
+- **Solo-queue win-rate source** — used as a prior for champions with a
+  limited professional sample. Not currently wired to a live source (no
+  reliable live endpoint was confirmed working yet — see Roadmap); when
+  running against real match data, the pipeline uses a neutral 50% prior
+  instead of guessing, rather than blending in made-up numbers.
 
 Pipeline fetchers are written to be **pluggable/swappable** — each data
 source lives behind its own fetcher module in `packages/pipeline`, so a
 source can be replaced (e.g. if a site changes its API or shuts down) without
-touching the modeling code downstream.
+touching the modeling code downstream. Select the live source with
+`python -m compstrength_pipeline.build --source leaguepedia` (this is what
+the scheduled GitHub Actions refresh uses); the default (`--source fixture`)
+reads a small, clearly-labeled **synthetic** dataset (see
+`packages/pipeline/tests/fixtures/README.md`) so the pipeline can also run
+fully offline for local dev/tests.
 
-**A caveat on ToS and rate limits:** community stats sites (Oracle's Elixir,
-Leaguepedia, solo-queue aggregators) are typically maintained by volunteers
-or small teams, not designed for high-volume automated access. This project
-fetches data **at most once a day**, caches what it can, and is intended to
-stay a good citizen of those sites' terms of service and rate limits. If
-you fork this project, please review the current ToS of whichever sources you
-point the pipeline at, and keep request volume low.
+**A caveat on ToS and rate limits:** Leaguepedia is maintained by volunteers,
+not designed for high-volume automated access. This project fetches data
+**at most once a day**, batches requests to minimize total call count, and
+is intended to stay a good citizen of the site's terms of service and rate
+limits. If you fork this project, please review the current ToS of
+whichever sources you point the pipeline at, and keep request volume low.
 
 ## How the model works
 
 At a high level, the pipeline turns raw match history into a single blue-side
 win probability estimate via five steps:
 
-1. **Recent-patches-only cutoff.** Only the `NUM_RECENT_PATCHES` most recent
-   patches (default 3) that actually appear in the match data are considered
-   at all — anything older is excluded outright, not just down-weighted, since
-   older patches can reflect a meaningfully different game. Patches are
-   ordered by the actual date of play, not by sorting the patch string.
-2. **Patch-recency weighting *within* that window.** Older games still matter
-   less than newer ones inside the recent-patch window. Each historical game
-   is weighted by an exponential decay based on how long ago it was played,
-   controlled by a `PATCH_HALF_LIFE_DAYS` hyperparameter — a game from one
-   half-life ago counts for half as much as a game played today, so the most
-   recent patch dominates the rating.
+1. **A target sample size, not a patch cutoff.** The pipeline trains on the
+   most recent `TARGET_TRAINING_GAMES` games overall (default 1000),
+   regardless of which patch they're on — older games aren't excluded just
+   for being on an older patch, they're simply weighted down by step 2
+   below. This guarantees a statistically meaningful sample size even when
+   the last patch or two alone wouldn't have nearly enough games, at the
+   cost of a small amount of stale-meta signal from older patches (which the
+   decay below keeps small).
+2. **Patch-recency weighting.** Older games still matter less than newer
+   ones. Each historical game is weighted by an exponential decay based on
+   how long ago it was played, controlled by a `PATCH_HALF_LIFE_DAYS`
+   hyperparameter — a game from one half-life ago counts for half as much as
+   a game played today, so the most recent patch dominates the rating.
 3. **Empirical-Bayes shrinkage toward solo queue.** Many champions have a
    small sample of professional games on the current patch. Rather than
    trusting a noisy small-sample pro win rate outright, the pipeline blends
@@ -198,11 +205,11 @@ leakage from the future. It reports accuracy, log-loss, Brier score, and a
 calibration table (predicted win probability vs. actual win rate, bucketed),
 against a coin-flip and majority-class baseline, and writes
 `data/backtest_report.json`. The live site's [`/methodology`](#) page
-surfaces these numbers. **Today, this runs against a small synthetic fixture
-dataset** (see `packages/pipeline/tests/fixtures/README.md`) — the reported
-numbers are illustrative of the *methodology*, not a real accuracy claim,
-until the pipeline is pointed at real historical Oracle's Elixir data (see
-"Local development" below for how to do that).
+surfaces these numbers. Run it against real data with
+`python -m compstrength_pipeline.build --source leaguepedia` (what the
+scheduled refresh does); the default local/test run uses the small
+synthetic fixture, in which case treat the numbers as illustrative of the
+*methodology*, not a real accuracy claim.
 
 ## Local development
 
@@ -222,7 +229,8 @@ root.
 
 ```bash
 pip install -e packages/pipeline
-python -m compstrength_pipeline.build
+python -m compstrength_pipeline.build                    # bundled synthetic fixture (offline)
+python -m compstrength_pipeline.build --source leaguepedia  # real, live data
 ```
 
 This fetches the latest data, refits the model, and overwrites
@@ -288,10 +296,16 @@ This is the important part — follow these steps in order.
 
 ## Roadmap / future ideas
 
+- **A working live solo-queue source.** `LolalyticsSoloQueueSource` exists
+  but its endpoint/query params aren't confirmed correct yet; until then,
+  real-data runs use a neutral 50% prior instead (see Data sources above).
+- **A scriptable Oracle's Elixir download link**, so it can be used as a
+  second live source (currently its downloads page is JS-rendered, so the
+  actual current-year CSV link isn't discoverable by a simple fetch).
 - **Side-specific (blue/red) champion win-rate deltas** — some champions may
   perform meaningfully differently on blue vs. red side beyond the generic
   side-advantage term.
-- **Backfilling the full historical Oracle's Elixir archive**, rather than
-  only a recent rolling window, to better support long-term trend analysis.
+- **Backfilling further into historical data**, rather than only the most
+  recent `TARGET_TRAINING_GAMES`, to better support long-term trend analysis.
 - **Per-league model variants** (LCK vs. LPL vs. LEC vs. others), since
   regional metas and playstyles can diverge from the global average.
