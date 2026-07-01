@@ -1,0 +1,21 @@
+# Node
+node_modules/
+.next/
+out/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+.pytest_cache/
+
+# Data (large raw downloads, not the committed snapshots)
+packages/pipeline/.cache/
+*.db
+
+# Misc
+.DS_Store
+.env
+.env.local
