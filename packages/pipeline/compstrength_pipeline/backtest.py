@@ -110,14 +110,15 @@ def _fit_snapshot_and_predict(
     solo_source: SoloQueueSource,
     config: PipelineConfig,
     reference_date: pd.Timestamp,
-) -> list[tuple[float, int]]:
+) -> list[tuple[float, int, str, str]]:
     """Fit the full pipeline on ``train_games_df`` (as of ``reference_date``)
     and predict blue-win-probability for every game in ``test_games_df``.
 
-    Returns a list of ``(predicted_proba, actual_blue_win)`` tuples, one
-    per gameid in ``test_games_df`` (skipping any gameid that doesn't have
-    both a blue and red side, which shouldn't happen post-ETL but is
-    handled defensively).
+    Returns a list of ``(predicted_proba, actual_blue_win, league, patch)``
+    tuples, one per gameid in ``test_games_df`` (skipping any gameid that
+    doesn't have both a blue and red side, which shouldn't happen post-ETL but
+    is handled defensively). ``league``/``patch`` are carried so the aggregate
+    report can break held-out accuracy down by league and by patch.
     """
     if train_games_df.empty:
         return []
@@ -160,7 +161,7 @@ def _fit_snapshot_and_predict(
         restricted_train_games, champion_strength, synergy_residuals, matchup_residuals
     )
 
-    predictions: list[tuple[float, int]] = []
+    predictions: list[tuple[float, int, str, str]] = []
     for gameid, group in test_games_df.groupby("gameid"):
         blue_rows = group[group["side"].str.lower() == "blue"]
         red_rows = group[group["side"].str.lower() == "red"]
@@ -182,18 +183,34 @@ def _fit_snapshot_and_predict(
 
         proba = _predict_proba(model_result.coefficients, score_diff, synergy_diff, matchup_diff)
         actual = int(blue_rows["result"].iloc[0] == 1)
-        predictions.append((proba, actual))
+        league = (
+            str(blue_rows["league"].iloc[0])
+            if "league" in blue_rows.columns and pd.notna(blue_rows["league"].iloc[0])
+            else "Unknown"
+        )
+        patch = (
+            str(blue_rows["patch"].iloc[0])
+            if "patch" in blue_rows.columns and pd.notna(blue_rows["patch"].iloc[0])
+            else "Unknown"
+        )
+        predictions.append((proba, actual, league, patch))
 
     return predictions
 
 
-def _calibration_table(predictions: list[tuple[float, int]]) -> list[dict]:
-    """Bucket predictions into quintiles by predicted probability."""
+def _calibration_table(predictions: list[tuple]) -> list[dict]:
+    """Bucket predictions into quintiles by predicted probability.
+
+    ``predictions`` are ``(proba, actual, ...)`` tuples; only the first two
+    fields are used here.
+    """
     table = []
     for lo, hi in zip(CALIBRATION_BUCKET_EDGES[:-1], CALIBRATION_BUCKET_EDGES[1:]):
         is_last_bucket = hi >= 1.0
         bucket_preds = [
-            (p, y) for p, y in predictions if lo <= p < hi or (is_last_bucket and p == hi)
+            (rec[0], rec[1])
+            for rec in predictions
+            if lo <= rec[0] < hi or (is_last_bucket and rec[0] == hi)
         ]
         if not bucket_preds:
             continue
@@ -208,6 +225,105 @@ def _calibration_table(predictions: list[tuple[float, int]]) -> list[dict]:
             }
         )
     return table
+
+
+# Held-out segments (a league / a patch) below this many test games are folded
+# into an aggregated "Other" row so the breakdown tables aren't dominated by
+# tiny, statistically-meaningless slices.
+MIN_SEGMENT_GAMES = 30
+
+
+def _segment_breakdown(
+    predictions: list[tuple], field_index: int, sort_key: str
+) -> list[dict]:
+    """Break held-out predictions down by a categorical field (league at index
+    2, patch at index 3), reporting per-segment held-out accuracy, baseline,
+    and log-loss. Segments with fewer than ``MIN_SEGMENT_GAMES`` test games are
+    aggregated into a single ``"Other (<n> segments)"`` row.
+
+    ``sort_key`` is ``"patch"`` (newest patch first, numerically) or
+    ``"count"`` (largest segment first).
+    """
+    groups: dict[str, list[tuple[float, int]]] = {}
+    for rec in predictions:
+        groups.setdefault(rec[field_index], []).append((rec[0], rec[1]))
+
+    def _row(name: str, preds: list[tuple[float, int]]) -> dict:
+        probs = np.array([p for p, _ in preds])
+        outs = np.array([y for _, y in preds])
+        acc = float(np.mean((probs >= 0.5).astype(int) == outs))
+        baseline = float(max(outs.mean(), 1.0 - outs.mean()))
+        try:
+            ll = float(log_loss(outs, probs, labels=[0, 1]))
+        except ValueError:
+            ll = float("nan")
+        return {
+            "name": name,
+            "testGames": int(len(outs)),
+            "accuracy": acc,
+            "baselineAccuracy": baseline,
+            "logLoss": ll,
+            "blueWinRate": float(outs.mean()),
+        }
+
+    big = {k: v for k, v in groups.items() if len(v) >= MIN_SEGMENT_GAMES}
+    small = {k: v for k, v in groups.items() if len(v) < MIN_SEGMENT_GAMES}
+
+    rows = [_row(str(name), preds) for name, preds in big.items()]
+
+    if sort_key == "patch":
+        rows.sort(
+            key=lambda r: features.parse_patch(r["name"]) or (-1, -1), reverse=True
+        )
+    else:
+        rows.sort(key=lambda r: r["testGames"], reverse=True)
+
+    if small:
+        pooled = [pred for preds in small.values() for pred in preds]
+        other = _row(f"Other ({len(small)} smaller)", pooled)
+        rows.append(other)  # always last, regardless of sort
+
+    return rows
+
+
+def _data_composition(games_df: pd.DataFrame, config: PipelineConfig) -> dict:
+    """Summarize the data the model is actually built on: total games, plus a
+    per-patch and per-league count of games. Patches also carry their relative
+    patch-recency weight (``patch_decay_base ** distance``) so the reader can
+    see the newest patch is weighted most. Computed over the same restricted
+    set the deployed model trains on (min_patch floor + most-recent-games cap).
+    """
+    floored, _ = features.restrict_to_min_patch(games_df, None, config.min_patch)
+    restricted, _, _ = features.restrict_to_recent_games(
+        floored, None, config.target_training_games
+    )
+    if restricted.empty:
+        return {"totalGames": 0, "byPatch": [], "byLeague": []}
+
+    per_game = restricted.drop_duplicates("gameid")
+    total = int(per_game["gameid"].nunique())
+
+    distances = features.patch_ordinal_distances(restricted)
+    patch_counts = per_game.groupby("patch")["gameid"].nunique()
+    by_patch = [
+        {
+            "name": str(p),
+            "games": int(patch_counts[p]),
+            "recencyWeight": float(config.patch_decay_base ** distances.get(p, 0)),
+        }
+        for p in patch_counts.index
+    ]
+    by_patch.sort(key=lambda r: features.parse_patch(r["name"]) or (-1, -1), reverse=True)
+
+    by_league = []
+    if "league" in per_game.columns:
+        league_counts = per_game.groupby("league")["gameid"].nunique()
+        by_league = [
+            {"name": str(lg), "games": int(league_counts[lg])} for lg in league_counts.index
+        ]
+        by_league.sort(key=lambda r: r["games"], reverse=True)
+
+    return {"totalGames": total, "byPatch": by_patch, "byLeague": by_league}
 
 
 def _provenance_note(games_df: pd.DataFrame, n_predictions: int) -> str:
@@ -376,8 +492,8 @@ def run_backtest(
             + " ".join(skipped_fold_notes)
         )
 
-    probs = np.array([p for p, _ in all_predictions])
-    outcomes = np.array([y for _, y in all_predictions])
+    probs = np.array([rec[0] for rec in all_predictions])
+    outcomes = np.array([rec[1] for rec in all_predictions])
 
     preds_binary = (probs >= 0.5).astype(int)
     accuracy = float(np.mean(preds_binary == outcomes))
@@ -389,6 +505,11 @@ def run_backtest(
     coin_flip_log_loss = float(log_loss(outcomes, coin_flip_probs, labels=[0, 1]))
 
     calibration = _calibration_table(all_predictions)
+    breakdowns = {
+        "byPatch": _segment_breakdown(all_predictions, field_index=3, sort_key="patch"),
+        "byLeague": _segment_breakdown(all_predictions, field_index=2, sort_key="count"),
+    }
+    data_composition = _data_composition(games_df, config)
 
     note_parts = []
     if degraded_note:
@@ -409,6 +530,8 @@ def run_backtest(
             "coinFlipLogLoss": coin_flip_log_loss,
         },
         "calibration": calibration,
+        "dataComposition": data_composition,
+        "breakdowns": breakdowns,
         "note": " ".join(note_parts),
     }
 
@@ -426,6 +549,8 @@ def _empty_report(note: str) -> dict:
             "coinFlipLogLoss": float("nan"),
         },
         "calibration": [],
+        "dataComposition": {"totalGames": 0, "byPatch": [], "byLeague": []},
+        "breakdowns": {"byPatch": [], "byLeague": []},
         "note": note,
     }
 

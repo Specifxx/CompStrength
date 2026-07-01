@@ -70,6 +70,25 @@ def test_run_backtest_end_to_end_produces_expected_schema(cleaned_games_and_bans
 
     assert isinstance(report["note"], str) and len(report["note"]) > 0
 
+    # Per-segment breakdowns + data composition (drive the Methodology page).
+    assert "breakdowns" in report and "dataComposition" in report
+    for seg in ("byPatch", "byLeague"):
+        assert isinstance(report["breakdowns"][seg], list)
+        for row in report["breakdowns"][seg]:
+            assert {"name", "testGames", "accuracy", "baselineAccuracy", "logLoss"}.issubset(row.keys())
+            assert row["testGames"] > 0
+            assert 0.0 <= row["accuracy"] <= 1.0
+    comp = report["dataComposition"]
+    assert comp["totalGames"] > 0
+    assert isinstance(comp["byPatch"], list) and isinstance(comp["byLeague"], list)
+    for row in comp["byPatch"]:
+        assert {"name", "games", "recencyWeight"}.issubset(row.keys())
+        assert row["games"] > 0
+        assert 0.0 < row["recencyWeight"] <= 1.0
+    # The composition should account for exactly the games used (sum over
+    # patches == total).
+    assert sum(r["games"] for r in comp["byPatch"]) == comp["totalGames"]
+
 
 def test_run_backtest_does_not_crash_with_too_little_data(solo_source):
     """A tiny dataset (below the minimum-games threshold) should degrade

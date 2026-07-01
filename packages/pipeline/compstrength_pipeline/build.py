@@ -472,6 +472,8 @@ def _degraded_backtest_report(exc: Exception) -> dict:
             "coinFlipLogLoss": float("nan"),
         },
         "calibration": [],
+        "dataComposition": {"totalGames": 0, "byPatch": [], "byLeague": []},
+        "breakdowns": {"byPatch": [], "byLeague": []},
         "note": f"Backtest could not be run: {exc!r}",
     }
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { DataNotReadyError, loadBacktestReport } from "@/lib/data";
-import type { BacktestReportFile } from "@/lib/types";
+import type { BacktestReportFile, BacktestSegment } from "@/lib/types";
 
 function loadReport(): BacktestReportFile | null {
   try {
@@ -13,6 +13,59 @@ function loadReport(): BacktestReportFile | null {
 
 function pct(x: number) {
   return `${Math.round(x * 1000) / 10}%`;
+}
+
+/** Held-out accuracy table for a set of segments (patches or leagues). The
+ *  "edge" column shows accuracy minus that segment's own pick-majority
+ *  baseline -- the honest measure of whether the model adds anything there. */
+function SegmentTable({
+  rows,
+  label,
+}: {
+  rows: BacktestSegment[];
+  label: string;
+}) {
+  if (!rows || rows.length === 0) {
+    return <p className="text-sm text-slate-500">No {label} breakdown available.</p>;
+  }
+  return (
+    <table className="w-full text-left text-sm">
+      <thead className="text-xs uppercase text-slate-500">
+        <tr>
+          <th className="pb-1 pr-2">{label}</th>
+          <th className="pb-1 pr-2">Games</th>
+          <th className="pb-1 pr-2">Accuracy</th>
+          <th className="pb-1 pr-2">Baseline</th>
+          <th className="pb-1 pr-2">Edge</th>
+          <th className="pb-1">Log loss</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => {
+          const edge = r.accuracy - r.baselineAccuracy;
+          return (
+            <tr key={r.name} className="border-t border-slate-800">
+              <td className="py-1 pr-2 font-mono text-slate-300">{r.name}</td>
+              <td className="py-1 pr-2 text-slate-500">{r.testGames.toLocaleString()}</td>
+              <td className="py-1 pr-2 text-slate-300">{pct(r.accuracy)}</td>
+              <td className="py-1 pr-2 text-slate-500">{pct(r.baselineAccuracy)}</td>
+              <td
+                className={
+                  "py-1 pr-2 " + (edge > 0.0005 ? "text-emerald-400" : edge < -0.0005 ? "text-rose-400" : "text-slate-500")
+                }
+              >
+                {edge >= 0 ? "+" : ""}
+                {(edge * 100).toFixed(1)}pp
+              </td>
+              <td className="py-1 text-slate-500">
+                {Number.isFinite(r.logLoss) ? r.logLoss.toFixed(3) : "—"}
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
 }
 
 export default function MethodologyPage() {
@@ -99,6 +152,102 @@ export default function MethodologyPage() {
               <p className="mt-4 text-xs text-slate-500">{report.note}</p>
             )}
           </section>
+
+          {report.dataComposition && report.dataComposition.totalGames > 0 && (
+            <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-5">
+              <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-sky-400">
+                Data the model is built on
+              </h2>
+              <p className="mb-4 text-xs text-slate-500">
+                {report.dataComposition.totalGames.toLocaleString()} real
+                professional games, drawn from the leagues and patches below.
+                More recent patches are weighted exponentially more (the
+                &ldquo;weight&rdquo; column is each patch&apos;s share of full
+                weight); older games still contribute, just less.
+              </p>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div>
+                  <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                    By patch
+                  </h3>
+                  <table className="w-full text-left text-sm">
+                    <thead className="text-xs uppercase text-slate-500">
+                      <tr>
+                        <th className="pb-1 pr-2">Patch</th>
+                        <th className="pb-1 pr-2">Games</th>
+                        <th className="pb-1">Weight</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {report.dataComposition.byPatch.map((p) => (
+                        <tr key={p.name} className="border-t border-slate-800">
+                          <td className="py-1 pr-2 font-mono text-slate-300">{p.name}</td>
+                          <td className="py-1 pr-2 text-slate-400">
+                            {p.games.toLocaleString()}
+                          </td>
+                          <td className="py-1 text-slate-500">
+                            {(p.recencyWeight * 100).toFixed(0)}%
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div>
+                  <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                    By league (top 12)
+                  </h3>
+                  <table className="w-full text-left text-sm">
+                    <thead className="text-xs uppercase text-slate-500">
+                      <tr>
+                        <th className="pb-1 pr-2">League</th>
+                        <th className="pb-1">Games</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {report.dataComposition.byLeague.slice(0, 12).map((lg) => (
+                        <tr key={lg.name} className="border-t border-slate-800">
+                          <td className="py-1 pr-2 font-mono text-slate-300">{lg.name}</td>
+                          <td className="py-1 text-slate-400">{lg.games.toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {report.dataComposition.byLeague.length > 12 && (
+                    <p className="mt-2 text-xs text-slate-600">
+                      + {report.dataComposition.byLeague.length - 12} more leagues
+                    </p>
+                  )}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {report.breakdowns &&
+            (report.breakdowns.byPatch.length > 0 ||
+              report.breakdowns.byLeague.length > 0) && (
+              <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-5">
+                <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-sky-400">
+                  Held-out accuracy by segment
+                </h2>
+                <p className="mb-4 text-xs text-slate-500">
+                  The same walk-forward held-out predictions, split by patch and
+                  by league. &ldquo;Edge&rdquo; is accuracy minus that
+                  segment&apos;s own pick-majority baseline &mdash; a positive
+                  edge means the model beat simply guessing the more common
+                  outcome there. Per-segment numbers are noisier the fewer games
+                  the segment has.
+                </p>
+                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                  By patch
+                </h3>
+                <SegmentTable rows={report.breakdowns.byPatch} label="Patch" />
+                <h3 className="mb-2 mt-6 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                  By league
+                </h3>
+                <SegmentTable rows={report.breakdowns.byLeague} label="League" />
+              </section>
+            )}
 
           <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-5">
             <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-sky-400">

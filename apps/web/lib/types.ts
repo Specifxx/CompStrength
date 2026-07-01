@@ -79,6 +79,29 @@ export interface BacktestCalibrationBucket {
   count: number;
 }
 
+/** Held-out accuracy for one segment (a league or a patch). */
+export interface BacktestSegment {
+  name: string;
+  testGames: number;
+  accuracy: number;
+  baselineAccuracy: number;
+  logLoss: number;
+  blueWinRate: number;
+}
+
+/** One patch's share of the training data + its patch-recency weight. */
+export interface CompositionPatch {
+  name: string;
+  games: number;
+  recencyWeight: number;
+}
+
+/** One league's share of the training data. */
+export interface CompositionLeague {
+  name: string;
+  games: number;
+}
+
 export interface BacktestReportFile {
   generatedAt: string;
   folds: number;
@@ -91,6 +114,17 @@ export interface BacktestReportFile {
     coinFlipLogLoss: number;
   };
   calibration: BacktestCalibrationBucket[];
+  // Composition of the data the model is built on, and held-out accuracy
+  // broken down by patch/league. Optional so older reports still type-check.
+  dataComposition?: {
+    totalGames: number;
+    byPatch: CompositionPatch[];
+    byLeague: CompositionLeague[];
+  };
+  breakdowns?: {
+    byPatch: BacktestSegment[];
+    byLeague: BacktestSegment[];
+  };
   note?: string;
 }
 
