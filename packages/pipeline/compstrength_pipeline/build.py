@@ -127,7 +127,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def _games_and_bans_from_csv_path(csv_path: str) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Read a local Oracle's-Elixir-shaped CSV ONCE and produce both the
     normalized games table and the bans table from the same in-memory frame."""
-    raw = pd.read_csv(csv_path, low_memory=False)
+    # Read patch as a string (see oracles_elixir._READ_CSV_KWARGS): otherwise
+    # pandas coerces "16.10" -> 16.1, silently corrupting patch-recency logic.
+    raw = pd.read_csv(csv_path, **oracles_elixir_source._READ_CSV_KWARGS)
     games_df = oracles_elixir_source._normalize_player_games(raw)
     bans_df = (
         oracles_elixir_source.extract_bans(raw)
@@ -152,7 +154,9 @@ def load_games_and_bans(
 
             resp = requests.get(oracles_elixir_url, timeout=30)
             resp.raise_for_status()
-            raw = pd.read_csv(io.StringIO(resp.text), low_memory=False)
+            raw = pd.read_csv(
+                io.StringIO(resp.text), **oracles_elixir_source._READ_CSV_KWARGS
+            )
             bans_df = extract_bans(raw) if not raw.empty else pd.DataFrame(
                 columns=["gameid", "team", "champion", "ban_number"]
             )

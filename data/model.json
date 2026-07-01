@@ -1,18 +1,18 @@
 {
   "version": 1,
-  "trainedAt": "2026-07-01T14:20:20.410071+00:00",
-  "trainingGames": 78,
+  "trainedAt": "2026-07-01T15:44:09.921896+00:00",
+  "trainingGames": 5482,
   "coefficients": {
-    "scoreDiffWeight": 0.1763499586156392,
-    "synergyWeight": 1.0849437716193167,
-    "matchupWeight": 0.22218378699211708,
-    "blueSideBias": 0.019012221087888588,
+    "scoreDiffWeight": 0.1012461373470886,
+    "synergyWeight": 0.2451507083234704,
+    "matchupWeight": 0.04817852885062431,
+    "blueSideBias": 0.11842345073712103,
     "intercept": 0.0
   },
   "metrics": {
-    "logLoss": 0.45282489024107814,
-    "accuracy": 0.8974358974358975,
-    "baselineAccuracy": 0.5256410256410257,
-    "note": "Small-sample fit (78 games): coefficients/metrics are illustrative only and will be noisy until more historical data accumulates."
+    "logLoss": 0.6749782735526034,
+    "accuracy": 0.58646479387085,
+    "baselineAccuracy": 0.5299160890186063,
+    "note": ""
   }
 }

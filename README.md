@@ -217,10 +217,22 @@ calibration table (predicted win probability vs. actual win rate, bucketed),
 against a coin-flip and majority-class baseline, and writes
 `data/backtest_report.json`. The live site's [`/methodology`](#) page
 surfaces these numbers. Run it against real data with
-`python -m compstrength_pipeline.build --source leaguepedia` (what the
-scheduled refresh does); the default local/test run uses the small
-synthetic fixture, in which case treat the numbers as illustrative of the
+`python -m compstrength_pipeline.build --source oracles-elixir` (what the
+scheduled refresh does); the report's `note` field states which it ran on.
+The default local/test run uses the small synthetic fixture, in which case
+the note says so and the numbers should be treated as illustrative of the
 *methodology*, not a real accuracy claim.
+
+**A note on what the real-data backtest shows.** Draft alone is a genuinely
+weak predictor of pro outcomes (see "How accurate is this, really?" above),
+and the honest walk-forward numbers reflect that: on thousands of real 2026
+games, held-out accuracy sits a point or two either side of the
+majority-class baseline, and log-loss hovers around the coin-flip line. That
+is the true ceiling of *champions-only* prediction at the pro level, not a
+bug — pro teams win with a huge range of comps, so which champions are picked
+carries only a small, noisy signal once you remove player skill, form, and
+in-game execution. The model is deliberately regularized so its probabilities
+stay honest (modest, well-calibrated) rather than confidently wrong.
 
 ## Local development
 
@@ -240,8 +252,9 @@ root.
 
 ```bash
 pip install -e packages/pipeline
-python -m compstrength_pipeline.build                    # bundled synthetic fixture (offline)
-python -m compstrength_pipeline.build --source leaguepedia  # real, live data
+python -m compstrength_pipeline.build                        # bundled synthetic fixture (offline)
+python -m compstrength_pipeline.build --source oracles-elixir  # real, live data (primary source)
+python -m compstrength_pipeline.build --source leaguepedia     # real, live data (backup source)
 ```
 
 This fetches the latest data, refits the model, and overwrites

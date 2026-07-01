@@ -45,6 +45,7 @@ import pandas as pd
 from compstrength_pipeline.config import (
     ORACLES_ELIXIR_DRIVE_DOWNLOAD_URL,
     ORACLES_ELIXIR_DRIVE_IDS,
+    ORACLES_ELIXIR_MIRROR_URLS,
 )
 
 # A real Oracle's Elixir season CSV is tens of MB; anything much smaller is
@@ -72,6 +73,18 @@ CANONICAL_BAN_COLUMNS = ["gameid", "team", "champion", "ban_number"]
 # Raw Oracle's Elixir column names we depend on.
 _BAN_COLUMNS = [f"ban{i}" for i in range(1, 6)]
 _TEAM_ROW_POSITION = "team"
+
+# CRITICAL: force ``patch`` to be read as a string. Oracle's Elixir stores it
+# zero-padded ("16.01".."16.10".."16.12"), but pandas otherwise auto-detects
+# the all-numeric column as float64, which is silently destructive:
+#   - "16.10" (a huge, near-newest patch) becomes the float 16.1, which parses
+#     to (16, 1) -- i.e. it looks like an *ancient* patch, corrupting every
+#     patch-recency comparison and the min_patch floor.
+#   - features.parse_patch() only accepts strings, so a float column makes the
+#     25.1 floor a silent no-op and the per-patch decay ordering unreliable.
+# Reading it as text preserves the exact "16.10" form so parse_patch, the
+# floor, and the patch-recency decay all work correctly.
+_READ_CSV_KWARGS: dict = {"low_memory": False, "dtype": {"patch": str}}
 
 
 class DataSourceUnavailableError(RuntimeError):
@@ -118,7 +131,7 @@ def _read_csv_from_url(url: str) -> pd.DataFrame:
             f"{exc!r}"
         ) from exc
 
-    return pd.read_csv(io.StringIO(response.text), low_memory=False)
+    return pd.read_csv(io.StringIO(response.text), **_READ_CSV_KWARGS)
 
 
 def fetch_oracles_elixir(path_or_url: str) -> pd.DataFrame:
@@ -149,67 +162,99 @@ def fetch_oracles_elixir(path_or_url: str) -> pd.DataFrame:
         local_path = Path(path_or_url)
         if not local_path.exists():
             raise FileNotFoundError(f"Oracle's Elixir CSV not found at {local_path}")
-        raw = pd.read_csv(local_path, low_memory=False)
+        raw = pd.read_csv(local_path, **_READ_CSV_KWARGS)
 
     return _normalize_player_games(raw)
 
 
 def download_oracles_elixir_csv(year: int, dest: str | Path | None = None) -> Path:
-    """Download the Oracle's Elixir season CSV for ``year`` from Google Drive.
+    """Download the Oracle's Elixir season CSV for ``year``.
 
-    Oracle's Elixir serves its match-data CSVs from a public Google Drive
-    folder (see ``config.ORACLES_ELIXIR_DRIVE_IDS``). Large Drive files
-    require a virus-scan "confirm token" dance; the ``gdown`` package handles
-    this automatically, so we use it when available and fall back to a manual
-    ``requests`` download against the ``drive.usercontent.google.com``
-    direct-download endpoint otherwise.
+    Tries, in order (first one that yields a valid CSV wins):
+      1. Google Drive via ``gdown`` (freshest -- OE updates the Drive file
+         ~daily -- but the shared file is often over Google's per-file
+         download quota).
+      2. Google Drive direct-download endpoint via ``requests``.
+      3. Plain-HTTP GitHub mirrors (``config.ORACLES_ELIXIR_MIRROR_URLS``) --
+         no per-file quota, reachable from essentially anywhere; may lag the
+         Drive file by a few days.
 
-    The result is validated: a real season CSV is tens of MB and its header
-    starts with ``gameid``. A too-small file or an HTML page (Drive's quota
-    interstitial) raises ``DataSourceUnavailableError`` rather than being
-    silently fed downstream as garbage.
+    Each candidate is validated (a real season CSV is tens of MB and its
+    header starts with ``gameid``); a too-small file or an HTML quota
+    interstitial is rejected and the next candidate is tried, so garbage is
+    never fed downstream.
 
     Args:
-        year: Season year, e.g. ``2026``. Must be a key of
-            ``ORACLES_ELIXIR_DRIVE_IDS``.
+        year: Season year, e.g. ``2026``.
         dest: Where to write the CSV. Defaults to a temp file.
 
     Returns:
         The path to the downloaded CSV.
 
     Raises:
-        DataSourceUnavailableError: if the year is unknown, the network
-            request fails (including blocked egress in this sandbox), or the
-            downloaded file doesn't look like the real CSV.
+        DataSourceUnavailableError: if the year is unknown, or every source
+            fails / returns something that isn't the real CSV.
     """
-    if year not in ORACLES_ELIXIR_DRIVE_IDS:
+    file_id = ORACLES_ELIXIR_DRIVE_IDS.get(year)
+    mirror_urls = ORACLES_ELIXIR_MIRROR_URLS.get(year, [])
+    if file_id is None and not mirror_urls:
         raise DataSourceUnavailableError(
-            f"No known Oracle's Elixir Google Drive file ID for year {year}. "
-            f"Known years: {sorted(ORACLES_ELIXIR_DRIVE_IDS)}."
+            f"No known Oracle's Elixir source for year {year}. Known Drive years: "
+            f"{sorted(ORACLES_ELIXIR_DRIVE_IDS)}; mirror years: {sorted(ORACLES_ELIXIR_MIRROR_URLS)}."
         )
-    file_id = ORACLES_ELIXIR_DRIVE_IDS[year]
 
     if dest is None:
-        fd, dest_str = tempfile.mkstemp(
-            prefix=f"oracleselixir_{year}_", suffix=".csv"
-        )
+        fd, dest_str = tempfile.mkstemp(prefix=f"oracleselixir_{year}_", suffix=".csv")
         import os
 
         os.close(fd)
         dest = dest_str
     dest = Path(dest)
 
-    downloaded = _download_via_gdown(file_id, dest) or _download_via_requests(file_id, dest)
-    if not downloaded:
-        raise DataSourceUnavailableError(
-            f"Could not download Oracle's Elixir {year} CSV (Drive id {file_id!r}). "
-            "This is expected in network-restricted sandboxes (drive.google.com is "
-            "blocked here); this code path is designed to work unmodified in an "
-            "unrestricted environment such as GitHub Actions."
-        )
+    # (label, download-callable) attempts, in priority order.
+    attempts: list[tuple[str, "callable"]] = []
+    if file_id is not None:
+        attempts.append((f"gdown Drive id {file_id!r}", lambda: _download_via_gdown(file_id, dest)))
+        attempts.append((f"requests Drive id {file_id!r}", lambda: _download_via_requests(file_id, dest)))
+    for url in mirror_urls:
+        attempts.append((f"mirror {url}", lambda u=url: _download_via_url(u, dest)))
 
-    _validate_downloaded_csv(dest, year, file_id)
-    return dest
+    for label, fn in attempts:
+        if not fn():
+            continue
+        try:
+            _validate_downloaded_csv(dest, year, label)
+            return dest
+        except DataSourceUnavailableError as exc:
+            warnings.warn(f"Discarding {label}: {exc}")
+            continue
+
+    raise DataSourceUnavailableError(
+        f"Could not obtain a valid Oracle's Elixir {year} CSV from any source "
+        f"(tried: {[label for label, _ in attempts]}). In this dev sandbox "
+        "drive.google.com is blocked; the GitHub raw mirror should work here "
+        "and on GitHub Actions."
+    )
+
+
+def _download_via_url(url: str, dest: Path) -> bool:
+    """Stream a plain-HTTP CSV (e.g. a raw.githubusercontent.com mirror) to
+    ``dest``. Returns True on a non-trivial download, False on any failure."""
+    try:
+        import requests
+    except ImportError:  # pragma: no cover
+        return False
+    try:
+        with requests.get(url, stream=True, timeout=180) as resp:
+            resp.raise_for_status()
+            with dest.open("wb") as fh:
+                for chunk in resp.iter_content(chunk_size=1 << 16):
+                    if chunk:
+                        fh.write(chunk)
+    except Exception as exc:  # pragma: no cover - network path
+        warnings.warn(f"Could not download Oracle's Elixir mirror {url!r}: {exc!r}")
+        return False
+    return dest.exists() and dest.stat().st_size > _MIN_CSV_BYTES
 
 
 def _download_via_gdown(file_id: str, dest: Path) -> bool:
@@ -254,20 +299,20 @@ def _download_via_requests(file_id: str, dest: Path) -> bool:
     return dest.exists() and dest.stat().st_size > _MIN_CSV_BYTES
 
 
-def _validate_downloaded_csv(path: Path, year: int, file_id: str) -> None:
+def _validate_downloaded_csv(path: Path, year: int, source_label: str) -> None:
     """Reject a too-small file or an HTML interstitial masquerading as CSV."""
     size = path.stat().st_size if path.exists() else 0
     if size < _MIN_CSV_BYTES:
         raise DataSourceUnavailableError(
-            f"Downloaded Oracle's Elixir {year} CSV (Drive id {file_id!r}) is only "
-            f"{size} bytes (< {_MIN_CSV_BYTES}); this is almost certainly a Google "
-            "Drive quota/interstitial HTML page, not the real data."
+            f"Downloaded Oracle's Elixir {year} CSV via {source_label} is only "
+            f"{size} bytes (< {_MIN_CSV_BYTES}); this is almost certainly a quota/"
+            "interstitial HTML page or a truncated file, not the real data."
         )
     with path.open("r", encoding="utf-8", errors="ignore") as f:
         header = f.readline()
     if "gameid" not in header:
         raise DataSourceUnavailableError(
-            f"Downloaded Oracle's Elixir {year} file (Drive id {file_id!r}) does not "
+            f"Downloaded Oracle's Elixir {year} file via {source_label} does not "
             f"look like the CSV: header {header[:120]!r} is missing 'gameid'."
         )
 

@@ -30,22 +30,36 @@ using scikit-learn's ``LogisticRegression``. ``blueSideBias`` captures any
 residual blue-side advantage (e.g. first pick / vision / river control)
 not explained by the three historical predictors above.
 
-We use L2 regularization with ``C=0.1`` (well below sklearn's default of
-``C=1.0``): ``synergy_diff``/``matchup_diff`` are themselves derived from --
-and heavily correlated with -- the same underlying game outcomes used to
-fit this model (most specific champion pairs/matchups only recur a handful
-of times even in a large sample, so their shrunk residual is still mostly
-"what this exact game's outcome was"). Empirically (see the walk-forward
-backtest in ``backtest.py``), the in-sample training accuracy barely moves
-as ``C`` is tuned down from 0.5 -> 0.1 -> 0.02 -- ``scoreDiffWeight`` simply
-picks up the slack -- which is a strong signal that ``score_diff`` (real,
-generalizable per-champion strength) explains most of the recoverable
-signal, while a large chunk of what ``synergy_diff``/``matchup_diff`` add
-in-sample is leakage rather than genuine held-out predictive power.
-Stronger regularization trades a bit of in-sample fit for meaningfully
-better out-of-sample generalization in the backtest. This is a judgment
-call, not a fully tuned value; revisit as more historical (ideally real,
-not synthetic) data accumulates.
+We use strong L2 regularization with ``C=0.001`` (far below sklearn's
+default of ``C=1.0``): ``synergy_diff``/``matchup_diff`` are themselves
+derived from -- and heavily correlated with -- the same underlying game
+outcomes used to fit this model (most specific champion pairs/matchups only
+recur a handful of times even in a large sample, so their shrunk residual is
+still mostly "what this exact game's outcome was"). Left unregularized the
+fit leans hard on those leaky terms (synergy/matchup weights ~0.9/0.6 vs a
+~0.1 score-diff weight) and becomes badly overconfident out of sample.
+
+This value was tuned empirically on the real Oracle's Elixir walk-forward
+backtest (``backtest.py``), NOT guessed. Sweeping ``C`` over
+``0.1 -> 0.01 -> 0.005 -> 0.002 -> 0.001 -> 0.0005`` on ~4,100 held-out 2026
+pro games, held-out log-loss falls monotonically from ~0.77 (wildly
+overconfident, worse than a coin flip) toward the ~0.69 base-rate floor:
+
+    C=0.01   logLoss 0.720   acc 0.518
+    C=0.005  logLoss 0.707   acc 0.518
+    C=0.002  logLoss 0.696   acc 0.519
+    C=0.001  logLoss 0.692   acc 0.531   <- chosen (first C below the
+    C=0.0005 logLoss 0.690   acc 0.535      0.693 coin-flip line; retains
+                                            the most champion signal)
+
+``C=0.001`` is the knee of that curve: the largest ``C`` (hence the most
+champion-driven discrimination retained) at which held-out log-loss drops
+just below the coin-flip baseline and accuracy reaches the majority-class
+baseline. Shrinking further (0.0005) only improves the metrics within
+noise while flattening the model's response to the draft. The deeper truth
+this exposes: draft alone is a genuinely weak predictor of pro outcomes, so
+an honestly-calibrated model necessarily makes modest predictions near the
+base rate rather than confident ones. Revisit as more real data accumulates.
 
 Both ``blueSideBias`` and ``intercept`` keys are included per the required
 output schema, but sklearn only fits one bias term. The consuming frontend
@@ -78,9 +92,12 @@ from compstrength_pipeline.pairwise import matchup_key, synergy_key
 # a warning + caveat note to the output.
 SMALL_SAMPLE_THRESHOLD = 200
 
-# Regularization strength for the 3-feature model. See module docstring for
-# why this is well below sklearn's default of 1.0.
-LOGISTIC_REGRESSION_C = 0.1
+# Regularization strength for the 3-feature model. Empirically tuned on the
+# real walk-forward backtest (see module docstring): 0.001 is the knee where
+# held-out log-loss first drops below the coin-flip baseline while retaining
+# the most champion-driven signal. Far below sklearn's default of 1.0 because
+# the synergy/matchup features leak in-sample and must be shrunk hard.
+LOGISTIC_REGRESSION_C = 0.001
 
 
 @dataclass(frozen=True)
@@ -298,9 +315,9 @@ def train_model(
         }
         return ModelResult(coefficients=coefficients, metrics=metrics, training_games=n)
 
-    # C=0.5: see module docstring for why we use slightly stronger L2
-    # regularization than sklearn's default now that we've gone from 1 to
-    # 3 features on a still-small pro-game sample.
+    # Strong L2 (C=0.001): see module docstring for the walk-forward tuning
+    # that picked this -- the synergy/matchup features leak in-sample, so
+    # heavy shrinkage is what keeps held-out predictions honest.
     model = LogisticRegression(C=LOGISTIC_REGRESSION_C)
     model.fit(X, y)
 

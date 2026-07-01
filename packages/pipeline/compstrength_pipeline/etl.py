@@ -27,17 +27,20 @@ def _standardize_champion_name(series: pd.Series) -> pd.Series:
     right after the apostrophe is also capitalized, matching Riot's
     official spelling.
     """
-    cleaned = series.astype(str).str.strip()
-    titled = cleaned.str.title()
-
-    def _fix_apostrophe(name: str) -> str:
-        if "'" in name:
-            parts = name.split("'")
+    def _fix(name: object) -> object:
+        # Real Oracle's Elixir data has NaN/None champions in empty ban slots
+        # ("No Ban" games), so this must be non-string-safe -- the synthetic
+        # fixture never exercised that path.
+        if not isinstance(name, str):
+            return name
+        titled = name.strip().title()
+        if "'" in titled:
+            parts = titled.split("'")
             parts = [parts[0]] + [p[:1].upper() + p[1:] if p else p for p in parts[1:]]
             return "'".join(parts)
-        return name
+        return titled
 
-    return titled.map(_fix_apostrophe)
+    return series.map(_fix)
 
 
 def build_raw_tables(

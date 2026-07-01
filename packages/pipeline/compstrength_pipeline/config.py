@@ -90,13 +90,17 @@ class PipelineConfig:
     # guards against pathological inputs. A smoke test can still pass a small
     # --target-games to fetch/process fewer games quickly.
     target_training_games: int = 20000
-    # Oldest patch to include, inclusive (parsed as major.minor, NOT compared
-    # lexically). Games on patches older than this are dropped entirely; the
-    # newest patch present is weighted most and each older patch exponentially
-    # less (patch_decay_base). Set to None to disable the floor. If the floor
-    # would drop every game (e.g. the synthetic fixture's 14.x patches), it is
-    # skipped so offline/dev runs still work.
-    min_patch: str | None = "25.1"
+    # Oldest patch to include, inclusive, in Oracle's Elixir's `patch` column
+    # numbering (the GAME-CLIENT version, not Riot's season.patch marketing
+    # name). OE labels the 2026 season "16.xx" and 2025 "15.xx" (client major
+    # = year - 2010), so the owner's "no older than 2025 patch 1 (25.1)" is
+    # "15.1" here, and the current "26.13" is "16.13". Games on older patches
+    # are dropped entirely; the newest patch present is weighted most and each
+    # older patch exponentially less (patch_decay_base). Compared numerically,
+    # not lexically. None disables the floor; and if the floor would drop every
+    # game (e.g. the synthetic fixture's 14.x patches) it is skipped so
+    # offline/dev runs still work.
+    min_patch: str | None = "15.1"
     synergy_prior_games: int = 30
     matchup_prior_games: int = 35
     international_leagues: frozenset[str] = frozenset(
@@ -184,6 +188,19 @@ ORACLES_ELIXIR_DRIVE_IDS: dict[int, str] = {
 ORACLES_ELIXIR_DRIVE_DOWNLOAD_URL = (
     "https://drive.usercontent.google.com/download?id={file_id}&export=download&confirm=t"
 )
+# Plain-HTTP mirrors of the same per-season Oracle's Elixir CSV, committed to
+# public GitHub repos by community projects. raw.githubusercontent.com has NO
+# per-file download quota (unlike the shared Google Drive file, which is so
+# widely used it's often over Google's "too many users" quota) and is
+# reachable from essentially anywhere, so this is the reliable workhorse when
+# the Drive download is quota-locked. Mirrors can lag the daily Drive file by
+# a few days, so the Drive endpoints are still tried first for freshness.
+ORACLES_ELIXIR_MIRROR_URLS: dict[int, list[str]] = {
+    2026: [
+        "https://raw.githubusercontent.com/HKB06/ProjectPredictionLOl/HEAD/"
+        "lol-predictor/data/raw/2026_LoL_esports_match_data_from_OraclesElixir.csv",
+    ],
+}
 
 # Leaguepedia Cargo query API (MediaWiki extension). Documented at
 # https://lol.fandom.com/wiki/Special:CargoTables

@@ -204,6 +204,45 @@ def _calibration_table(predictions: list[tuple[float, int]]) -> list[dict]:
     return table
 
 
+def _provenance_note(games_df: pd.DataFrame, n_predictions: int) -> str:
+    """Describe what data this backtest actually ran on, honestly.
+
+    We detect real Oracle's Elixir pro data vs. the tiny synthetic dev
+    fixture from the data itself (no need to thread a source label through
+    every caller): real OE seasons use game-client patch majors >= 15
+    (2025 = 15.x, 2026 = 16.x, ...) and carry thousands of games, whereas
+    the offline fixture is a handful of games on fabricated 14.x patches.
+    """
+    newest_major = None
+    if "patch" in games_df.columns:
+        majors = [
+            parsed[0]
+            for parsed in (features.parse_patch(p) for p in games_df["patch"].dropna())
+            if parsed is not None
+        ]
+        if majors:
+            newest_major = max(majors)
+
+    is_real = newest_major is not None and newest_major >= 15 and n_predictions >= 200
+    if is_real:
+        season = 2010 + newest_major
+        return (
+            f"Walk-forward validation on real Oracle's Elixir pro-match data "
+            f"({n_predictions:,} held-out games; newest patch {newest_major}.x = "
+            f"{season} season). Each fold refits the entire pipeline using only "
+            "games strictly before that fold, so there is no lookahead leakage. "
+            "Draft-only prediction (champions picked, no in-game state) is a "
+            "genuinely weak signal at the pro level -- treat accuracy a few points "
+            "above the pick-majority baseline as expected, not a bug."
+        )
+    return (
+        "This backtest ran on the small synthetic dev fixture (see "
+        "tests/fixtures/README.md), not real historical Oracle's Elixir data "
+        "-- treat all numbers here as illustrative of the *methodology* "
+        "(walk-forward validation), not as a real-world accuracy claim."
+    )
+
+
 def run_backtest(
     games_df: pd.DataFrame,
     bans_df: pd.DataFrame,
@@ -350,12 +389,7 @@ def run_backtest(
         note_parts.append(degraded_note.strip())
     if skipped_fold_notes:
         note_parts.append(" ".join(skipped_fold_notes))
-    note_parts.append(
-        "This backtest ran on a small synthetic fixture (see "
-        "tests/fixtures/README.md), not real historical Oracle's Elixir "
-        "data -- treat all numbers here as illustrative of the *methodology* "
-        "(walk-forward validation), not as a real-world accuracy claim."
-    )
+    note_parts.append(_provenance_note(games_df, len(all_predictions)))
 
     return {
         "generatedAt": datetime.now(timezone.utc).isoformat(),

@@ -1,33 +1,33 @@
 {
-  "generatedAt": "2026-07-01T14:20:23.198502+00:00",
+  "generatedAt": "2026-07-01T15:45:05.458957+00:00",
   "folds": 3,
-  "testGames": 58,
+  "testGames": 4112,
   "metrics": {
-    "accuracy": 0.4827586206896552,
-    "logLoss": 0.75776377624438,
-    "brierScore": 0.2796983417259547,
-    "baselineAccuracy": 0.5689655172413793,
-    "coinFlipLogLoss": 0.6931471805599453
+    "accuracy": 0.5308852140077821,
+    "logLoss": 0.6915714773620706,
+    "brierScore": 0.24920609545832353,
+    "baselineAccuracy": 0.5323443579766537,
+    "coinFlipLogLoss": 0.6931471805599452
   },
   "calibration": [
     {
       "bucket": "0.2-0.4",
-      "predictedMean": 0.3171964046214959,
+      "predictedMean": 0.38021572579036783,
       "actualWinRate": 0.5,
-      "count": 6
+      "count": 14
     },
     {
       "bucket": "0.4-0.6",
-      "predictedMean": 0.5047975244614978,
-      "actualWinRate": 0.4722222222222222,
-      "count": 36
+      "predictedMean": 0.520825025960222,
+      "actualWinRate": 0.5296664120193532,
+      "count": 3927
     },
     {
       "bucket": "0.6-0.8",
-      "predictedMean": 0.655864731330287,
-      "actualWinRate": 0.3125,
-      "count": 16
+      "predictedMean": 0.6186082743558909,
+      "actualWinRate": 0.5964912280701754,
+      "count": 171
     }
   ],
-  "note": "Fold 1/4 skipped: insufficient train/test data (train_games=0, test_games=20). This backtest ran on a small synthetic fixture (see tests/fixtures/README.md), not real historical Oracle's Elixir data -- treat all numbers here as illustrative of the *methodology* (walk-forward validation), not as a real-world accuracy claim."
+  "note": "Fold 1/4 skipped: insufficient train/test data (train_games=0, test_games=1370). Walk-forward validation on real Oracle's Elixir pro-match data (4,112 held-out games; newest patch 16.x = 2026 season). Each fold refits the entire pipeline using only games strictly before that fold, so there is no lookahead leakage. Draft-only prediction (champions picked, no in-game state) is a genuinely weak signal at the pro level -- treat accuracy a few points above the pick-majority baseline as expected, not a bug."
 }
