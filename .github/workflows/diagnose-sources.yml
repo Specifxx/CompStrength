@@ -16,49 +16,50 @@ jobs:
   diagnose:
     runs-on: ubuntu-latest
     steps:
-      - name: Data Dragon versions (current patch)
+      - name: gol.gg matchlist -- extract game links and table structure
         run: |
-          echo "=== ddragon versions.json ==="
-          curl -sS --max-time 20 "https://ddragon.leagueoflegends.com/api/versions.json" | head -c 500 || echo "FAILED"
+          curl -sS --max-time 20 -A "Mozilla/5.0" -o /tmp/golgg_list.html "https://gol.gg/tournament/tournament-matchlist/MSI%202026/"
+          echo "--- size ---"; wc -c /tmp/golgg_list.html
+          echo "--- hrefs containing /game/ ---"
+          grep -oE 'href="[^"]*/game/[^"]*"' /tmp/golgg_list.html | sort -u | head -20
+          echo "--- hrefs containing /stats/ ---"
+          grep -oE 'href="[^"]*stats[^"]*"' /tmp/golgg_list.html | sort -u | head -20
+          echo "--- any href at all (sample) ---"
+          grep -oE 'href="[^"]*"' /tmp/golgg_list.html | sort -u | head -40
+
+      - name: gol.gg -- fetch one game detail / draft page
+        run: |
+          GAME_HREF=$(grep -oE 'href="/game/stats/[0-9]+/[^"]*"' /tmp/golgg_list.html | head -1 | sed 's/href="//;s/"$//')
+          echo "First game href: $GAME_HREF"
+          if [ -n "$GAME_HREF" ]; then
+            BASE_ID=$(echo "$GAME_HREF" | grep -oE '/game/stats/[0-9]+/')
+            echo "Base id path: $BASE_ID"
+            for PAGE in "page-summary" "page-game" "page-fullstats" "page-draft"; do
+              URL="https://gol.gg${BASE_ID}${PAGE}/"
+              echo "=== $URL ==="
+              curl -sS --max-time 20 -A "Mozilla/5.0" -o /tmp/detail_$PAGE.html -w "HTTP %{http_code} size=%{size_download}\n" "$URL"
+              grep -o "<title>[^<]*</title>" /tmp/detail_$PAGE.html 2>/dev/null
+              echo "--- mentions of Ban/Pick ---"
+              grep -oiE '(ban|pick)[a-z0-9_ -]{0,20}' /tmp/detail_$PAGE.html 2>/dev/null | sort -u | head -15
+            done
+          else
+            echo "No game href found -- printing raw hrefs for debugging"
+            grep -oE 'href="[^"]*"' /tmp/golgg_list.html | sort -u | head -80
+          fi
+
+      - name: Leaguepedia Cargo -- corrected field casing, single request
+        run: |
+          sleep 3
+          echo "=== tables list sanity check (Cargo__Tables) ==="
+          curl -sS --max-time 20 -A "compstrength-diagnostic/1.0 (contact: github.com/Specifxx/CompStrength)" \
+            "https://lol.fandom.com/api.php?action=cargoquery&format=json&tables=ScoreboardGames&fields=ScoreboardGames.GameId,ScoreboardGames.Team1,ScoreboardGames.Team2,ScoreboardGames.DateTime_UTC,ScoreboardGames.Patch&order_by=ScoreboardGames.DateTime_UTC%20DESC&limit=3" \
+            | head -c 3000
           echo
 
-      - name: Oracle's Elixir downloads page
+      - name: Oracle Elixir downloads page -- look for JSON/script-embedded data
         run: |
-          echo "=== oracleselixir.com/tools/downloads ==="
-          curl -sSL --max-time 20 -A "Mozilla/5.0" "https://oracleselixir.com/tools/downloads" -o /tmp/downloads.html || echo "FETCH FAILED"
-          echo "--- status/size ---"
-          ls -la /tmp/downloads.html || true
-          echo "--- candidate links (drive.google / .csv / s3 / 2026) ---"
-          grep -oE 'https?://[^"'"'"' ]+' /tmp/downloads.html 2>/dev/null | grep -iE 'drive\.google|\.csv|s3.*amazonaws|2026' | sort -u | head -60 || echo "no matches"
-          echo "--- lines mentioning 2026 ---"
-          grep -i "2026" /tmp/downloads.html 2>/dev/null | head -20 || echo "no matches"
-
-      - name: Leaguepedia Cargo API sample query
-        run: |
-          echo "=== lol.fandom.com cargoquery ==="
-          curl -sS --max-time 20 -A "Mozilla/5.0" "https://lol.fandom.com/api.php?action=cargoquery&format=json&tables=ScoreboardGames&fields=GameId,Team1,Team2,DateTime_UTC,Patch,WinningTeam&order_by=DateTime_UTC%20DESC&limit=5" | head -c 3000 || echo "FAILED"
-          echo
-          echo "=== lol.fandom.com PicksAndBansS7 sample ==="
-          curl -sS --max-time 20 -A "Mozilla/5.0" "https://lol.fandom.com/api.php?action=cargoquery&format=json&tables=PicksAndBansS7&fields=GameId,Team1,Team2,Team1Pick1,Team1Pick2,Team2Pick1,Team2Pick2&order_by=GameId%20DESC&limit=3" | head -c 3000 || echo "FAILED"
-
-      - name: Liquipedia API probes
-        run: |
-          echo "=== liquipedia.net mediawiki api (no key) ==="
-          curl -sS --max-time 20 -A "compstrength-diagnostic/1.0 (github.com/Specifxx/CompStrength)" "https://liquipedia.net/leagueoflegends/api.php?action=query&list=search&srsearch=MSI%202026&format=json" | head -c 1500 || echo "FAILED"
-          echo
-          echo "=== liquipedia LPDB API (likely requires key) ==="
-          curl -sS --max-time 20 -A "compstrength-diagnostic/1.0 (github.com/Specifxx/CompStrength)" "https://api.liquipedia.net/api/v3/match?wiki=leagueoflegends&limit=3" | head -c 1500 || echo "FAILED"
-
-      - name: gol.gg reachability
-        run: |
-          echo "=== gol.gg tournament list ==="
-          curl -sS --max-time 20 -A "Mozilla/5.0" -o /tmp/golgg.html -w "HTTP %{http_code}\n" "https://gol.gg/tournament/tournament-matchlist/MSI%202026/" || echo "FETCH FAILED"
-          echo "--- size ---"
-          ls -la /tmp/golgg.html || true
-          echo "--- title/snippet ---"
-          grep -o "<title>[^<]*</title>" /tmp/golgg.html 2>/dev/null || echo "no title found"
-
-      - name: lolalytics reachability
-        run: |
-          echo "=== lolalytics champion endpoint ==="
-          curl -sS --max-time 20 -A "Mozilla/5.0" "https://a1.lolalytics.com/mega/?ep=champion&patch=25.13&tier=platinum_plus&queue=ranked" | head -c 1000 || echo "FAILED"
+          curl -sS --max-time 20 -A "Mozilla/5.0" "https://oracleselixir.com/tools/downloads" -o /tmp/downloads2.html
+          echo "--- full grep for any .csv mentions ---"
+          grep -oiE '[a-z0-9_/.:-]*\.csv' /tmp/downloads2.html | sort -u | head -30 || echo "none"
+          echo "--- script src tags (likely a Next.js app -- data may be client-fetched) ---"
+          grep -oE '<script[^>]*src="[^"]*"' /tmp/downloads2.html | sort -u | head -20
