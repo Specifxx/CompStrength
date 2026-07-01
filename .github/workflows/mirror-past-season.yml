@@ -1,0 +1,75 @@
+name: Mirror Past Season CSV
+
+# One-shot (workflow_dispatch) utility: publish the frozen PREVIOUS season's
+# Oracle's Elixir CSV to this repo's `data-cache` branch, making the repo its
+# own quota-proof mirror. A finished season's file never changes, so one
+# successful publish serves forever: the dev sandbox (where Google Drive is
+# blocked) and any future quota-locked run can then fetch it from
+# raw.githubusercontent.com via ORACLES_ELIXIR_MIRROR_URLS.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install pipeline dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e packages/pipeline
+
+      # Reuse the refresh workflow's ratcheting cache: if any daily run
+      # already caught the Drive quota window, the 2025 CSV is in here and no
+      # network is needed at all.
+      - name: Restore past-season cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/compstrength-oe
+          key: oe-mirror-restore-${{ github.run_id }}
+          restore-keys: |
+            oe-past-seasons-
+
+      - name: Obtain previous season CSV (cache first, Drive fallback)
+        env:
+          COMPSTRENGTH_OE_CACHE_DIR: ~/.cache/compstrength-oe
+        run: |
+          python - <<'EOF'
+          import shutil
+          from datetime import datetime, timezone
+          from compstrength_pipeline.sources.oracles_elixir import download_oracles_elixir_csv
+          year = datetime.now(timezone.utc).year - 1
+          path = download_oracles_elixir_csv(year)
+          dest = f"/tmp/{year}_LoL_esports_match_data_from_OraclesElixir.csv"
+          shutil.copyfile(path, dest)
+          print(f"staged {dest}")
+          EOF
+
+      - name: Publish to data-cache branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          FILE=$(ls /tmp/*_LoL_esports_match_data_from_OraclesElixir.csv)
+          # Orphan branch: just the CSV(s), no repo history.
+          git checkout --orphan data-cache
+          git rm -rf --quiet . || true
+          cp "$FILE" .
+          echo "Frozen past-season Oracle's Elixir CSVs, published by mirror-past-season.yml. A finished season's file never changes." > README.md
+          git add ./*.csv README.md
+          git commit -m "Mirror $(basename "$FILE") (frozen past season)"
+          git push --force origin data-cache
