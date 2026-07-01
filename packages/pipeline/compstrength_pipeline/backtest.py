@@ -86,18 +86,20 @@ def _predict_proba(
     score_diff: float,
     synergy_diff: float,
     matchup_diff: float,
+    presence_diff: float = 0.0,
 ) -> float:
     """Mirror the frontend's combination rule (see train_model.py docstring):
 
         logit = intercept + scoreDiffWeight * scoreDiff
                 + synergyWeight * synergyDiff + matchupWeight * matchupDiff
-                + blueSideBias
+                + presenceWeight * presenceDiff + blueSideBias
     """
     logit_val = (
         coefficients.get("intercept", 0.0)
         + coefficients.get("scoreDiffWeight", 0.0) * score_diff
         + coefficients.get("synergyWeight", 0.0) * synergy_diff
         + coefficients.get("matchupWeight", 0.0) * matchup_diff
+        + coefficients.get("presenceWeight", 0.0) * presence_diff
         + coefficients.get("blueSideBias", 0.0)
     )
     return 1.0 / (1.0 + math.exp(-logit_val))
@@ -134,6 +136,13 @@ def _fit_snapshot_and_predict(
         reference_date=reference_date,
     )
     champion_strength = champion_features_df["strengthScore"].to_dict()
+    # Meta-presence feature: pickRate + banRate over this fold's training
+    # window (train-only, so no leakage into the fold's test games).
+    champion_presence = (
+        (champion_features_df["pickRate"] + champion_features_df["banRate"]).to_dict()
+        if config.use_presence_feature
+        else {}
+    )
 
     # The restricted set used for pairwise/model fitting must match what
     # compute_champion_features actually used internally: same min_patch
@@ -158,7 +167,11 @@ def _fit_snapshot_and_predict(
     matchup_residuals = pairwise.matchup_lookup(matchup_table)
 
     model_result = train_model.train_model(
-        restricted_train_games, champion_strength, synergy_residuals, matchup_residuals
+        restricted_train_games,
+        champion_strength,
+        synergy_residuals,
+        matchup_residuals,
+        champion_presence,
     )
 
     predictions: list[tuple[float, int, str, str]] = []
@@ -180,8 +193,13 @@ def _fit_snapshot_and_predict(
         matchup_diff = train_model.compute_matchup_diff(
             matchup_residuals, blue_by_role, red_by_role
         )
+        presence_diff = train_model.compute_presence_diff(
+            champion_presence, blue_champs, red_champs
+        )
 
-        proba = _predict_proba(model_result.coefficients, score_diff, synergy_diff, matchup_diff)
+        proba = _predict_proba(
+            model_result.coefficients, score_diff, synergy_diff, matchup_diff, presence_diff
+        )
         actual = int(blue_rows["result"].iloc[0] == 1)
         league = (
             str(blue_rows["league"].iloc[0])

@@ -113,6 +113,85 @@ def test_pipeline_main_writes_to_output_dir(output_dir: Path):
         assert key in backtest_data["metrics"]
 
 
+def test_oracles_elixir_source_merges_previous_season(monkeypatch, tmp_path):
+    """The oracles-elixir source fetches the current AND previous season and
+    concatenates them (previous season's duplicate gameids dropped)."""
+    import pandas as pd
+
+    from compstrength_pipeline.sources import oracles_elixir as oe
+
+    # Build a doctored "previous season" fixture: same shape, distinct gameids.
+    raw = pd.read_csv(ORACLES_ELIXIR_FIXTURE, **oe._READ_CSV_KWARGS)
+    prev_raw = raw.copy()
+    prev_raw["gameid"] = "prev_" + prev_raw["gameid"].astype(str)
+    prev_path = tmp_path / "prev.csv"
+    prev_raw.to_csv(prev_path, index=False)
+
+    fetched_years = []
+
+    def fake_download(year, dest=None):
+        fetched_years.append(year)
+        return prev_path if len(fetched_years) > 1 else ORACLES_ELIXIR_FIXTURE
+
+    monkeypatch.setattr(oe, "download_oracles_elixir_csv", fake_download)
+
+    games_df, bans_df = build.load_raw_games_and_bans(
+        "oracles-elixir", str(ORACLES_ELIXIR_FIXTURE), None, target_games=1000
+    )
+
+    # Both seasons fetched: newest year first, then year-1.
+    assert len(fetched_years) == 2
+    assert fetched_years[0] - 1 == fetched_years[1]
+    # Merged: every fixture game appears twice (once per pseudo-season).
+    single_games, _ = build.load_games_and_bans(str(ORACLES_ELIXIR_FIXTURE), None)
+    assert games_df["gameid"].nunique() == 2 * single_games["gameid"].nunique()
+    assert bans_df["gameid"].nunique() > 0
+
+
+def test_oracles_elixir_source_drops_gameids_duplicated_across_seasons(
+    monkeypatch, tmp_path
+):
+    """If the previous season's file overlaps the current one, the overlap is
+    dropped (else 20-row 'games' would be silently discarded by ETL)."""
+    from compstrength_pipeline.sources import oracles_elixir as oe
+
+    def fake_download(year, dest=None):
+        return ORACLES_ELIXIR_FIXTURE  # same file for both years -> full overlap
+
+    monkeypatch.setattr(oe, "download_oracles_elixir_csv", fake_download)
+
+    games_df, _ = build.load_raw_games_and_bans(
+        "oracles-elixir", str(ORACLES_ELIXIR_FIXTURE), None, target_games=1000
+    )
+    single_games, _ = build.load_games_and_bans(str(ORACLES_ELIXIR_FIXTURE), None)
+    # Full overlap -> merged result identical to a single season, and every
+    # game still has exactly 10 player rows.
+    assert games_df["gameid"].nunique() == single_games["gameid"].nunique()
+    assert (games_df.groupby("gameid").size() == 10).all()
+
+
+def test_oracles_elixir_source_survives_missing_previous_season(monkeypatch):
+    """Previous-season download failure is non-fatal: proceed with one year."""
+    from compstrength_pipeline.sources import oracles_elixir as oe
+
+    calls = []
+
+    def fake_download(year, dest=None):
+        calls.append(year)
+        if len(calls) > 1:
+            raise oe.DataSourceUnavailableError("prev year unavailable")
+        return ORACLES_ELIXIR_FIXTURE
+
+    monkeypatch.setattr(oe, "download_oracles_elixir_csv", fake_download)
+
+    with pytest.warns(UserWarning, match="previous season"):
+        games_df, _ = build.load_raw_games_and_bans(
+            "oracles-elixir", str(ORACLES_ELIXIR_FIXTURE), None, target_games=1000
+        )
+    single_games, _ = build.load_games_and_bans(str(ORACLES_ELIXIR_FIXTURE), None)
+    assert games_df["gameid"].nunique() == single_games["gameid"].nunique()
+
+
 def test_parse_args_target_games_defaults_to_none_when_env_var_is_empty_string(monkeypatch):
     """GitHub Actions sets an unfilled workflow_dispatch string input to an
     empty string in the job env, not unset -- os.environ.get(key, "0") only

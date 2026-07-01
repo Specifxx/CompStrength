@@ -197,7 +197,40 @@ def load_raw_games_and_bans(
         resolved_year = _resolve_oe_year(year)
         try:
             csv_path = oracles_elixir_source.download_oracles_elixir_csv(resolved_year)
-            return _games_and_bans_from_csv_path(str(csv_path))
+            games_df, bans_df = _games_and_bans_from_csv_path(str(csv_path))
+            # The min_patch floor (25.1 -> current) deliberately spans TWO
+            # seasons, so also pull the PREVIOUS season's file: its patches are
+            # exponentially down-weighted (patch_decay_base ** distance) so it
+            # barely moves the current ratings, but it (a) gives the
+            # walk-forward backtest real training data for its earliest folds
+            # (fold 1 currently has zero) and (b) keeps the model usable in the
+            # first weeks of a new season, when the current-year file is nearly
+            # empty. Best-effort: if the previous year's file can't be fetched
+            # (e.g. Drive quota / sandbox egress), proceed with one season.
+            prev_year = resolved_year - 1
+            try:
+                prev_csv = oracles_elixir_source.download_oracles_elixir_csv(prev_year)
+                prev_games, prev_bans = _games_and_bans_from_csv_path(str(prev_csv))
+                # Defensive: a gameid present in BOTH season files would merge
+                # into a 20-row "game" that ETL's exactly-10-rows filter then
+                # silently drops -- so keep only prev-season games that don't
+                # already exist in the current season's file.
+                current_ids = set(games_df["gameid"].dropna())
+                prev_games = prev_games[~prev_games["gameid"].isin(current_ids)]
+                prev_bans = prev_bans[~prev_bans["gameid"].isin(current_ids)]
+                games_df = pd.concat([prev_games, games_df], ignore_index=True)
+                bans_df = pd.concat([prev_bans, bans_df], ignore_index=True)
+                print(
+                    f"Merged {prev_year} season: total {games_df['gameid'].nunique()} "
+                    "games across both seasons (older patches exponentially "
+                    "down-weighted; min_patch floor still applies)."
+                )
+            except oracles_elixir_source.DataSourceUnavailableError as prev_exc:
+                warnings.warn(
+                    f"Could not fetch the previous season ({prev_year}) CSV "
+                    f"({prev_exc}); continuing with {resolved_year} only."
+                )
+            return games_df, bans_df
         except oracles_elixir_source.DataSourceUnavailableError as exc:
             # The shared 2026 Drive file is heavily used and can hit Google's
             # per-file public-download quota ("too many users..."). That's an
@@ -280,6 +313,14 @@ def run_pipeline_on_data(
     )
 
     champion_strength = champion_features_df["strengthScore"].to_dict()
+    # Meta-presence feature (pickRate + banRate): same values shipped per
+    # champion in champion_ratings.json, so the frontend can reconstruct
+    # presence_diff exactly (see apps/web/lib/predict.ts).
+    champion_presence = (
+        (champion_features_df["pickRate"] + champion_features_df["banRate"]).to_dict()
+        if config.use_presence_feature
+        else {}
+    )
 
     synergy_table = pairwise.compute_synergy_table(
         games_df, champion_strength, config, reference_date=reference_date
@@ -291,7 +332,8 @@ def run_pipeline_on_data(
     matchup_residuals = pairwise.matchup_lookup(matchup_table)
 
     model_result = train_model.train_model(
-        games_df, champion_strength, synergy_residuals, matchup_residuals
+        games_df, champion_strength, synergy_residuals, matchup_residuals,
+        champion_presence,
     )
 
     champion_ratings_payload = _build_champion_ratings_payload(

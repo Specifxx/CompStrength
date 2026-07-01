@@ -44,6 +44,9 @@ export interface ModelFile {
     // snapshots — treat as `?? 0` wherever this is consumed.
     synergyWeight?: number;
     matchupWeight?: number;
+    // Meta-presence (pickRate + banRate) feature weight. Absent on older
+    // snapshots — treat as `?? 0`.
+    presenceWeight?: number;
   };
   metrics: {
     logLoss: number;

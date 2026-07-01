@@ -68,7 +68,7 @@ import pandas as pd
 from compstrength_pipeline.config import PipelineConfig
 from compstrength_pipeline.features import (
     decay_weight,
-    international_league_multiplier,
+    league_weight_multiplier,
     logit,
     patch_ordinal_distances,
     patch_weight_series,
@@ -109,6 +109,8 @@ def _decayed_group_stats(
     international_weight_multiplier: float = 1.0,
     patch_distances: dict[str, int] | None = None,
     patch_decay_base: float = 1.0,
+    major_leagues: frozenset[str] = frozenset(),
+    major_league_weight_multiplier: float = 1.0,
 ) -> tuple[float, float]:
     """Decayed (games, win_rate) for an arbitrary set of game-outcome rows.
 
@@ -127,8 +129,12 @@ def _decayed_group_stats(
     weights = days_since.map(lambda d: decay_weight(d, half_life_days))
     if "league" in group.columns:
         league_boost = group["league"].map(
-            lambda lg: international_league_multiplier(
-                lg, international_leagues, international_weight_multiplier
+            lambda lg: league_weight_multiplier(
+                lg,
+                international_leagues,
+                international_weight_multiplier,
+                major_leagues,
+                major_league_weight_multiplier,
             )
         )
         weights = weights * league_boost
@@ -224,6 +230,8 @@ def compute_synergy_table(
             international_weight_multiplier=config.international_weight_multiplier,
             patch_distances=patch_distances,
             patch_decay_base=config.patch_decay_base,
+            major_leagues=config.major_leagues,
+            major_league_weight_multiplier=config.major_league_weight_multiplier,
         )
         if games_decayed <= 0:
             continue
@@ -307,6 +315,8 @@ def compute_matchup_table(
             international_weight_multiplier=config.international_weight_multiplier,
             patch_distances=patch_distances,
             patch_decay_base=config.patch_decay_base,
+            major_leagues=config.major_leagues,
+            major_league_weight_multiplier=config.major_league_weight_multiplier,
         )
         if games_decayed <= 0:
             continue

@@ -249,6 +249,32 @@ def international_league_multiplier(
     return multiplier if league.strip().upper() in international_leagues else 1.0
 
 
+def league_weight_multiplier(
+    league: object,
+    international_leagues: frozenset[str],
+    international_multiplier: float,
+    major_leagues: frozenset[str] = frozenset(),
+    major_multiplier: float = 1.0,
+) -> float:
+    """Per-game weight multiplier from league quality.
+
+    International events (MSI/Worlds/EWC) get ``international_multiplier``;
+    tier-1 regional leagues (LCK/LPL/LEC/...) get ``major_multiplier``; every
+    other league (academy/minor/ERL tiers -- the majority of raw game volume)
+    gets 1.0. A league can only match one tier (international wins), so the
+    multipliers don't stack. Missing/non-string ``league`` values are treated
+    as regular games.
+    """
+    if not isinstance(league, str):
+        return 1.0
+    normalized = league.strip().upper()
+    if normalized in international_leagues:
+        return international_multiplier
+    if normalized in major_leagues:
+        return major_multiplier
+    return 1.0
+
+
 def patch_weight_series(
     patches: pd.Series,
     patch_distances: dict[str, int] | None,
@@ -277,6 +303,8 @@ def compute_decayed_pro_stats(
     international_weight_multiplier: float = 1.0,
     patch_distances: dict[str, int] | None = None,
     patch_decay_base: float = 1.0,
+    major_leagues: frozenset[str] = frozenset(),
+    major_league_weight_multiplier: float = 1.0,
 ) -> tuple[float, float]:
     """Compute (pro_games_decayed, pro_win_rate_raw) for one champion's games.
 
@@ -321,8 +349,12 @@ def compute_decayed_pro_stats(
 
     if "league" in champion_games.columns:
         league_boost = champion_games["league"].map(
-            lambda lg: international_league_multiplier(
-                lg, international_leagues, international_weight_multiplier
+            lambda lg: league_weight_multiplier(
+                lg,
+                international_leagues,
+                international_weight_multiplier,
+                major_leagues,
+                major_league_weight_multiplier,
             )
         )
         weights = weights * league_boost
@@ -611,6 +643,8 @@ def compute_champion_features(
             international_weight_multiplier=config.international_weight_multiplier,
             patch_distances=patch_distances,
             patch_decay_base=config.patch_decay_base,
+            major_leagues=config.major_leagues,
+            major_league_weight_multiplier=config.major_league_weight_multiplier,
         )
 
         solo_win_rate, solo_games = solo_winrates.get(champion, (config.global_mean, 0))

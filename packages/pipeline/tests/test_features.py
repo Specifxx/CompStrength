@@ -373,6 +373,24 @@ def test_target_training_games_validation():
 # ---------------------------------------------------------------------------
 
 
+def test_league_weight_multiplier_tiers():
+    from compstrength_pipeline.features import league_weight_multiplier
+
+    intl = frozenset({"MSI", "WLDS"})
+    majors = frozenset({"LCK", "LPL", "LEC"})
+    # International events take the international multiplier (never the major
+    # one, even though they're also top-tier -- multipliers don't stack).
+    assert league_weight_multiplier("MSI", intl, 1.5, majors, 2.0) == 1.5
+    # Tier-1 regional leagues take the major multiplier, case-insensitively.
+    assert league_weight_multiplier("lck", intl, 1.5, majors, 2.0) == 2.0
+    assert league_weight_multiplier(" LEC ", intl, 1.5, majors, 2.0) == 2.0
+    # Everything else (minor/academy leagues, NaN) stays at 1.0.
+    assert league_weight_multiplier("LCKC", intl, 1.5, majors, 2.0) == 1.0
+    assert league_weight_multiplier(float("nan"), intl, 1.5, majors, 2.0) == 1.0
+    # Defaults (no majors configured) reduce to the old international-only rule.
+    assert league_weight_multiplier("LCK", intl, 1.5) == 1.0
+
+
 def test_international_league_multiplier_matches_case_insensitively():
     intl = frozenset({"MSI", "WORLDS"})
     assert international_league_multiplier("msi", intl, 1.5) == 1.5

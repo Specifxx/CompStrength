@@ -107,7 +107,29 @@ class PipelineConfig:
         {"MSI", "WLDS", "WORLDS", "EWC"}
     )
     international_weight_multiplier: float = 1.5
+    # Tier-1 regional leagues (Oracle's Elixir ``league`` codes). Games from
+    # these leagues get ``major_league_weight_multiplier`` extra weight in all
+    # decayed statistics: the best teams and most disciplined drafting produce
+    # a cleaner champion-strength signal than minor/academy leagues, which
+    # make up the majority of raw game volume (the 2026 dataset spans 36
+    # leagues, mostly sub-tier-1). Multiplier 1.0 disables this entirely.
+    major_leagues: frozenset[str] = frozenset(
+        {"LCK", "LPL", "LEC", "LCS", "LTA", "LTA N", "LTA S", "LCP"}
+    )
+    major_league_weight_multiplier: float = 1.0
     patch_decay_base: float = 0.5
+    # Feed the meta-presence feature (per-champion pickRate + banRate over the
+    # training window) into the logistic model as a 4th predictor. The theory
+    # (teams reveal champion strength through bans; presence needs no game
+    # outcomes so it's low-noise) did NOT survive measurement: a walk-forward
+    # A/B on 4,112 held-out real 2026 pro games showed presence made held-out
+    # accuracy/log-loss slightly WORSE at every regularization strength tried
+    # (off: acc .5319 / ll .6907; on: .5233/.6912 at C=.001, monotonically
+    # worse at lighter C). Likely because in pro play both teams draft from
+    # the same contested pool, so the presence differential is small and
+    # uninformative. Kept as machinery (False zeroes the feature so its
+    # fitted weight is exactly 0) in case future data changes the picture.
+    use_presence_feature: bool = False
 
     def __post_init__(self) -> None:
         if not (0.0 <= self.solo_queue_weight <= 1.0):
@@ -128,6 +150,8 @@ class PipelineConfig:
             raise ValueError("matchup_prior_games must be non-negative")
         if self.international_weight_multiplier <= 0:
             raise ValueError("international_weight_multiplier must be positive")
+        if self.major_league_weight_multiplier <= 0:
+            raise ValueError("major_league_weight_multiplier must be positive")
         if not (0.0 < self.patch_decay_base <= 1.0):
             raise ValueError("patch_decay_base must be in (0, 1]")
         if self.min_patch is not None:

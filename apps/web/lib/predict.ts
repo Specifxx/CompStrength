@@ -129,18 +129,32 @@ export function predictMatchup(
     if (residual !== 0) notableMatchupCandidates.push({ pair: [blueChamp, redChamp], residual });
   }
 
+  // Meta-presence feature: how contested each champion is in pro drafts
+  // (pickRate + banRate over the training window). Mirrors the pipeline's
+  // train_model.compute_presence_diff exactly; presenceWeight is 0 on model
+  // snapshots that don't include the feature.
+  const presenceOf = (name: string) => {
+    const r = ratings.champions[name];
+    return r ? (r.pickRate ?? 0) + (r.banRate ?? 0) : 0;
+  };
+  const presenceDiff =
+    blueChampions.reduce((s, c) => s + presenceOf(c), 0) -
+    redChampions.reduce((s, c) => s + presenceOf(c), 0);
+
   const {
     scoreDiffWeight,
     blueSideBias,
     intercept,
     synergyWeight = 0,
     matchupWeight = 0,
+    presenceWeight = 0,
   } = model.coefficients;
   const logit =
     intercept +
     scoreDiffWeight * (blueTeamScore - redTeamScore) +
     synergyWeight * synergyDiff +
     matchupWeight * matchupDiff +
+    presenceWeight * presenceDiff +
     blueSideBias;
   const blueWinProbability = sigmoid(logit);
 
