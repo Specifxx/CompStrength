@@ -88,6 +88,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=os.environ.get("COMPSTRENGTH_OUTPUT_DIR", str(DEFAULT_OUTPUT_DIR)),
         help="Directory to write champion_ratings.json and model.json into.",
     )
+    parser.add_argument(
+        "--target-games",
+        type=int,
+        default=int(os.environ.get("COMPSTRENGTH_TARGET_GAMES", "0")) or None,
+        help=(
+            "Override PipelineConfig.target_training_games (default 1000). "
+            "Useful for a quick, fast --source leaguepedia smoke test with a "
+            "small number before committing to a full-size live fetch."
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -420,8 +430,14 @@ def write_backtest_report(
 
 
 def main(argv: list[str] | None = None) -> None:
+    import dataclasses
+
     args = parse_args(argv)
-    config = DEFAULT_CONFIG
+    config = (
+        dataclasses.replace(DEFAULT_CONFIG, target_training_games=args.target_games)
+        if args.target_games
+        else DEFAULT_CONFIG
+    )
 
     # Fetch once and reuse for both the live build and the backtest -- for
     # the `leaguepedia` source this avoids repeating several rate-limited

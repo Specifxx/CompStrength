@@ -43,6 +43,7 @@ per game) to keep the total request count low.
 
 from __future__ import annotations
 
+import random
 import time
 from typing import Any
 
@@ -55,11 +56,28 @@ DEFAULT_USER_AGENT = "CompStrength/0.1 (hobby esports analytics; contact via Git
 # Cargo's hard per-request row cap.
 CARGO_MAX_LIMIT = 500
 
-# Retry/backoff for the API's aggressive rate limiting (observed to trigger
-# even several seconds apart from a shared CI IP).
-MAX_RETRIES = 6
-RATE_LIMIT_BACKOFF_BASE_SECONDS = 20
-REQUEST_DELAY_SECONDS = 5
+# Retry/backoff for the API's aggressive rate limiting. Observed to trigger
+# even several seconds apart from a shared CI IP -- likely a limit shared
+# across many unrelated callers on the same NAT'd GitHub Actions egress IP
+# range, not purely a function of our own request rate. So: pace requests
+# conservatively up front (REQUEST_DELAY_SECONDS) to avoid contributing to
+# the problem, and retry patiently with jitter (rather than a short,
+# aggressively-escalating backoff) since a shared limit is more about
+# waiting for a free window than about our own backoff curve.
+MAX_RETRIES = 8
+RATE_LIMIT_BACKOFF_BASE_SECONDS = 25
+RATE_LIMIT_BACKOFF_MAX_SECONDS = 90
+REQUEST_DELAY_SECONDS = 12
+
+
+def _backoff_seconds(attempt: int) -> float:
+    """Capped, jittered backoff: grows with ``attempt`` but never past
+    ``RATE_LIMIT_BACKOFF_MAX_SECONDS`` (bounds worst-case total wait), with
+    random jitter so retries from many concurrent callers don't stay
+    synchronized against a shared rate-limit window.
+    """
+    base = min(RATE_LIMIT_BACKOFF_BASE_SECONDS * (attempt + 1), RATE_LIMIT_BACKOFF_MAX_SECONDS)
+    return base + random.uniform(0, 10)
 
 ROLE_TO_POSITION = {
     "Top": "top",
@@ -151,12 +169,12 @@ def _request_with_retry(api_base: str, params: dict[str, Any]) -> dict:
             payload = response.json()
         except Exception as exc:  # noqa: BLE001 - converted to DataSourceUnavailableError below
             last_error = exc
-            time.sleep(RATE_LIMIT_BACKOFF_BASE_SECONDS * (attempt + 1))
+            time.sleep(_backoff_seconds(attempt))
             continue
 
         if isinstance(payload, dict) and payload.get("error", {}).get("code") == "ratelimited":
             last_error = "ratelimited"
-            time.sleep(RATE_LIMIT_BACKOFF_BASE_SECONDS * (attempt + 1))
+            time.sleep(_backoff_seconds(attempt))
             continue
 
         if isinstance(payload, dict) and "error" in payload:

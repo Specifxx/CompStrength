@@ -15,7 +15,15 @@ on:
     # 04:17 UTC daily — off-peak, and offset from the hour to avoid the
     # top-of-hour crunch on GitHub Actions' shared cron scheduler.
     - cron: "17 4 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      target_games:
+        description: >-
+          Override the number of most-recent games to fetch (default: 1000,
+          PipelineConfig.target_training_games). Useful for a quick, smaller
+          smoke test of the live Leaguepedia fetch before a full-size run.
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -23,6 +31,10 @@ permissions:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    # Leaguepedia's Cargo API rate-limits aggressively; the fetcher retries
+    # with backoff, but bound the whole job so a pathological run fails
+    # cleanly instead of running for hours.
+    timeout-minutes: 45
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -42,6 +54,8 @@ jobs:
           pip install -e packages/pipeline
 
       - name: Run data pipeline (real, live match data from Leaguepedia)
+        env:
+          COMPSTRENGTH_TARGET_GAMES: ${{ github.event.inputs.target_games }}
         run: python -m compstrength_pipeline.build --source leaguepedia
 
       - name: Check for data changes
