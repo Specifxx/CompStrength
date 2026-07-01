@@ -16,50 +16,33 @@ jobs:
   diagnose:
     runs-on: ubuntu-latest
     steps:
-      - name: gol.gg matchlist -- extract game links and table structure
+      - name: Leaguepedia -- ScoreboardGames with clean aliases (confirmed working query pattern)
         run: |
-          curl -sS --max-time 20 -A "Mozilla/5.0" -o /tmp/golgg_list.html "https://gol.gg/tournament/tournament-matchlist/MSI%202026/"
-          echo "--- size ---"; wc -c /tmp/golgg_list.html
-          echo "--- hrefs containing /game/ ---"
-          grep -oE 'href="[^"]*/game/[^"]*"' /tmp/golgg_list.html | sort -u | head -20
-          echo "--- hrefs containing /stats/ ---"
-          grep -oE 'href="[^"]*stats[^"]*"' /tmp/golgg_list.html | sort -u | head -20
-          echo "--- any href at all (sample) ---"
-          grep -oE 'href="[^"]*"' /tmp/golgg_list.html | sort -u | head -40
-
-      - name: gol.gg -- fetch one game detail / draft page
-        run: |
-          GAME_HREF=$(grep -oE 'href="/game/stats/[0-9]+/[^"]*"' /tmp/golgg_list.html | head -1 | sed 's/href="//;s/"$//')
-          echo "First game href: $GAME_HREF"
-          if [ -n "$GAME_HREF" ]; then
-            BASE_ID=$(echo "$GAME_HREF" | grep -oE '/game/stats/[0-9]+/')
-            echo "Base id path: $BASE_ID"
-            for PAGE in "page-summary" "page-game" "page-fullstats" "page-draft"; do
-              URL="https://gol.gg${BASE_ID}${PAGE}/"
-              echo "=== $URL ==="
-              curl -sS --max-time 20 -A "Mozilla/5.0" -o /tmp/detail_$PAGE.html -w "HTTP %{http_code} size=%{size_download}\n" "$URL"
-              grep -o "<title>[^<]*</title>" /tmp/detail_$PAGE.html 2>/dev/null
-              echo "--- mentions of Ban/Pick ---"
-              grep -oiE '(ban|pick)[a-z0-9_ -]{0,20}' /tmp/detail_$PAGE.html 2>/dev/null | sort -u | head -15
-            done
-          else
-            echo "No game href found -- printing raw hrefs for debugging"
-            grep -oE 'href="[^"]*"' /tmp/golgg_list.html | sort -u | head -80
-          fi
-
-      - name: Leaguepedia Cargo -- corrected field casing, single request
-        run: |
-          sleep 3
-          echo "=== tables list sanity check (Cargo__Tables) ==="
           curl -sS --max-time 20 -A "compstrength-diagnostic/1.0 (contact: github.com/Specifxx/CompStrength)" \
-            "https://lol.fandom.com/api.php?action=cargoquery&format=json&tables=ScoreboardGames&fields=ScoreboardGames.GameId,ScoreboardGames.Team1,ScoreboardGames.Team2,ScoreboardGames.DateTime_UTC,ScoreboardGames.Patch&order_by=ScoreboardGames.DateTime_UTC%20DESC&limit=3" \
+            "https://lol.fandom.com/api.php?action=cargoquery&format=json&tables=ScoreboardGames&fields=ScoreboardGames.GameId=GameId,ScoreboardGames.Team1=Team1,ScoreboardGames.Team2=Team2,ScoreboardGames.WinTeam=WinTeam,ScoreboardGames.DateTime_UTC=DateTimeUTC,ScoreboardGames.Patch=Patch,ScoreboardGames.Tournament=Tournament&order_by=ScoreboardGames.DateTime_UTC%20DESC&limit=2" \
             | head -c 3000
           echo
 
-      - name: Oracle Elixir downloads page -- look for JSON/script-embedded data
+      - name: Leaguepedia -- ScoreboardPlayers for the same recent game
         run: |
-          curl -sS --max-time 20 -A "Mozilla/5.0" "https://oracleselixir.com/tools/downloads" -o /tmp/downloads2.html
-          echo "--- full grep for any .csv mentions ---"
-          grep -oiE '[a-z0-9_/.:-]*\.csv' /tmp/downloads2.html | sort -u | head -30 || echo "none"
-          echo "--- script src tags (likely a Next.js app -- data may be client-fetched) ---"
-          grep -oE '<script[^>]*src="[^"]*"' /tmp/downloads2.html | sort -u | head -20
+          sleep 4
+          curl -sS --max-time 20 -A "compstrength-diagnostic/1.0 (contact: github.com/Specifxx/CompStrength)" \
+            "https://lol.fandom.com/api.php?action=cargoquery&format=json&tables=ScoreboardPlayers&fields=ScoreboardPlayers.GameId=GameId,ScoreboardPlayers.Link=Link,ScoreboardPlayers.Champion=Champion,ScoreboardPlayers.Side=Side,ScoreboardPlayers.Role=Role,ScoreboardPlayers.PlayerWin=PlayerWin,ScoreboardPlayers.Team=Team&where=ScoreboardPlayers.GameId=%222026%20Mid-Season%20Invitational_Play-In%20Day%204_1_3%22&limit=15" \
+            | head -c 4000
+          echo
+
+      - name: Leaguepedia -- PicksAndBansS7 for the same game
+        run: |
+          sleep 4
+          curl -sS --max-time 20 -A "compstrength-diagnostic/1.0 (contact: github.com/Specifxx/CompStrength)" \
+            "https://lol.fandom.com/api.php?action=cargoquery&format=json&tables=PicksAndBansS7&fields=PicksAndBansS7.GameId=GameId,PicksAndBansS7.Team1Ban1=Team1Ban1,PicksAndBansS7.Team1Pick1=Team1Pick1,PicksAndBansS7.Team2Ban1=Team2Ban1,PicksAndBansS7.Team2Pick1=Team2Pick1&where=PicksAndBansS7.GameId=%222026%20Mid-Season%20Invitational_Play-In%20Day%204_1_3%22&limit=3" \
+            | head -c 3000
+          echo
+
+      - name: Leaguepedia -- count of recent games available (last 45 days, all tournaments)
+        run: |
+          sleep 4
+          curl -sS --max-time 20 -A "compstrength-diagnostic/1.0 (contact: github.com/Specifxx/CompStrength)" \
+            "https://lol.fandom.com/api.php?action=cargoquery&format=json&tables=ScoreboardGames&fields=ScoreboardGames.GameId=GameId,ScoreboardGames.DateTime_UTC=DateTimeUTC,ScoreboardGames.Tournament=Tournament&where=ScoreboardGames.DateTime_UTC%20%3E%3D%20%222026-05-17%22&order_by=ScoreboardGames.DateTime_UTC%20DESC&limit=10" \
+            | head -c 3000
+          echo
