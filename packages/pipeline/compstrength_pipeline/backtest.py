@@ -128,11 +128,11 @@ def _fit_snapshot_and_predict(
     )
     champion_strength = champion_features_df["strengthScore"].to_dict()
 
-    # The patch-restricted set used for pairwise/model fitting must match
-    # what compute_champion_features actually used internally.
+    # The restricted set used for pairwise/model fitting must match what
+    # compute_champion_features actually used internally.
     restricted_train_games, restricted_train_bans, _patches_used = (
-        features.restrict_to_recent_patches(
-            train_games_df, train_bans_df, config.num_recent_patches
+        features.restrict_to_recent_games(
+            train_games_df, train_bans_df, config.target_training_games
         )
     )
 
@@ -213,9 +213,9 @@ def run_backtest(
         bans_df: Cleaned bans table (post ``etl.build_raw_tables``).
         solo_source: A ``SoloQueueSource`` used to fetch solo-queue win
             rates for each fold's resolved patch.
-        config: Hyperparameters. Note ``config.num_recent_patches`` is
+        config: Hyperparameters. Note ``config.target_training_games`` is
             applied *within* each fold's training snapshot (i.e. each fold
-            still only looks at its own most-recent patches as of that
+            still only looks at its own most-recent games as of that
             fold's boundary), not globally beforehand.
         k_folds: Requested number of folds (auto-reduced if there isn't
             enough data; see module docstring).

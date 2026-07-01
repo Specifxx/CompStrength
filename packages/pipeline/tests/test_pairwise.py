@@ -27,7 +27,7 @@ def config() -> PipelineConfig:
         prior_games=15,
         pro_window_days=90,
         global_mean=0.5,
-        num_recent_patches=3,
+        target_training_games=1000,
         synergy_prior_games=8,
         matchup_prior_games=10,
     )

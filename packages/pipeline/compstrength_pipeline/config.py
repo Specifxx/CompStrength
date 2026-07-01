@@ -35,14 +35,18 @@ class PipelineConfig:
             patches to find more data (see ``features.py``).
         global_mean: The assumed baseline win rate for any champion in a
             balanced 5v5 game with no other information (50%).
-        num_recent_patches: The number of most-recent distinct patches
-            (ordered by the max game date on that patch, not lexicographic/
-            semver order) to hard-restrict all feature computation to.
-            Games on any older patch are dropped entirely before any
-            window selection, decay, or pick/ban-rate computation happens.
-            This enforces "only look at the last few patches at all" on
-            top of (not instead of) the day-based exponential recency
-            decay, per explicit product requirement.
+        target_training_games: The number of most-recent games (by date,
+            regardless of which patch they're on) to hard-restrict all
+            feature computation to -- i.e. a target *sample size*, not a
+            patch-count cutoff. Older games are still included (unlike the
+            previous patch-count-based cutoff) as long as there are fewer
+            than this many more-recent games available; they just count
+            for less thanks to the day-based exponential recency decay
+            below, rather than being excluded outright. If fewer than this
+            many games exist in total, all of them are used. This is what
+            lets the model train on a statistically meaningful sample
+            (default target: 1000 games) even when the last patch or two
+            alone wouldn't have nearly enough.
         synergy_prior_games: Empirical-Bayes shrinkage strength (in
             decayed "pseudo-games") for the within-team pairwise synergy
             residual computed in ``pairwise.py``.
@@ -68,9 +72,9 @@ class PipelineConfig:
     prior_games: int = 15
     pro_window_days: int = 90
     global_mean: float = 0.5
-    num_recent_patches: int = 3
-    synergy_prior_games: int = 8
-    matchup_prior_games: int = 10
+    target_training_games: int = 1000
+    synergy_prior_games: int = 30
+    matchup_prior_games: int = 35
     international_leagues: frozenset[str] = frozenset(
         {"MSI", "WLDS", "WORLDS", "EWC"}
     )
@@ -87,8 +91,8 @@ class PipelineConfig:
             raise ValueError("pro_window_days must be positive")
         if not (0.0 < self.global_mean < 1.0):
             raise ValueError("global_mean must be in (0, 1)")
-        if self.num_recent_patches < 1:
-            raise ValueError("num_recent_patches must be >= 1")
+        if self.target_training_games < 1:
+            raise ValueError("target_training_games must be >= 1")
         if self.synergy_prior_games < 0:
             raise ValueError("synergy_prior_games must be non-negative")
         if self.matchup_prior_games < 0:

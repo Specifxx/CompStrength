@@ -30,15 +30,22 @@ using scikit-learn's ``LogisticRegression``. ``blueSideBias`` captures any
 residual blue-side advantage (e.g. first pick / vision / river control)
 not explained by the three historical predictors above.
 
-We use L2 regularization with ``C=0.5`` (slightly stronger regularization
-than sklearn's default ``C=1.0``): going from 1 to 3 features on a
-still-small pro-game sample meaningfully increases the risk of overfitting
-(especially since ``synergy_diff``/``matchup_diff`` are themselves derived
-from -- and correlated with -- the same underlying game outcomes used to
-fit this model), so a lower ``C`` trades a bit of training-set fit for
-better out-of-sample generalization. This is a judgment call, not a tuned
-value; revisit once more historical data accumulates (see
-``backtest.py`` for walk-forward validation of this choice).
+We use L2 regularization with ``C=0.1`` (well below sklearn's default of
+``C=1.0``): ``synergy_diff``/``matchup_diff`` are themselves derived from --
+and heavily correlated with -- the same underlying game outcomes used to
+fit this model (most specific champion pairs/matchups only recur a handful
+of times even in a large sample, so their shrunk residual is still mostly
+"what this exact game's outcome was"). Empirically (see the walk-forward
+backtest in ``backtest.py``), the in-sample training accuracy barely moves
+as ``C`` is tuned down from 0.5 -> 0.1 -> 0.02 -- ``scoreDiffWeight`` simply
+picks up the slack -- which is a strong signal that ``score_diff`` (real,
+generalizable per-champion strength) explains most of the recoverable
+signal, while a large chunk of what ``synergy_diff``/``matchup_diff`` add
+in-sample is leakage rather than genuine held-out predictive power.
+Stronger regularization trades a bit of in-sample fit for meaningfully
+better out-of-sample generalization in the backtest. This is a judgment
+call, not a fully tuned value; revisit as more historical (ideally real,
+not synthetic) data accumulates.
 
 Both ``blueSideBias`` and ``intercept`` keys are included per the required
 output schema, but sklearn only fits one bias term. The consuming frontend
@@ -72,8 +79,8 @@ from compstrength_pipeline.pairwise import matchup_key, synergy_key
 SMALL_SAMPLE_THRESHOLD = 200
 
 # Regularization strength for the 3-feature model. See module docstring for
-# why this is lower than sklearn's default of 1.0.
-LOGISTIC_REGRESSION_C = 0.5
+# why this is well below sklearn's default of 1.0.
+LOGISTIC_REGRESSION_C = 0.1
 
 
 @dataclass(frozen=True)

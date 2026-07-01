@@ -287,50 +287,81 @@ def _select_pro_window(
     return selected
 
 
-def select_recent_patches(games_df: pd.DataFrame, num_recent_patches: int) -> list[str]:
-    """Return the ``num_recent_patches`` most-recent distinct patches present.
-
-    Patches are ordered by the max ``date`` of games on that patch (not by
-    lexicographic/semver sort, since patch strings like "14.2" vs "14.10"
-    aren't reliably sortable as text). Returned most-recent-first.
-
-    If ``games_df`` is empty or has no ``patch``/``date`` columns, returns
-    an empty list.
+def _patches_by_recency(games_df: pd.DataFrame) -> list[str]:
+    """Distinct patches present in ``games_df``, ordered by the max ``date``
+    of games on that patch (not lexicographic/semver sort, since patch
+    strings like "14.2" vs "14.10" aren't reliably sortable as text),
+    most-recent-first.
     """
     if games_df.empty or "patch" not in games_df.columns:
         return []
-
     patch_max_dates = games_df.groupby("patch")["date"].max().sort_values(ascending=False)
-    return list(patch_max_dates.index[:num_recent_patches])
+    return list(patch_max_dates.index)
 
 
-def restrict_to_recent_patches(
-    games_df: pd.DataFrame, bans_df: pd.DataFrame, num_recent_patches: int
+def select_recent_games(games_df: pd.DataFrame, target_games: int) -> list:
+    """Return the up-to-``target_games`` most recent distinct ``gameid``s.
+
+    Games are ordered by each gameid's max ``date`` (most recent first),
+    with no regard for which patch they're on -- unlike a patch-count
+    cutoff, this guarantees a target *sample size* rather than an
+    unpredictable one that depends on how many games happen to exist on
+    the last patch or two. If fewer than ``target_games`` distinct games
+    exist at all, all of them are returned.
+
+    If ``games_df`` is empty or has no ``gameid``/``date`` columns, returns
+    an empty list.
+    """
+    if games_df.empty or "gameid" not in games_df.columns:
+        return []
+
+    game_max_dates = games_df.groupby("gameid")["date"].max().sort_values(ascending=False)
+    return list(game_max_dates.index[:target_games])
+
+
+def restrict_to_recent_games(
+    games_df: pd.DataFrame, bans_df: pd.DataFrame, target_games: int
 ) -> tuple[pd.DataFrame, pd.DataFrame, list[str]]:
-    """Hard-filter ``games_df``/``bans_df`` to only the most recent patches.
+    """Hard-filter ``games_df``/``bans_df`` down to the most recent
+    ``target_games`` games, regardless of which patch(es) they're on.
+
+    Older games beyond ``target_games`` are excluded outright (to bound
+    compute and avoid ancient, barely-relevant history), but -- per
+    ``PipelineConfig.target_training_games`` -- games are no longer
+    dropped just for being on an older patch: as long as they're within
+    the ``target_games`` most recent, they're included and simply count
+    for less via the existing day-based exponential recency decay.
 
     Args:
-        games_df: Cleaned per-player-game table with a ``patch`` column.
+        games_df: Cleaned per-player-game table with ``gameid``/``date``/
+            ``patch`` columns.
         bans_df: Cleaned bans table (filtered to the same surviving
             gameids as ``games_df``).
-        num_recent_patches: See ``PipelineConfig.num_recent_patches``.
+        target_games: See ``PipelineConfig.target_training_games``.
 
     Returns:
         ``(restricted_games_df, restricted_bans_df, patches_used)`` where
-        ``patches_used`` is the most-recent-first list of patch strings
-        that survived the filter (see :func:`select_recent_patches`).
+        ``patches_used`` is the most-recent-first list of every distinct
+        patch present among the surviving games (see
+        :func:`_patches_by_recency`) -- this can span many patches, since
+        selection is by game count, not patch count.
     """
-    patches_used = select_recent_patches(games_df, num_recent_patches)
-    if not patches_used:
-        return games_df, bans_df, patches_used
+    selected_gameids = select_recent_games(games_df, target_games)
+    if not selected_gameids:
+        return games_df, bans_df, _patches_by_recency(games_df)
 
-    restricted_games = games_df[games_df["patch"].isin(patches_used)].reset_index(drop=True)
+    selected_gameids_set = set(selected_gameids)
+    restricted_games = games_df[games_df["gameid"].isin(selected_gameids_set)].reset_index(
+        drop=True
+    )
+    patches_used = _patches_by_recency(restricted_games)
 
     if bans_df is None or bans_df.empty:
         restricted_bans = bans_df
     else:
-        surviving_gameids = set(restricted_games["gameid"])
-        restricted_bans = bans_df[bans_df["gameid"].isin(surviving_gameids)].reset_index(drop=True)
+        restricted_bans = bans_df[bans_df["gameid"].isin(selected_gameids_set)].reset_index(
+            drop=True
+        )
 
     return restricted_games, restricted_bans, patches_used
 
@@ -347,11 +378,11 @@ def compute_champion_features(
     Args:
         games_df: Cleaned per-player-game table (post ``etl.build_raw_tables``),
             with at least [gameid, date, patch, champion, result] columns.
-            Before anything else, this is hard-restricted to games on the
-            ``config.num_recent_patches`` most recent distinct patches
-            (see :func:`restrict_to_recent_patches`) -- window selection,
-            decay, and pick/ban rates are all computed over that
-            patch-restricted set only.
+            Before anything else, this is hard-restricted to the
+            ``config.target_training_games`` most recent games overall,
+            regardless of patch (see :func:`restrict_to_recent_games`) --
+            window selection, decay, and pick/ban rates are all computed
+            over that restricted set only.
         bans_df: Cleaned bans table (post ``etl.build_raw_tables``), with
             at least [gameid, champion] columns.
         solo_winrates: ``{champion: (winrate, games)}`` for the current
@@ -361,7 +392,7 @@ def compute_champion_features(
         config: Hyperparameters (see ``config.PipelineConfig``).
         reference_date: The "as of" date for recency decay and the
             trailing pro-games window. Defaults to the max date present
-            in the patch-restricted ``games_df``.
+            in the restricted ``games_df``.
 
     Returns:
         A DataFrame indexed by champion name with columns: primaryRole,
@@ -378,8 +409,8 @@ def compute_champion_features(
             ]
         )
 
-    games_df, bans_df, _patches_used = restrict_to_recent_patches(
-        games_df, bans_df, config.num_recent_patches
+    games_df, bans_df, _patches_used = restrict_to_recent_games(
+        games_df, bans_df, config.target_training_games
     )
 
     if games_df.empty:

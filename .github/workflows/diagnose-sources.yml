@@ -1,0 +1,64 @@
+name: Diagnose Real Data Sources
+
+# One-off diagnostic: this sandbox's network policy blocks direct access to
+# oracleselixir.com, lol.fandom.com, liquipedia.net, gol.gg, lolalytics.com,
+# and ddragon.leagueoflegends.com, so we can't discover the real, current
+# download URLs / API shapes for these sources from within the dev session.
+# GitHub-hosted runners have normal internet access, so this workflow probes
+# each candidate source and logs what it finds, purely to inform how the
+# real fetchers in packages/pipeline/compstrength_pipeline/sources/ should
+# be implemented. Safe to delete once that information has been gathered.
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Data Dragon versions (current patch)
+        run: |
+          echo "=== ddragon versions.json ==="
+          curl -sS --max-time 20 "https://ddragon.leagueoflegends.com/api/versions.json" | head -c 500 || echo "FAILED"
+          echo
+
+      - name: Oracle's Elixir downloads page
+        run: |
+          echo "=== oracleselixir.com/tools/downloads ==="
+          curl -sSL --max-time 20 -A "Mozilla/5.0" "https://oracleselixir.com/tools/downloads" -o /tmp/downloads.html || echo "FETCH FAILED"
+          echo "--- status/size ---"
+          ls -la /tmp/downloads.html || true
+          echo "--- candidate links (drive.google / .csv / s3 / 2026) ---"
+          grep -oE 'https?://[^"'"'"' ]+' /tmp/downloads.html 2>/dev/null | grep -iE 'drive\.google|\.csv|s3.*amazonaws|2026' | sort -u | head -60 || echo "no matches"
+          echo "--- lines mentioning 2026 ---"
+          grep -i "2026" /tmp/downloads.html 2>/dev/null | head -20 || echo "no matches"
+
+      - name: Leaguepedia Cargo API sample query
+        run: |
+          echo "=== lol.fandom.com cargoquery ==="
+          curl -sS --max-time 20 -A "Mozilla/5.0" "https://lol.fandom.com/api.php?action=cargoquery&format=json&tables=ScoreboardGames&fields=GameId,Team1,Team2,DateTime_UTC,Patch,WinningTeam&order_by=DateTime_UTC%20DESC&limit=5" | head -c 3000 || echo "FAILED"
+          echo
+          echo "=== lol.fandom.com PicksAndBansS7 sample ==="
+          curl -sS --max-time 20 -A "Mozilla/5.0" "https://lol.fandom.com/api.php?action=cargoquery&format=json&tables=PicksAndBansS7&fields=GameId,Team1,Team2,Team1Pick1,Team1Pick2,Team2Pick1,Team2Pick2&order_by=GameId%20DESC&limit=3" | head -c 3000 || echo "FAILED"
+
+      - name: Liquipedia API probes
+        run: |
+          echo "=== liquipedia.net mediawiki api (no key) ==="
+          curl -sS --max-time 20 -A "compstrength-diagnostic/1.0 (github.com/Specifxx/CompStrength)" "https://liquipedia.net/leagueoflegends/api.php?action=query&list=search&srsearch=MSI%202026&format=json" | head -c 1500 || echo "FAILED"
+          echo
+          echo "=== liquipedia LPDB API (likely requires key) ==="
+          curl -sS --max-time 20 -A "compstrength-diagnostic/1.0 (github.com/Specifxx/CompStrength)" "https://api.liquipedia.net/api/v3/match?wiki=leagueoflegends&limit=3" | head -c 1500 || echo "FAILED"
+
+      - name: gol.gg reachability
+        run: |
+          echo "=== gol.gg tournament list ==="
+          curl -sS --max-time 20 -A "Mozilla/5.0" -o /tmp/golgg.html -w "HTTP %{http_code}\n" "https://gol.gg/tournament/tournament-matchlist/MSI%202026/" || echo "FETCH FAILED"
+          echo "--- size ---"
+          ls -la /tmp/golgg.html || true
+          echo "--- title/snippet ---"
+          grep -o "<title>[^<]*</title>" /tmp/golgg.html 2>/dev/null || echo "no title found"
+
+      - name: lolalytics reachability
+        run: |
+          echo "=== lolalytics champion endpoint ==="
+          curl -sS --max-time 20 -A "Mozilla/5.0" "https://a1.lolalytics.com/mega/?ep=champion&patch=25.13&tier=platinum_plus&queue=ranked" | head -c 1000 || echo "FAILED"

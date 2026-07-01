@@ -18,9 +18,9 @@ from compstrength_pipeline.features import (
     decay_weight,
     international_league_multiplier,
     logit,
-    restrict_to_recent_patches,
+    restrict_to_recent_games,
     sample_confidence_label,
-    select_recent_patches,
+    select_recent_games,
 )
 
 
@@ -192,7 +192,7 @@ def test_prior_mean_uses_solo_queue_weight_correctly(config: PipelineConfig):
 
 
 # ---------------------------------------------------------------------------
-# Patch-recency restriction (select_recent_patches / restrict_to_recent_patches)
+# Recent-games restriction (select_recent_games / restrict_to_recent_games)
 # ---------------------------------------------------------------------------
 
 
@@ -210,25 +210,26 @@ def _make_game_row(gameid, date, patch, side, position, champion, result):
 
 def _make_games_df_for_patch_test() -> pd.DataFrame:
     """3 patches, 1 game each, each game with a single champion of interest
-    (OldPatchChamp only appears on the oldest patch)."""
+    (OldPatchChamp only appears on the oldest patch/game)."""
     rows = [
-        # Oldest patch: 14.1, only OldPatchChamp plays here.
+        # Oldest game/patch: 14.1, only OldPatchChamp plays here.
         _make_game_row("g1", "2026-01-01", "14.1", "Blue", "top", "OldPatchChamp", 1),
         _make_game_row("g1", "2026-01-01", "14.1", "Red", "top", "Filler1", 0),
-        # Middle patch: 14.2
+        # Middle game/patch: 14.2
         _make_game_row("g2", "2026-02-01", "14.2", "Blue", "top", "Filler2", 1),
         _make_game_row("g2", "2026-02-01", "14.2", "Red", "top", "Filler3", 0),
-        # Most recent patch: 14.3, RecentChamp plays and always wins.
+        # Most recent game/patch: 14.3, RecentChamp plays and always wins.
         _make_game_row("g3", "2026-03-01", "14.3", "Blue", "top", "RecentChamp", 1),
         _make_game_row("g3", "2026-03-01", "14.3", "Red", "top", "Filler4", 0),
     ]
     return pd.DataFrame(rows)
 
 
-def test_select_recent_patches_orders_by_max_date_not_lexicographic():
+def test_select_recent_games_orders_by_max_date_not_lexicographic():
     # Deliberately use a patch string ("14.10") that would sort *before*
     # "14.2" lexicographically despite being chronologically later, to
-    # prove we're ordering by date, not by string/semver sort.
+    # prove game ordering is by date, not by the (irrelevant here) patch
+    # string.
     df = pd.DataFrame(
         [
             _make_game_row("g1", "2026-01-01", "14.2", "Blue", "top", "A", 1),
@@ -237,48 +238,59 @@ def test_select_recent_patches_orders_by_max_date_not_lexicographic():
             _make_game_row("g2", "2026-06-01", "14.10", "Red", "top", "D", 0),
         ]
     )
-    patches = select_recent_patches(df, num_recent_patches=2)
-    # Most-recent-first: 14.10 (June) should come before 14.2 (January),
-    # even though "14.10" < "14.2" as a string.
-    assert patches == ["14.10", "14.2"]
+    games = select_recent_games(df, target_games=2)
+    # Most-recent-first: g2 (June, patch "14.10") before g1 (January).
+    assert games == ["g2", "g1"]
 
 
-def test_select_recent_patches_respects_num_recent_patches():
+def test_select_recent_games_respects_target_games():
     df = _make_games_df_for_patch_test()
-    assert select_recent_patches(df, num_recent_patches=1) == ["14.3"]
-    assert select_recent_patches(df, num_recent_patches=2) == ["14.3", "14.2"]
-    assert select_recent_patches(df, num_recent_patches=3) == ["14.3", "14.2", "14.1"]
+    assert select_recent_games(df, target_games=1) == ["g3"]
+    assert select_recent_games(df, target_games=2) == ["g3", "g2"]
+    assert select_recent_games(df, target_games=3) == ["g3", "g2", "g1"]
     # Asking for more than exist just returns all of them.
-    assert select_recent_patches(df, num_recent_patches=10) == ["14.3", "14.2", "14.1"]
+    assert select_recent_games(df, target_games=1000) == ["g3", "g2", "g1"]
 
 
-def test_restrict_to_recent_patches_drops_older_patch_games():
+def test_restrict_to_recent_games_drops_older_games_but_keeps_all_patches_within_target():
     df = _make_games_df_for_patch_test()
     empty_bans = pd.DataFrame(columns=["gameid", "team", "champion", "ban_number"])
 
-    restricted_games, restricted_bans, patches_used = restrict_to_recent_patches(
-        df, empty_bans, num_recent_patches=2
+    # target_games=2 drops the oldest game (g1/14.1/OldPatchChamp) but keeps
+    # g2 and g3, which happen to span two different patches -- patchesUsed
+    # is derived from whatever patches survive, not the other way around.
+    restricted_games, restricted_bans, patches_used = restrict_to_recent_games(
+        df, empty_bans, target_games=2
     )
-
     assert patches_used == ["14.3", "14.2"]
     assert set(restricted_games["gameid"]) == {"g2", "g3"}
     assert "OldPatchChamp" not in restricted_games["champion"].values
 
+    # target_games=1000 (>> available games) keeps everything, regardless
+    # of patch -- this is the "more games, no matter the patch" behavior.
+    restricted_games_all, _, patches_used_all = restrict_to_recent_games(
+        df, empty_bans, target_games=1000
+    )
+    assert set(restricted_games_all["gameid"]) == {"g1", "g2", "g3"}
+    assert patches_used_all == ["14.3", "14.2", "14.1"]
+    assert "OldPatchChamp" in restricted_games_all["champion"].values
 
-def test_old_excluded_patch_does_not_affect_champion_rating(config: PipelineConfig):
-    """A champion whose only games are on an excluded old patch should end
-    up with zero decayed pro games and a rating driven purely by its solo
-    queue prior -- the old pro games must have literally zero influence."""
+
+def test_old_excluded_game_does_not_affect_champion_rating(config: PipelineConfig):
+    """A champion whose only game falls outside the target-games window
+    should end up with zero decayed pro games and a rating driven purely
+    by its solo queue prior -- the excluded pro game must have literally
+    zero influence."""
     df = _make_games_df_for_patch_test()
-    # Give OldPatchChamp a 100% raw pro win rate on the excluded patch; if
-    # the patch restriction leaked through, this would push its rating up.
+    # Give OldPatchChamp a 100% raw pro win rate on the excluded game; if
+    # the restriction leaked through, this would push its rating up.
     restricted_config = PipelineConfig(
         patch_half_life_days=config.patch_half_life_days,
         solo_queue_weight=config.solo_queue_weight,
         prior_games=config.prior_games,
         pro_window_days=config.pro_window_days,
         global_mean=config.global_mean,
-        num_recent_patches=2,  # excludes 14.1, where OldPatchChamp lives
+        target_training_games=2,  # excludes g1, where OldPatchChamp lives
     )
 
     solo_winrates = {
@@ -298,28 +310,28 @@ def test_old_excluded_patch_does_not_affect_champion_rating(config: PipelineConf
     )
 
     # OldPatchChamp still appears (every champion does, via the full roster
-    # union -- see champions.py), but its excluded-patch pro games must have
-    # zero influence: proGames should be 0 and its rating should be driven
+    # union -- see champions.py), but its excluded game must have zero
+    # influence: proGames should be 0 and its rating should be driven
     # purely by its solo-queue prior (0.5 here), not the leaked 100% pro WR.
     assert "OldPatchChamp" in result_df.index
     assert result_df.loc["OldPatchChamp", "proGames"] == 0
     assert result_df.loc["OldPatchChamp", "blendedWinRate"] == pytest.approx(0.5, abs=0.01)
 
-    # RecentChamp (100% win rate, most recent patch) should still be there
+    # RecentChamp (100% win rate, most recent game) should still be there
     # with a strength score above the neutral prior (it actually won).
     assert "RecentChamp" in result_df.index
     assert result_df.loc["RecentChamp", "proGames"] >= 1
     assert result_df.loc["RecentChamp", "strengthScore"] > 0
 
 
-def test_num_recent_patches_validation():
+def test_target_training_games_validation():
     with pytest.raises(ValueError):
-        PipelineConfig(num_recent_patches=0)
+        PipelineConfig(target_training_games=0)
     with pytest.raises(ValueError):
-        PipelineConfig(num_recent_patches=-1)
+        PipelineConfig(target_training_games=-1)
     # Valid values should not raise.
-    PipelineConfig(num_recent_patches=1)
-    PipelineConfig(num_recent_patches=5)
+    PipelineConfig(target_training_games=1)
+    PipelineConfig(target_training_games=1000)
 
 
 # ---------------------------------------------------------------------------

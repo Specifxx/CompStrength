@@ -128,16 +128,16 @@ def run_pipeline(
             "Check the input data source."
         )
 
-    # Hard-restrict to the most recent patches up front so every downstream
-    # computation (resolved patch, champion features, pairwise synergy/
-    # matchup, and the training frame for the model) operates on exactly
-    # the same patch-restricted window.
-    games_df, bans_df, patches_used = features.restrict_to_recent_patches(
-        games_df, bans_df, config.num_recent_patches
+    # Hard-restrict to the most recent `target_training_games` games up
+    # front (regardless of patch) so every downstream computation (resolved
+    # patch, champion features, pairwise synergy/matchup, and the training
+    # frame for the model) operates on exactly the same window.
+    games_df, bans_df, patches_used = features.restrict_to_recent_games(
+        games_df, bans_df, config.target_training_games
     )
     if games_df.empty:
         raise ValueError(
-            "No games remain after restricting to the most recent patches; "
+            "No games remain after restricting to the most recent games; "
             "cannot compute features. Check the input data source."
         )
 
