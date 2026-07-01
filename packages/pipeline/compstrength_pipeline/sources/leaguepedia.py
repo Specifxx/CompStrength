@@ -33,12 +33,18 @@ environment (GitHub Actions).
 
 Rate limiting
 --------------
-The Cargo API rate-limits aggressively, especially from shared-IP CI
-runners: even a few requests seconds apart can return
-``{"error": {"code": "ratelimited"}}``. ``_request_with_retry`` retries
-with exponential backoff; ``fetch_recent_games`` also batches player/ban
-lookups into chunked ``GameId IN (...)`` queries (rather than one request
-per game) to keep the total request count low.
+The Cargo API rate-limits aggressively from shared-IP CI runners, and the
+block can be sustained (observed to outlast 15+ minutes of in-job retries)
+rather than a simple per-second throttle -- likely shared across whatever
+else is hitting lol.fandom.com from the same GitHub Actions egress IP
+range at the time, not purely a function of our own request rate.
+``fetch_recent_games`` batches player/ban lookups into chunked
+``GameId IN (...)`` queries (rather than one request per game) to keep the
+total request count low, but when a sustained block is in effect, no
+amount of in-job backoff will out-wait it -- ``_request_with_retry`` fails
+fast (a few short retries, not tens of minutes) so a blocked run ends
+quickly and the next attempt (the next day's scheduled run, or a
+deliberately-later manual retry) gets a fresh chance instead.
 """
 
 from __future__ import annotations
@@ -56,17 +62,21 @@ DEFAULT_USER_AGENT = "CompStrength/0.1 (hobby esports analytics; contact via Git
 # Cargo's hard per-request row cap.
 CARGO_MAX_LIMIT = 500
 
-# Retry/backoff for the API's aggressive rate limiting. Observed to trigger
-# even several seconds apart from a shared CI IP -- likely a limit shared
-# across many unrelated callers on the same NAT'd GitHub Actions egress IP
-# range, not purely a function of our own request rate. So: pace requests
-# conservatively up front (REQUEST_DELAY_SECONDS) to avoid contributing to
-# the problem, and retry patiently with jitter (rather than a short,
-# aggressively-escalating backoff) since a shared limit is more about
-# waiting for a free window than about our own backoff curve.
-MAX_RETRIES = 8
-RATE_LIMIT_BACKOFF_BASE_SECONDS = 25
-RATE_LIMIT_BACKOFF_MAX_SECONDS = 90
+# Retry/backoff for the API's rate limiting. Confirmed (2026-07-01, via a
+# targeted diagnostic) that this is a SUSTAINED, IP-wide block, not a
+# query-complexity issue: a plain ScoreboardGames query with no IN-clause
+# -- identical to one that succeeded minutes earlier -- got rate-limited
+# too, after a burst of testing against this API from the same shared
+# GitHub Actions egress IP range. In-job backoff cannot fix a block like
+# this; only real wall-clock time between separate job runs can (the
+# window appears to be well over 15 minutes, based on an 8-retry/~15-minute
+# attempt that never recovered). So: keep retries here SHORT (fail in a
+# couple of minutes, not tens of minutes) and rely on the scheduled job's
+# once-a-day cadence -- plus genuinely spaced-out manual retries -- to find
+# an open window, rather than hammering harder within a single run.
+MAX_RETRIES = 3
+RATE_LIMIT_BACKOFF_BASE_SECONDS = 20
+RATE_LIMIT_BACKOFF_MAX_SECONDS = 45
 REQUEST_DELAY_SECONDS = 12
 
 
