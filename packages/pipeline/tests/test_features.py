@@ -324,6 +324,40 @@ def test_old_excluded_game_does_not_affect_champion_rating(config: PipelineConfi
     assert result_df.loc["RecentChamp", "strengthScore"] > 0
 
 
+def test_solo_queue_keys_are_canonicalized_to_match_game_names():
+    """Regression: a solo-queue source that spells a champion differently
+    ("Jarvan Iv") than the canonical game name ("Jarvan IV") must still join
+    onto the SAME champion row -- not drop the prior and emit a phantom
+    duplicate champion. This is the game<->solo-queue split-key bug that the
+    game-side name canonicalization would otherwise have relocated here."""
+    ref = pd.Timestamp("2026-06-15", tz="UTC")
+    games = pd.DataFrame(
+        [
+            {"gameid": "g1", "date": ref, "patch": "16.12", "champion": "Jarvan IV",
+             "result": 1, "position": "jungle", "side": "Blue", "team": "T1", "league": "LCK"},
+            {"gameid": "g2", "date": ref, "patch": "16.12", "champion": "Jarvan IV",
+             "result": 0, "position": "jungle", "side": "Blue", "team": "T2", "league": "LCK"},
+        ]
+    )
+    empty_bans = pd.DataFrame(columns=["gameid", "team", "champion", "ban_number"])
+    # Solo source uses the MANGLED spelling that naive title-casing produced.
+    solo_winrates = {"Jarvan Iv": (0.55, 4000)}
+
+    result = compute_champion_features(
+        games, empty_bans, solo_winrates, PipelineConfig(global_mean=0.5),
+        reference_date=ref,
+    )
+
+    # The mangled solo key must NOT create a phantom champion row...
+    assert "Jarvan Iv" not in result.index
+    # ...and the canonical champion carries BOTH the pro games AND the solo prior.
+    assert "Jarvan IV" in result.index
+    row = result.loc["Jarvan IV"]
+    assert row["proGames"] > 0
+    assert row["soloGames"] == 4000
+    assert row["soloWinRate"] == pytest.approx(0.55)
+
+
 def test_target_training_games_validation():
     with pytest.raises(ValueError):
         PipelineConfig(target_training_games=0)

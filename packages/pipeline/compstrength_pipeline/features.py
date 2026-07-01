@@ -564,7 +564,23 @@ def compute_champion_features(
     if reference_date is None:
         reference_date = games_df["date"].max()
 
-    # Patch-recency weighting: newest patch (by date) = distance 0, previous
+    # Canonicalize solo-queue keys onto the roster's spelling so they join with
+    # the (already-canonicalized) game champion names. Without this, a solo
+    # source that spells a champion differently ("Jarvan Iv"/"Leblanc" vs the
+    # canonical "Jarvan IV"/"LeBlanc") would (a) miss the prior lookup below and
+    # (b) leak a phantom duplicate champion row via the ``data_champions``
+    # union -- the very split-key bug the game-side canonicalization fixed, at
+    # the game<->solo boundary. We only remap names that hit the KNOWN roster
+    # (case-insensitively) and leave unrecognized names untouched, so this never
+    # mangles a name the roster doesn't know.
+    if solo_winrates:
+        _canon = {name.casefold(): name for name in get_full_champion_roster()}
+        solo_winrates = {
+            _canon.get(str(name).strip().casefold(), name): stats
+            for name, stats in solo_winrates.items()
+        }
+
+    # Patch-recency weighting: newest patch (by number) = distance 0, previous
     # = 1, etc. Games are additionally weighted by patch_decay_base**distance
     # so the latest patch(es) dominate the ratings (see compute_decayed_pro_stats).
     patch_distances = patch_ordinal_distances(games_df)

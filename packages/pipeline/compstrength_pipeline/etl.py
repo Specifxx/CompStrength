@@ -35,43 +35,48 @@ def _canonical_name_by_casefold() -> dict[str, str]:
     return {name.casefold(): name for name in get_full_champion_roster()}
 
 
-def _standardize_champion_name(series: pd.Series) -> pd.Series:
-    """Canonicalize champion name spelling/casing.
+def standardize_champion_name(name: object) -> object:
+    """Canonicalize a SINGLE champion name to its roster spelling.
 
     Oracle's Elixir already uses Riot's official spellings, but naive
     ``str.title()`` corrupts irregular names -- "Jarvan IV" -> "Jarvan Iv",
     "LeBlanc" -> "Leblanc" -- which would then fail to match the roster's
     canonical spelling and split ALL of that champion's game/synergy/matchup
     data under a mangled key (while the correctly-spelled roster entry gets
-    zero data). To avoid that, we first map each name (case-insensitively)
+    zero data). To avoid that, we first map the name (case-insensitively)
     onto the known roster's canonical spelling; only names the roster doesn't
     know fall back to title-casing, with the apostrophe special-case
     (Kai'Sa, Kog'Maw, Cho'Gath, Vel'Koz, Kha'Zix, Rek'Sai) preserved.
+
+    This is deliberately the SINGLE canonicalization used for BOTH the game
+    champion column (via :func:`_standardize_champion_name`) AND the
+    solo-queue win-rate keys (see ``features.compute_champion_features``), so
+    the two sides can never diverge onto different spellings of one champion.
+
+    Non-string inputs (NaN/None -- real Oracle's Elixir data has them in empty
+    ban slots / "No Ban" games) are returned unchanged.
     """
-    canonical = _canonical_name_by_casefold()
+    if not isinstance(name, str):
+        return name
+    stripped = name.strip()
+    # 1. Canonical roster match (case-insensitive) -- the common path for real
+    #    data, and the fix for "Jarvan IV"/"LeBlanc"-style names.
+    canon = _canonical_name_by_casefold().get(stripped.casefold())
+    if canon is not None:
+        return canon
+    # 2. Unknown champion (e.g. a brand-new release not yet in the roster):
+    #    title-case with apostrophe fixup so casing is at least consistent.
+    titled = stripped.title()
+    if "'" in titled:
+        parts = titled.split("'")
+        parts = [parts[0]] + [p[:1].upper() + p[1:] if p else p for p in parts[1:]]
+        return "'".join(parts)
+    return titled
 
-    def _fix(name: object) -> object:
-        # Real Oracle's Elixir data has NaN/None champions in empty ban slots
-        # ("No Ban" games), so this must be non-string-safe -- the synthetic
-        # fixture never exercised that path.
-        if not isinstance(name, str):
-            return name
-        stripped = name.strip()
-        # 1. Canonical roster match (case-insensitive) -- the common path for
-        #    real data, and the fix for "Jarvan IV"/"LeBlanc"-style names.
-        canon = canonical.get(stripped.casefold())
-        if canon is not None:
-            return canon
-        # 2. Unknown champion (e.g. a brand-new release not yet in the roster):
-        #    title-case with apostrophe fixup so casing is at least consistent.
-        titled = stripped.title()
-        if "'" in titled:
-            parts = titled.split("'")
-            parts = [parts[0]] + [p[:1].upper() + p[1:] if p else p for p in parts[1:]]
-            return "'".join(parts)
-        return titled
 
-    return series.map(_fix)
+def _standardize_champion_name(series: pd.Series) -> pd.Series:
+    """Vectorized :func:`standardize_champion_name` over a champion-name column."""
+    return series.map(standardize_champion_name)
 
 
 def build_raw_tables(
