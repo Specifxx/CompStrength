@@ -5,9 +5,11 @@ name: Refresh Data
 # default branch. Vercel watches this branch, so a push here triggers an
 # automatic redeploy of the site with fresh data.
 #
-# Runs against --source leaguepedia (real, current pro match data fetched
-# live from Leaguepedia's Cargo API) rather than the bundled synthetic
-# fixture -- this only works from an environment with normal network
+# Runs against --source oracles-elixir: it downloads Oracle's Elixir's bulk
+# season CSV (thousands of real pro games, one file) from Google Drive. This
+# is far more robust for a daily cron than Leaguepedia's Cargo API, which
+# rate-limits aggressively on shared CI IPs (a single bulk download has no
+# per-request throttle). Only works from an environment with normal network
 # access (GitHub Actions), not the dev sandbox this was built in.
 
 on:
@@ -53,10 +55,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e packages/pipeline
 
-      - name: Run data pipeline (real, live match data from Leaguepedia)
+      - name: Run data pipeline (real match data from Oracle's Elixir bulk CSV)
         env:
           COMPSTRENGTH_TARGET_GAMES: ${{ github.event.inputs.target_games }}
-        run: python -m compstrength_pipeline.build --source leaguepedia
+        run: python -m compstrength_pipeline.build --source oracles-elixir
 
       - name: Check for data changes
         id: git-check

@@ -65,6 +65,18 @@ class PipelineConfig:
             normal patch-recency decay weight) applied to games whose
             ``league`` is in ``international_leagues``. ``1.0`` disables
             this entirely.
+        patch_decay_base: Per-patch geometric decay base applied on top of
+            the day-based recency decay. Each game is additionally weighted
+            by ``patch_decay_base ** patch_ordinal_distance``, where the
+            newest patch has distance 0, the previous patch distance 1, and
+            so on (patches ordered by their most recent game date, NOT by
+            lexically sorting the patch string). With the default 0.5 the
+            current patch counts at full weight, the previous patch at half,
+            two patches back at a quarter -- so the latest patch(es)
+            dominate the rating, while older patches still contribute a
+            shrinking-but-nonzero amount. ``1.0`` disables patch weighting
+            entirely (pure calendar-day decay, the old behavior). This is
+            the knob for "weight the latest patches more heavily".
     """
 
     patch_half_life_days: int = 21
@@ -79,6 +91,7 @@ class PipelineConfig:
         {"MSI", "WLDS", "WORLDS", "EWC"}
     )
     international_weight_multiplier: float = 1.5
+    patch_decay_base: float = 0.5
 
     def __post_init__(self) -> None:
         if not (0.0 <= self.solo_queue_weight <= 1.0):
@@ -99,6 +112,8 @@ class PipelineConfig:
             raise ValueError("matchup_prior_games must be non-negative")
         if self.international_weight_multiplier <= 0:
             raise ValueError("international_weight_multiplier must be positive")
+        if not (0.0 < self.patch_decay_base <= 1.0):
+            raise ValueError("patch_decay_base must be in (0, 1]")
 
 
 # Module-level default instance, importable directly as
@@ -123,16 +138,30 @@ GLOBAL_MEAN = DEFAULT_CONFIG.global_mean
 # unrestricted environment (e.g. GitHub Actions).
 # ---------------------------------------------------------------------------
 
-# Oracle's Elixir publishes one CSV per year, refreshed daily. The exact
-# per-year download URL pattern is not officially documented via a stable
-# REST API; the canonical entry point is the tools/downloads page which
-# links to Google Sheets / CSV exports per year.
+# Oracle's Elixir publishes one CSV per season (year), refreshed ~daily.
+# It MIGRATED OFF its old AWS S3 bucket (which now returns NoSuchBucket) to
+# Google Drive: the tools/downloads page links a public Drive folder with one
+# file per year, named "<YEAR>_LoL_esports_match_data_from_OraclesElixir.csv".
+# The stable machine handle is the per-year Drive file ID; fetch it with
+# gdown (which handles Drive's >25MB virus-scan confirm-token automatically),
+# or the drive.usercontent.google.com direct-download endpoint as a fallback.
+# These IDs are corroborated across many community repos (2026 verified across
+# 6 independent 2026 projects). oracleselixir.com itself is Cloudflare/bot
+# -blocked, but the Drive endpoints are directly reachable -- which is exactly
+# why every community pipeline hits Drive rather than scraping the site.
 ORACLES_ELIXIR_DOWNLOADS_PAGE = "https://oracleselixir.com/tools/downloads"
-# Best-effort direct CSV pattern (subject to change upstream); year must be
-# supplied by the caller, e.g. ORACLES_ELIXIR_CSV_URL_TEMPLATE.format(year=2026)
-ORACLES_ELIXIR_CSV_URL_TEMPLATE = (
-    "https://oracleselixir-downloadable-match-data.s3.us-east-2.amazonaws.com/"
-    "{year}_LoL_esports_match_data_from_OraclesElixir.csv"
+ORACLES_ELIXIR_DRIVE_IDS: dict[int, str] = {
+    2026: "1hnpbrUpBMS1TZI7IovfpKeZfWJH1Aptm",
+    2025: "1v6LRphp2kYciU4SXp0PCjEMuev1bDejc",
+    2024: "1IjIEhLc9n8eLKeY-yh_YigKVWbhgGBsN",
+    2023: "1XXk2LO0CsNADBB1LRGOV5rUpyZdEZ8s2",
+    2022: "1EHmptHyzY8owv0BAcNKtkQpMwfkURwRy",
+}
+# Direct-download endpoint for a large public Drive file without a browser
+# (the ``confirm=t`` skips the >25MB virus-scan interstitial). Used as the
+# fallback path when the ``gdown`` package isn't available.
+ORACLES_ELIXIR_DRIVE_DOWNLOAD_URL = (
+    "https://drive.usercontent.google.com/download?id={file_id}&export=download&confirm=t"
 )
 
 # Leaguepedia Cargo query API (MediaWiki extension). Documented at

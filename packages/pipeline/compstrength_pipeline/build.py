@@ -35,6 +35,7 @@ import pandas as pd
 from compstrength_pipeline import backtest, etl, features, pairwise, train_model
 from compstrength_pipeline.config import DEFAULT_CONFIG, PipelineConfig
 from compstrength_pipeline.sources import leaguepedia as leaguepedia_source
+from compstrength_pipeline.sources import oracles_elixir as oracles_elixir_source
 from compstrength_pipeline.sources.oracles_elixir import (
     extract_bans,
     fetch_oracles_elixir,
@@ -52,15 +53,30 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--source",
-        choices=["fixture", "leaguepedia"],
+        choices=["fixture", "oracles-elixir", "leaguepedia"],
         default=os.environ.get("COMPSTRENGTH_SOURCE", "fixture"),
         help=(
-            "Which pro-match data source to use. 'fixture' (default) reads "
-            "--oracles-elixir-path/--oracles-elixir-url (a bundled synthetic "
-            "fixture unless one of those is overridden). 'leaguepedia' "
-            "ignores those and fetches real, current data live from "
-            "Leaguepedia's Cargo API instead (requires unblocked network "
-            "egress to lol.fandom.com, e.g. GitHub Actions)."
+            "Which pro-match data source to use. 'oracles-elixir' (RECOMMENDED "
+            "for real data) downloads Oracle's Elixir's bulk season CSV from "
+            "Google Drive -- one download, thousands of real pro games, no "
+            "per-request rate limiting. 'leaguepedia' fetches live from "
+            "Leaguepedia's Cargo API (rate-limited on shared CI IPs). "
+            "'fixture' (default) reads the bundled synthetic fixture for "
+            "offline dev/tests. The real sources need unblocked network "
+            "egress (e.g. GitHub Actions), not this dev sandbox."
+        ),
+    )
+    parser.add_argument(
+        "--year",
+        type=int,
+        default=(
+            int(os.environ["COMPSTRENGTH_YEAR"])
+            if os.environ.get("COMPSTRENGTH_YEAR")
+            else None
+        ),
+        help=(
+            "Season year for --source oracles-elixir (default: current year "
+            "if known to ORACLES_ELIXIR_DRIVE_IDS, else the newest known year)."
         ),
     )
     parser.add_argument(
@@ -108,18 +124,26 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+def _games_and_bans_from_csv_path(csv_path: str) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Read a local Oracle's-Elixir-shaped CSV ONCE and produce both the
+    normalized games table and the bans table from the same in-memory frame."""
+    raw = pd.read_csv(csv_path, low_memory=False)
+    games_df = oracles_elixir_source._normalize_player_games(raw)
+    bans_df = (
+        oracles_elixir_source.extract_bans(raw)
+        if not raw.empty
+        else pd.DataFrame(columns=["gameid", "team", "champion", "ban_number"])
+    )
+    return games_df, bans_df
+
+
 def load_games_and_bans(
     oracles_elixir_path: str, oracles_elixir_url: str | None
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Load raw Oracle's Elixir data (live URL if given, else local path/fixture)."""
-    source = oracles_elixir_url or oracles_elixir_path
-    games_df = fetch_oracles_elixir(source)
-
-    # extract_bans() needs the raw (un-normalized) frame including team rows,
-    # so we re-read it directly rather than reusing the normalized games_df.
     if oracles_elixir_url:
-        # Best-effort: re-fetch raw for ban extraction. In a live environment
-        # this is a second (cheap, cached-by-CDN) request; failures here are
+        games_df = fetch_oracles_elixir(oracles_elixir_url)
+        # Best-effort: re-fetch raw for ban extraction. Failures here are
         # non-fatal to the overall pipeline (bans just come back empty).
         try:
             import io
@@ -129,16 +153,24 @@ def load_games_and_bans(
             resp = requests.get(oracles_elixir_url, timeout=30)
             resp.raise_for_status()
             raw = pd.read_csv(io.StringIO(resp.text), low_memory=False)
+            bans_df = extract_bans(raw) if not raw.empty else pd.DataFrame(
+                columns=["gameid", "team", "champion", "ban_number"]
+            )
         except Exception as exc:  # pragma: no cover - network path
             warnings.warn(f"Could not fetch raw data for ban extraction: {exc!r}")
-            raw = pd.DataFrame()
-    else:
-        raw = pd.read_csv(oracles_elixir_path, low_memory=False)
+            bans_df = pd.DataFrame(columns=["gameid", "team", "champion", "ban_number"])
+        return games_df, bans_df
+    return _games_and_bans_from_csv_path(oracles_elixir_path)
 
-    bans_df = extract_bans(raw) if not raw.empty else pd.DataFrame(
-        columns=["gameid", "team", "champion", "ban_number"]
-    )
-    return games_df, bans_df
+
+def _resolve_oe_year(year: int | None) -> int:
+    """Pick the Oracle's Elixir season year: explicit --year, else the newest
+    year we have a Drive file ID for."""
+    if year is not None:
+        return year
+    from compstrength_pipeline.config import ORACLES_ELIXIR_DRIVE_IDS
+
+    return max(ORACLES_ELIXIR_DRIVE_IDS)
 
 
 def load_raw_games_and_bans(
@@ -146,14 +178,21 @@ def load_raw_games_and_bans(
     oracles_elixir_path: str,
     oracles_elixir_url: str | None,
     target_games: int,
+    year: int | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Dispatch to the requested data source's raw fetch.
 
-    ``source == "leaguepedia"`` fetches real, current data live from
-    Leaguepedia's Cargo API (see ``sources/leaguepedia.py``); anything else
-    falls back to the Oracle's-Elixir-shaped fixture/URL path (default:
-    the bundled synthetic fixture).
+    - ``oracles-elixir``: download the bulk season CSV from Google Drive
+      ONCE (one request, no per-request rate limiting), and derive both the
+      games and bans tables from that single file.
+    - ``leaguepedia``: fetch live from Leaguepedia's Cargo API.
+    - anything else (``fixture``): read the bundled synthetic fixture / a
+      local CSV path or URL.
     """
+    if source == "oracles-elixir":
+        resolved_year = _resolve_oe_year(year)
+        csv_path = oracles_elixir_source.download_oracles_elixir_csv(resolved_year)
+        return _games_and_bans_from_csv_path(str(csv_path))
     if source == "leaguepedia":
         return leaguepedia_source.fetch_recent_games(target_games=target_games)
     return load_games_and_bans(oracles_elixir_path, oracles_elixir_url)
@@ -239,6 +278,23 @@ def run_pipeline_on_data(
     return champion_ratings_payload, model_payload, synergy_payload
 
 
+def soloqueue_source_for(source: str, soloqueue_fixture: str):
+    """Pick the solo-queue prior source.
+
+    Only the offline ``fixture`` source uses the bundled StaticSoloQueueSource
+    (synthetic solo-queue numbers). On the REAL data paths
+    (``oracles-elixir``, ``leaguepedia``) we have no reachable real solo-queue
+    provider, so we use ``NullSoloQueueSource`` -- an honest neutral 50% prior
+    rather than blending in synthetic numbers (which the owner explicitly
+    doesn't want). Champions with sparse pro data therefore shrink toward 50%,
+    which is the correct data-free behavior. (Wiring a real solo-queue adapter
+    is tracked in the README roadmap.)
+    """
+    if source == "fixture":
+        return StaticSoloQueueSource(soloqueue_fixture)
+    return NullSoloQueueSource()
+
+
 def run_pipeline(
     oracles_elixir_path: str,
     oracles_elixir_url: str | None,
@@ -246,17 +302,16 @@ def run_pipeline(
     patch: str | None,
     config: PipelineConfig = DEFAULT_CONFIG,
     source: str = "fixture",
+    year: int | None = None,
 ) -> tuple[dict, dict, dict]:
     """Fetch from ``source`` and run the full pipeline. See
     :func:`run_pipeline_on_data` for the reusable, already-fetched-data core
     (used by ``main()`` so the backtest doesn't re-fetch).
     """
     raw_games_df, raw_bans_df = load_raw_games_and_bans(
-        source, oracles_elixir_path, oracles_elixir_url, config.target_training_games
+        source, oracles_elixir_path, oracles_elixir_url, config.target_training_games, year
     )
-    soloqueue_source = (
-        NullSoloQueueSource() if source == "leaguepedia" else StaticSoloQueueSource(soloqueue_fixture)
-    )
+    soloqueue_source = soloqueue_source_for(source, soloqueue_fixture)
     return run_pipeline_on_data(raw_games_df, raw_bans_df, soloqueue_source, patch, config)
 
 
@@ -293,6 +348,7 @@ def _build_champion_ratings_payload(
         "patchesUsed": list(patches_used),
         "params": {
             "patchHalfLifeDays": config.patch_half_life_days,
+            "patchDecayBase": config.patch_decay_base,
             "soloQueueWeight": config.solo_queue_weight,
             "priorGames": config.prior_games,
             "proWindowDays": config.pro_window_days,
@@ -428,9 +484,7 @@ def write_backtest_report(
     raw_games_df, raw_bans_df = load_raw_games_and_bans(
         source, oracles_elixir_path, oracles_elixir_url, config.target_training_games
     )
-    soloqueue_source = (
-        NullSoloQueueSource() if source == "leaguepedia" else StaticSoloQueueSource(soloqueue_fixture)
-    )
+    soloqueue_source = soloqueue_source_for(source, soloqueue_fixture)
     return write_backtest_report_on_data(
         raw_games_df, raw_bans_df, soloqueue_source, output_dir, config
     )
@@ -447,16 +501,16 @@ def main(argv: list[str] | None = None) -> None:
     )
 
     # Fetch once and reuse for both the live build and the backtest -- for
-    # the `leaguepedia` source this avoids repeating several rate-limited
-    # network round-trips.
+    # a real source (oracles-elixir / leaguepedia) this avoids repeating the
+    # download/network round-trips.
     raw_games_df, raw_bans_df = load_raw_games_and_bans(
-        args.source, args.oracles_elixir_path, args.oracles_elixir_url, config.target_training_games
+        args.source,
+        args.oracles_elixir_path,
+        args.oracles_elixir_url,
+        config.target_training_games,
+        args.year,
     )
-    soloqueue_source = (
-        NullSoloQueueSource()
-        if args.source == "leaguepedia"
-        else StaticSoloQueueSource(args.soloqueue_fixture)
-    )
+    soloqueue_source = soloqueue_source_for(args.source, args.soloqueue_fixture)
 
     champion_ratings, model, synergy = run_pipeline_on_data(
         raw_games_df, raw_bans_df, soloqueue_source, args.patch, config

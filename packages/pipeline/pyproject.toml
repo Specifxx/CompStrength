@@ -12,6 +12,10 @@ dependencies = [
     "numpy>=1.24",
     "scikit-learn>=1.3",
     "requests>=2.31",
+    # Downloads Oracle's Elixir's bulk season CSV from Google Drive, handling
+    # the >25MB virus-scan confirm-token dance automatically (see
+    # sources/oracles_elixir.download_oracles_elixir_csv).
+    "gdown>=4.4",
 ]
 
 [project.optional-dependencies]

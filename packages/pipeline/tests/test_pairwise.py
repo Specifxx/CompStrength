@@ -225,6 +225,35 @@ def test_matchup_residual_is_directional_and_can_differ_from_reverse(config: Pip
     assert a_vs_b.residual == pytest.approx(-b_vs_a.residual)
 
 
+def test_matchup_expected_logit_subtracts_opponent_strength(config: PipelineConfig):
+    """De-confounding: the matchup expected_logit must be
+    strength[A] - strength[B], not strength[A] alone -- otherwise the
+    opponent's strength leaks into the residual that gets ADDED on top of
+    the model's score_diff (double-counting opponent strength)."""
+    from compstrength_pipeline.features import logit
+
+    rows = [
+        _row("g1", "2026-01-05", "Blue", "top", "A", 1),
+        _row("g1", "2026-01-05", "Red", "top", "B", 0),
+        _row("g2", "2026-01-05", "Blue", "top", "A", 1),
+        _row("g2", "2026-01-05", "Red", "top", "B", 0),
+    ]
+    df = pd.DataFrame(rows)
+    # A is strong, B is weak: A's team winning is largely "expected" from the
+    # strength gap, so the de-confounded residual must be SMALL, whereas a
+    # strength[A]-only expected_logit would leave a large spurious residual.
+    strength = {"A": 0.8, "B": -0.6}
+    ref_date = pd.Timestamp("2026-01-05", tz="UTC")
+
+    table = compute_matchup_table(df, strength, config, reference_date=ref_date)
+    a_vs_b = table[matchup_key("A", "B")]
+
+    # expected_logit should be strength[A] - strength[B] = 0.8 - (-0.6) = 1.4
+    assert a_vs_b.expected_logit == pytest.approx(1.4)
+    # residual_raw = logit(win_rate) - expected_logit = logit(1.0 clipped) - 1.4
+    assert a_vs_b.residual_raw == pytest.approx(logit(1.0) - 1.4)
+
+
 def test_matchup_prior_games_validation():
     with pytest.raises(ValueError):
         PipelineConfig(matchup_prior_games=-1)

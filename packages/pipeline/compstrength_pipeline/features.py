@@ -189,12 +189,34 @@ def international_league_multiplier(
     return multiplier if league.strip().upper() in international_leagues else 1.0
 
 
+def patch_weight_series(
+    patches: pd.Series,
+    patch_distances: dict[str, int] | None,
+    patch_decay_base: float,
+) -> pd.Series:
+    """Per-row ``patch_decay_base ** ordinal_distance`` multiplier.
+
+    Games on the newest patch (distance 0) get 1.0, the previous patch
+    ``patch_decay_base``, two-back ``patch_decay_base**2``, etc. Patches not
+    present in ``patch_distances`` (shouldn't happen if it was built from the
+    same games) fall back to distance 0 (full weight). Returns all-ones when
+    patch weighting is disabled (``patch_distances`` is None or
+    ``patch_decay_base >= 1``), so the multiplier is a no-op for callers/tests
+    that don't opt in.
+    """
+    if patch_distances is None or patch_decay_base >= 1.0:
+        return pd.Series(1.0, index=patches.index)
+    return patches.map(lambda p: patch_decay_base ** patch_distances.get(p, 0))
+
+
 def compute_decayed_pro_stats(
     champion_games: pd.DataFrame,
     reference_date: pd.Timestamp,
     half_life_days: float,
     international_leagues: frozenset[str] = frozenset(),
     international_weight_multiplier: float = 1.0,
+    patch_distances: dict[str, int] | None = None,
+    patch_decay_base: float = 1.0,
 ) -> tuple[float, float]:
     """Compute (pro_games_decayed, pro_win_rate_raw) for one champion's games.
 
@@ -204,7 +226,8 @@ def compute_decayed_pro_stats(
             columns. Should already be restricted to the desired trailing
             window by the caller. A ``league`` column is used if present
             (see ``international_leagues``); its absence is treated as "no
-            international boost for any row".
+            international boost for any row". A ``patch`` column is used if
+            present together with ``patch_distances`` (see below).
         reference_date: The "current" date used to compute recency
             (typically the latest date in the whole dataset, i.e. "today"
             for the purposes of this pipeline run).
@@ -218,6 +241,13 @@ def compute_decayed_pro_stats(
             every region playing on one current patch, so they're an
             unusually high-signal sample of the current meta and are
             weighted up relative to a typical regional-split game.
+        patch_distances: ``{patch: ordinal_distance_from_newest}`` (see
+            :func:`patch_ordinal_distances`). When provided together with a
+            ``patch_decay_base`` < 1, each game is additionally weighted by
+            ``patch_decay_base ** distance`` so the latest patch(es) dominate
+            -- this is *patch*-recency weighting, on top of the *calendar-day*
+            recency decay. ``None`` disables it (old day-decay-only behavior).
+        patch_decay_base: See ``PipelineConfig.patch_decay_base``.
 
     Returns:
         ``(pro_games_decayed, pro_win_rate_raw)``. If ``champion_games``
@@ -236,6 +266,11 @@ def compute_decayed_pro_stats(
             )
         )
         weights = weights * league_boost
+
+    if "patch" in champion_games.columns:
+        weights = weights * patch_weight_series(
+            champion_games["patch"], patch_distances, patch_decay_base
+        )
 
     total_weight = float(weights.sum())
     if total_weight <= 0:
@@ -297,6 +332,18 @@ def _patches_by_recency(games_df: pd.DataFrame) -> list[str]:
         return []
     patch_max_dates = games_df.groupby("patch")["date"].max().sort_values(ascending=False)
     return list(patch_max_dates.index)
+
+
+def patch_ordinal_distances(games_df: pd.DataFrame) -> dict[str, int]:
+    """Map each patch in ``games_df`` to its ordinal distance from the newest.
+
+    The most recent patch (by max game date) gets distance 0, the previous
+    patch 1, two-back 2, and so on -- so a game's patch weighting can be
+    ``patch_decay_base ** distance``, making the latest patch(es) dominate.
+    Patches are ordered by date, never by lexically sorting the patch string
+    (see :func:`_patches_by_recency`).
+    """
+    return {patch: distance for distance, patch in enumerate(_patches_by_recency(games_df))}
 
 
 def select_recent_games(games_df: pd.DataFrame, target_games: int) -> list:
@@ -425,6 +472,11 @@ def compute_champion_features(
     if reference_date is None:
         reference_date = games_df["date"].max()
 
+    # Patch-recency weighting: newest patch (by date) = distance 0, previous
+    # = 1, etc. Games are additionally weighted by patch_decay_base**distance
+    # so the latest patch(es) dominate the ratings (see compute_decayed_pro_stats).
+    patch_distances = patch_ordinal_distances(games_df)
+
     total_games = games_df["gameid"].nunique()
     total_bans = 0 if bans_df is None or bans_df.empty else len(bans_df)
 
@@ -449,6 +501,8 @@ def compute_champion_features(
             config.patch_half_life_days,
             international_leagues=config.international_leagues,
             international_weight_multiplier=config.international_weight_multiplier,
+            patch_distances=patch_distances,
+            patch_decay_base=config.patch_decay_base,
         )
 
         solo_win_rate, solo_games = solo_winrates.get(champion, (config.global_mean, 0))

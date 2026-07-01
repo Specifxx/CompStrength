@@ -35,12 +35,21 @@ network involved at all.
 from __future__ import annotations
 
 import io
+import tempfile
 from pathlib import Path
 from urllib.parse import urlparse
 
 import pandas as pd
 
-from compstrength_pipeline.config import ORACLES_ELIXIR_CSV_URL_TEMPLATE
+from compstrength_pipeline.config import (
+    ORACLES_ELIXIR_DRIVE_DOWNLOAD_URL,
+    ORACLES_ELIXIR_DRIVE_IDS,
+)
+
+# A real Oracle's Elixir season CSV is tens of MB; anything much smaller is
+# almost certainly a Google-Drive HTML quota/interstitial page rather than
+# the data, so we reject it (see download_oracles_elixir_csv).
+_MIN_CSV_BYTES = 1_000_000
 
 # Canonical output schema for the per-player-game table.
 CANONICAL_GAME_COLUMNS = [
@@ -144,15 +153,155 @@ def fetch_oracles_elixir(path_or_url: str) -> pd.DataFrame:
     return _normalize_player_games(raw)
 
 
-def fetch_oracles_elixir_for_year(year: int) -> pd.DataFrame:
-    """Convenience wrapper: fetch the live per-year CSV for ``year``.
+def download_oracles_elixir_csv(year: int, dest: str | Path | None = None) -> Path:
+    """Download the Oracle's Elixir season CSV for ``year`` from Google Drive.
 
-    Uses :data:`compstrength_pipeline.config.ORACLES_ELIXIR_CSV_URL_TEMPLATE`.
-    Best-effort / not exercised over the network in this sandbox -- see
-    module docstring.
+    Oracle's Elixir serves its match-data CSVs from a public Google Drive
+    folder (see ``config.ORACLES_ELIXIR_DRIVE_IDS``). Large Drive files
+    require a virus-scan "confirm token" dance; the ``gdown`` package handles
+    this automatically, so we use it when available and fall back to a manual
+    ``requests`` download against the ``drive.usercontent.google.com``
+    direct-download endpoint otherwise.
+
+    The result is validated: a real season CSV is tens of MB and its header
+    starts with ``gameid``. A too-small file or an HTML page (Drive's quota
+    interstitial) raises ``DataSourceUnavailableError`` rather than being
+    silently fed downstream as garbage.
+
+    Args:
+        year: Season year, e.g. ``2026``. Must be a key of
+            ``ORACLES_ELIXIR_DRIVE_IDS``.
+        dest: Where to write the CSV. Defaults to a temp file.
+
+    Returns:
+        The path to the downloaded CSV.
+
+    Raises:
+        DataSourceUnavailableError: if the year is unknown, the network
+            request fails (including blocked egress in this sandbox), or the
+            downloaded file doesn't look like the real CSV.
     """
-    url = ORACLES_ELIXIR_CSV_URL_TEMPLATE.format(year=year)
-    return fetch_oracles_elixir(url)
+    if year not in ORACLES_ELIXIR_DRIVE_IDS:
+        raise DataSourceUnavailableError(
+            f"No known Oracle's Elixir Google Drive file ID for year {year}. "
+            f"Known years: {sorted(ORACLES_ELIXIR_DRIVE_IDS)}."
+        )
+    file_id = ORACLES_ELIXIR_DRIVE_IDS[year]
+
+    if dest is None:
+        fd, dest_str = tempfile.mkstemp(
+            prefix=f"oracleselixir_{year}_", suffix=".csv"
+        )
+        import os
+
+        os.close(fd)
+        dest = dest_str
+    dest = Path(dest)
+
+    downloaded = _download_via_gdown(file_id, dest) or _download_via_requests(file_id, dest)
+    if not downloaded:
+        raise DataSourceUnavailableError(
+            f"Could not download Oracle's Elixir {year} CSV (Drive id {file_id!r}). "
+            "This is expected in network-restricted sandboxes (drive.google.com is "
+            "blocked here); this code path is designed to work unmodified in an "
+            "unrestricted environment such as GitHub Actions."
+        )
+
+    _validate_downloaded_csv(dest, year, file_id)
+    return dest
+
+
+def _download_via_gdown(file_id: str, dest: Path) -> bool:
+    """Best-effort download using the ``gdown`` package. Returns True on
+    success, False if gdown isn't installed (so the caller can fall back).
+    Network/Drive failures propagate as ``DataSourceUnavailableError``."""
+    try:
+        import gdown
+    except ImportError:
+        return False
+    try:
+        gdown.download(id=file_id, output=str(dest), quiet=True)
+    except Exception as exc:  # pragma: no cover - network path
+        raise DataSourceUnavailableError(
+            f"gdown failed to download Drive id {file_id!r}: {exc!r}"
+        ) from exc
+    return dest.exists() and dest.stat().st_size > 0
+
+
+def _download_via_requests(file_id: str, dest: Path) -> bool:
+    """Fallback download via the drive.usercontent direct-download endpoint
+    (``confirm=t`` skips the >25MB virus-scan interstitial). Returns True on
+    success; raises ``DataSourceUnavailableError`` on network failure."""
+    try:
+        import requests
+    except ImportError as exc:  # pragma: no cover
+        raise DataSourceUnavailableError(
+            "Neither 'gdown' nor 'requests' is available to download Oracle's "
+            "Elixir data. Install one via `pip install gdown`."
+        ) from exc
+
+    url = ORACLES_ELIXIR_DRIVE_DOWNLOAD_URL.format(file_id=file_id)
+    try:
+        with requests.get(url, stream=True, timeout=180) as resp:
+            resp.raise_for_status()
+            with dest.open("wb") as fh:
+                for chunk in resp.iter_content(chunk_size=1 << 16):
+                    if chunk:
+                        fh.write(chunk)
+    except Exception as exc:  # pragma: no cover - network path
+        raise DataSourceUnavailableError(
+            f"requests failed to download Drive id {file_id!r} from {url!r}: {exc!r}"
+        ) from exc
+    return dest.exists() and dest.stat().st_size > 0
+
+
+def _validate_downloaded_csv(path: Path, year: int, file_id: str) -> None:
+    """Reject a too-small file or an HTML interstitial masquerading as CSV."""
+    size = path.stat().st_size if path.exists() else 0
+    if size < _MIN_CSV_BYTES:
+        raise DataSourceUnavailableError(
+            f"Downloaded Oracle's Elixir {year} CSV (Drive id {file_id!r}) is only "
+            f"{size} bytes (< {_MIN_CSV_BYTES}); this is almost certainly a Google "
+            "Drive quota/interstitial HTML page, not the real data."
+        )
+    with path.open("r", encoding="utf-8", errors="ignore") as f:
+        header = f.readline()
+    if "gameid" not in header:
+        raise DataSourceUnavailableError(
+            f"Downloaded Oracle's Elixir {year} file (Drive id {file_id!r}) does not "
+            f"look like the CSV: header {header[:120]!r} is missing 'gameid'."
+        )
+
+
+def fetch_oracles_elixir_for_year(year: int) -> pd.DataFrame:
+    """Convenience wrapper: download the live per-year CSV from Google Drive
+    (see :func:`download_oracles_elixir_csv`) and normalize it.
+
+    Not exercised over the network in this dev sandbox (drive.google.com is
+    blocked here); designed to run unmodified on GitHub Actions.
+    """
+    csv_path = download_oracles_elixir_csv(year)
+    return fetch_oracles_elixir(str(csv_path))
+
+
+def _drop_incomplete(raw: pd.DataFrame) -> pd.DataFrame:
+    """Drop rows from games flagged partial/incomplete by Oracle's Elixir.
+
+    Oracle's Elixir marks each row's ``datacompleteness`` as ``complete`` or
+    ``partial`` (a partial/forfeit/remade game can still have 10 player rows
+    with a valid ``result``, so the "exactly 10 rows" gate alone does not
+    exclude it). We drop every row belonging to any game that has a
+    non-``complete`` marker, so partial games never reach training. If the
+    column is absent (e.g. the Leaguepedia source or the synthetic fixture),
+    this is a no-op.
+    """
+    if "datacompleteness" not in raw.columns or "gameid" not in raw.columns:
+        return raw
+    completeness = raw["datacompleteness"].astype(str).str.strip().str.lower()
+    incomplete_gameids = set(raw.loc[completeness != "complete", "gameid"])
+    if not incomplete_gameids:
+        return raw
+    return raw[~raw["gameid"].isin(incomplete_gameids)].copy()
 
 
 def _normalize_player_games(raw: pd.DataFrame) -> pd.DataFrame:
@@ -164,7 +313,7 @@ def _normalize_player_games(raw: pd.DataFrame) -> pd.DataFrame:
             f"required columns: {missing}"
         )
 
-    df = raw.copy()
+    df = _drop_incomplete(raw.copy())
     # Player rows only (team-summary rows carry no champion/player and are
     # handled separately by extract_bans()).
     player_rows = df[df["position"].astype(str).str.lower() != _TEAM_ROW_POSITION].copy()
@@ -212,7 +361,10 @@ def extract_bans(raw: pd.DataFrame) -> pd.DataFrame:
             f"required columns: {missing}"
         )
 
-    team_rows = raw[raw["position"].astype(str).str.lower() == _TEAM_ROW_POSITION].copy()
+    complete = _drop_incomplete(raw)
+    team_rows = complete[
+        complete["position"].astype(str).str.lower() == _TEAM_ROW_POSITION
+    ].copy()
     if "teamname" in team_rows.columns and "team" not in team_rows.columns:
         team_rows = team_rows.rename(columns={"teamname": "team"})
 

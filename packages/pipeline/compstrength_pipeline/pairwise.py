@@ -66,7 +66,13 @@ from dataclasses import dataclass
 import pandas as pd
 
 from compstrength_pipeline.config import PipelineConfig
-from compstrength_pipeline.features import decay_weight, international_league_multiplier, logit
+from compstrength_pipeline.features import (
+    decay_weight,
+    international_league_multiplier,
+    logit,
+    patch_ordinal_distances,
+    patch_weight_series,
+)
 
 
 @dataclass(frozen=True)
@@ -101,15 +107,19 @@ def _decayed_group_stats(
     half_life_days: float,
     international_leagues: frozenset[str] = frozenset(),
     international_weight_multiplier: float = 1.0,
+    patch_distances: dict[str, int] | None = None,
+    patch_decay_base: float = 1.0,
 ) -> tuple[float, float]:
     """Decayed (games, win_rate) for an arbitrary set of game-outcome rows.
 
     ``group`` must have ``date`` (tz-aware) and a binary ``win`` column
     (1 if the perspective team/pairing won that game, else 0), and may have
-    a ``league`` column (used for the international-event weight boost --
-    see ``PipelineConfig.international_leagues``; absence is treated as "no
-    boost"). Mirrors ``features.compute_decayed_pro_stats`` but generalized
-    to an arbitrary "win" column rather than assuming one row per champion.
+    ``league`` (international-event boost) and ``patch`` (patch-recency
+    weighting) columns. Mirrors ``features.compute_decayed_pro_stats`` --
+    including the same ``patch_decay_base ** patch_ordinal_distance``
+    weighting so synergy/matchup residuals also lean on the latest patches --
+    but generalized to an arbitrary "win" column rather than one row per
+    champion.
     """
     if group.empty:
         return 0.0, 0.0
@@ -122,6 +132,10 @@ def _decayed_group_stats(
             )
         )
         weights = weights * league_boost
+    if "patch" in group.columns:
+        weights = weights * patch_weight_series(
+            group["patch"], patch_distances, patch_decay_base
+        )
     total_weight = float(weights.sum())
     if total_weight <= 0:
         return 0.0, 0.0
@@ -137,7 +151,10 @@ def _build_team_game_rows(games_df: pd.DataFrame) -> pd.DataFrame:
     """
     rows = []
     for (gameid, side), group in games_df.groupby(["gameid", "side"]):
-        won = int(group["result"].iloc[0] == 1)
+        # All 5 rows of a side should share one result; take the majority
+        # vote rather than a single row so one NaN-coerced/mislabeled row
+        # can't flip the whole side's win label.
+        won = int(round(float(group["result"].mean())))
         champs_by_role = dict(zip(group["position"], group["champion"]))
         rows.append(
             {
@@ -145,6 +162,7 @@ def _build_team_game_rows(games_df: pd.DataFrame) -> pd.DataFrame:
                 "side": side,
                 "date": group["date"].iloc[0],
                 "league": group["league"].iloc[0] if "league" in group.columns else None,
+                "patch": group["patch"].iloc[0] if "patch" in group.columns else None,
                 "won": won,
                 "champions": sorted(group["champion"].tolist()),
                 "champs_by_role": champs_by_role,
@@ -182,6 +200,7 @@ def compute_synergy_table(
     if reference_date is None:
         reference_date = games_df["date"].max()
 
+    patch_distances = patch_ordinal_distances(games_df)
     team_rows = _build_team_game_rows(games_df)
 
     # For each unordered champion pair, collect (date, won) rows across all
@@ -191,7 +210,7 @@ def compute_synergy_table(
         champs = row["champions"]
         for a, b in itertools.combinations(sorted(set(champs)), 2):
             pair_rows.setdefault((a, b), []).append(
-                {"date": row["date"], "win": row["won"], "league": row["league"]}
+                {"date": row["date"], "win": row["won"], "league": row["league"], "patch": row["patch"]}
             )
 
     result: dict[str, PairStat] = {}
@@ -203,6 +222,8 @@ def compute_synergy_table(
             config.patch_half_life_days,
             international_leagues=config.international_leagues,
             international_weight_multiplier=config.international_weight_multiplier,
+            patch_distances=patch_distances,
+            patch_decay_base=config.patch_decay_base,
         )
         if games_decayed <= 0:
             continue
@@ -254,6 +275,7 @@ def compute_matchup_table(
     if reference_date is None:
         reference_date = games_df["date"].max()
 
+    patch_distances = patch_ordinal_distances(games_df)
     team_rows = _build_team_game_rows(games_df)
 
     # Pair up the two sides within each game.
@@ -268,10 +290,10 @@ def compute_matchup_table(
             # Directional: from champ_a's team's perspective vs champ_b, and
             # symmetrically from champ_b's team's perspective vs champ_a.
             pair_records.setdefault((champ_a, champ_b), []).append(
-                {"date": row_a["date"], "win": row_a["won"], "league": row_a["league"]}
+                {"date": row_a["date"], "win": row_a["won"], "league": row_a["league"], "patch": row_a["patch"]}
             )
             pair_records.setdefault((champ_b, champ_a), []).append(
-                {"date": row_b["date"], "win": row_b["won"], "league": row_b["league"]}
+                {"date": row_b["date"], "win": row_b["won"], "league": row_b["league"], "patch": row_b["patch"]}
             )
 
     result: dict[str, PairStat] = {}
@@ -283,11 +305,19 @@ def compute_matchup_table(
             config.patch_half_life_days,
             international_leagues=config.international_leagues,
             international_weight_multiplier=config.international_weight_multiplier,
+            patch_distances=patch_distances,
+            patch_decay_base=config.patch_decay_base,
         )
         if games_decayed <= 0:
             continue
 
-        expected_logit = champion_strength.get(a, 0.0)
+        # De-confound the matchup: the observed win rate of A's team is driven
+        # by BOTH A's own strength and the opposing B's strength, so subtract
+        # both. residual = logit(A-team win rate vs B) - (strength[A] -
+        # strength[B]) isolates the lane/matchup effect beyond raw strength,
+        # which is what train_model.py adds on top of score_diff (this avoids
+        # double-counting opponent strength through the matchup channel).
+        expected_logit = champion_strength.get(a, 0.0) - champion_strength.get(b, 0.0)
         residual_raw = logit(win_rate_raw) - expected_logit
         residual = _shrink_residual(residual_raw, games_decayed, config.matchup_prior_games)
 
