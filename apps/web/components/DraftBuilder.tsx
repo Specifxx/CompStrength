@@ -13,6 +13,7 @@ import {
 } from "@/lib/predict";
 import {
   ROLES,
+  type BacktestReportFile,
   type ChampionListItem,
   type ChampionRatingsFile,
   type DraftTeam,
@@ -35,12 +36,14 @@ export function DraftBuilder({
   patch,
   model,
   synergy,
+  backtest,
 }: {
   champions: ChampionListItem[];
   ratings: ChampionRatingsFile;
   patch: string;
   model: ModelFile;
   synergy: SynergyFile;
+  backtest?: BacktestReportFile | null;
 }) {
   const [blue, setBlue] = useState<DraftTeam>({ ...EMPTY_TEAM });
   const [red, setRed] = useState<DraftTeam>({ ...EMPTY_TEAM });
@@ -187,12 +190,34 @@ export function DraftBuilder({
             <ResultBreakdown side="red" contributions={result.breakdown.red} />
           </div>
           <NotablePairs notablePairs={result.notablePairs} />
-          <p className="text-xs text-slate-500">
-            Model log-loss {result.modelMetrics.logLoss.toFixed(3)}, accuracy{" "}
-            {(result.modelMetrics.accuracy * 100).toFixed(1)}% vs.{" "}
-            {(result.modelMetrics.baselineAccuracy * 100).toFixed(1)}% baseline.
-            {result.modelMetrics.note ? ` ${result.modelMetrics.note}` : ""}
-          </p>
+          {backtest && Number.isFinite(backtest.metrics.accuracy) ? (
+            // Show the HONEST walk-forward held-out numbers (same as the
+            // Methodology page), NOT the model.json in-sample metrics, which
+            // are inflated by synergy/matchup leakage. Draft alone is a weak
+            // signal, so held-out accuracy sits near the pick-majority baseline.
+            <p className="text-xs text-slate-500">
+              Held-out accuracy {(backtest.metrics.accuracy * 100).toFixed(1)}% vs.{" "}
+              {(backtest.metrics.baselineAccuracy * 100).toFixed(1)}% pick-majority
+              baseline; log-loss {backtest.metrics.logLoss.toFixed(3)} vs.{" "}
+              {backtest.metrics.coinFlipLogLoss.toFixed(3)} coin-flip (walk-forward
+              backtest on {backtest.testGames.toLocaleString()} real pro games).
+              Draft alone is a weak predictor at the pro level — see{" "}
+              <Link href="/methodology" className="text-sky-400 hover:underline">
+                Methodology
+              </Link>
+              .
+            </p>
+          ) : (
+            <p className="text-xs text-slate-500">
+              In-sample (training-set) log-loss{" "}
+              {result.modelMetrics.logLoss.toFixed(3)}, accuracy{" "}
+              {(result.modelMetrics.accuracy * 100).toFixed(1)}% vs.{" "}
+              {(result.modelMetrics.baselineAccuracy * 100).toFixed(1)}% baseline —
+              these are optimistic; see the Methodology page for honest held-out
+              numbers.
+              {result.modelMetrics.note ? ` ${result.modelMetrics.note}` : ""}
+            </p>
+          )}
         </section>
       )}
     </div>

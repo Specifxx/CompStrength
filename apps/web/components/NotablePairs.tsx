@@ -1,7 +1,14 @@
 import type { NotablePairs as NotablePairsData } from "@/lib/types";
 
-function pct(x: number) {
-  return `${x >= 0 ? "+" : ""}${Math.round(x * 1000) / 10}%`;
+// Synergy/matchup residuals are LOG-ODDS quantities (logit(winRate) - expected
+// logit), NOT win-rate deltas. Multiplying them by 100 and calling the result a
+// "%" overstates the effect (a 0.48 log-odds residual is only ~+12 percentage
+// points of win rate near a 50% base, not 48%). Convert to an approximate
+// win-rate percentage-point delta via the logistic function before display.
+function pct(logOddsResidual: number) {
+  const winRateDelta = (1 / (1 + Math.exp(-logOddsResidual)) - 0.5) * 100;
+  const rounded = Math.round(winRateDelta * 10) / 10;
+  return `${rounded >= 0 ? "+" : ""}${rounded}%`;
 }
 
 export function NotablePairs({ notablePairs }: { notablePairs: NotablePairsData }) {

@@ -1,11 +1,13 @@
 import { DraftBuilder } from "@/components/DraftBuilder";
 import {
   DataNotReadyError,
+  loadBacktestReport,
   loadChampionRatings,
   loadModel,
   loadSynergy,
 } from "@/lib/data";
 import type {
+  BacktestReportFile,
   ChampionListItem,
   ChampionRatingsFile,
   ModelFile,
@@ -18,6 +20,7 @@ function loadHomeData(): {
   patch: string;
   model: ModelFile;
   synergy: SynergyFile;
+  backtest: BacktestReportFile | null;
 } | null {
   try {
     const ratings = loadChampionRatings();
@@ -42,7 +45,17 @@ function loadHomeData(): {
         matchup: {},
       };
     }
-    return { champions, ratings, patch: ratings.patch, model, synergy };
+    // The walk-forward backtest report drives the honest, held-out accuracy
+    // shown under a prediction (see DraftBuilder). Optional: if it hasn't been
+    // generated yet, fall back to null and the footer degrades gracefully.
+    let backtest: BacktestReportFile | null;
+    try {
+      backtest = loadBacktestReport();
+    } catch (err) {
+      if (!(err instanceof DataNotReadyError)) throw err;
+      backtest = null;
+    }
+    return { champions, ratings, patch: ratings.patch, model, synergy, backtest };
   } catch (err) {
     if (err instanceof DataNotReadyError) return null;
     throw err;
@@ -76,6 +89,7 @@ export default function HomePage() {
       patch={data.patch}
       model={data.model}
       synergy={data.synergy}
+      backtest={data.backtest}
     />
   );
 }
