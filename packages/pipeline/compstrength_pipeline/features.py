@@ -45,6 +45,7 @@ weighted mean win rate (``proWinRateRaw``).
 from __future__ import annotations
 
 import math
+import warnings
 from dataclasses import dataclass
 
 import numpy as np
@@ -52,6 +53,65 @@ import pandas as pd
 
 from compstrength_pipeline.champions import get_full_champion_roster
 from compstrength_pipeline.config import PipelineConfig
+
+
+def parse_patch(patch: object) -> tuple[int, int] | None:
+    """Parse a patch string like ``"26.13"`` into a ``(major, minor)`` tuple
+    for correct chronological comparison (``(26, 13) > (26, 2) > (25, 1)``).
+
+    Lexical/string comparison is wrong here ("26.13" < "26.2" as text), so
+    ratings/floors must compare these tuples, never the raw strings. Returns
+    ``None`` for anything that doesn't parse to at least a numeric major
+    (e.g. NaN, empty, or a non-numeric label).
+    """
+    if not isinstance(patch, str):
+        return None
+    parts = patch.strip().split(".")
+    if not parts or not parts[0]:
+        return None
+    try:
+        major = int(parts[0])
+        minor = int(parts[1]) if len(parts) > 1 and parts[1] != "" else 0
+    except ValueError:
+        return None
+    return (major, minor)
+
+
+def restrict_to_min_patch(
+    games_df: pd.DataFrame, bans_df: pd.DataFrame, min_patch: str | None
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Drop games on patches OLDER than ``min_patch`` (inclusive floor).
+
+    Patches are compared as parsed ``(major, minor)`` tuples (see
+    :func:`parse_patch`), never lexically. If ``min_patch`` is None/unparseable
+    or applying it would drop every game (e.g. the synthetic fixture's 14.x
+    patches against a "25.1" floor), the filter is skipped and all games are
+    kept -- so offline/dev/test runs still work while real runs get the floor.
+    """
+    if min_patch is None or games_df.empty or "patch" not in games_df.columns:
+        return games_df, bans_df
+    floor = parse_patch(min_patch)
+    if floor is None:
+        return games_df, bans_df
+
+    parsed = games_df["patch"].map(parse_patch)
+    keep = parsed.map(lambda t: t is not None and t >= floor)
+    if not keep.any():
+        warnings.warn(
+            f"min_patch floor {min_patch!r} would drop every game "
+            f"(newest present patch parses below it); skipping the floor. "
+            "This is expected offline on the synthetic fixture; on real data "
+            "it would mean the source has no games at or after the floor."
+        )
+        return games_df, bans_df
+
+    restricted_games = games_df[keep].reset_index(drop=True)
+    if bans_df is None or bans_df.empty:
+        restricted_bans = bans_df
+    else:
+        surviving = set(restricted_games["gameid"])
+        restricted_bans = bans_df[bans_df["gameid"].isin(surviving)].reset_index(drop=True)
+    return restricted_games, restricted_bans
 
 
 def logit(p: float) -> float:
@@ -456,6 +516,7 @@ def compute_champion_features(
             ]
         )
 
+    games_df, bans_df = restrict_to_min_patch(games_df, bans_df, config.min_patch)
     games_df, bans_df, _patches_used = restrict_to_recent_games(
         games_df, bans_df, config.target_training_games
     )

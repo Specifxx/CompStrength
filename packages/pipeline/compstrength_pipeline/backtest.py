@@ -129,10 +129,15 @@ def _fit_snapshot_and_predict(
     champion_strength = champion_features_df["strengthScore"].to_dict()
 
     # The restricted set used for pairwise/model fitting must match what
-    # compute_champion_features actually used internally.
+    # compute_champion_features actually used internally: same min_patch
+    # floor then most-recent-games cap. (Applying it to the fold's TRAIN set
+    # only keeps the backtest leak-free -- no future patches leak in.)
+    floored_train_games, floored_train_bans = features.restrict_to_min_patch(
+        train_games_df, train_bans_df, config.min_patch
+    )
     restricted_train_games, restricted_train_bans, _patches_used = (
         features.restrict_to_recent_games(
-            train_games_df, train_bans_df, config.target_training_games
+            floored_train_games, floored_train_bans, config.target_training_games
         )
     )
 

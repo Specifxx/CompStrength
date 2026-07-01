@@ -84,7 +84,19 @@ class PipelineConfig:
     prior_games: int = 15
     pro_window_days: int = 90
     global_mean: float = 0.5
-    target_training_games: int = 1000
+    # Safety cap on how many most-recent games to train on. With min_patch
+    # defining the real window (25.1 -> current), this is set high enough not
+    # to trim that window (~1.5 seasons of all-league pro play), so it only
+    # guards against pathological inputs. A smoke test can still pass a small
+    # --target-games to fetch/process fewer games quickly.
+    target_training_games: int = 20000
+    # Oldest patch to include, inclusive (parsed as major.minor, NOT compared
+    # lexically). Games on patches older than this are dropped entirely; the
+    # newest patch present is weighted most and each older patch exponentially
+    # less (patch_decay_base). Set to None to disable the floor. If the floor
+    # would drop every game (e.g. the synthetic fixture's 14.x patches), it is
+    # skipped so offline/dev runs still work.
+    min_patch: str | None = "25.1"
     synergy_prior_games: int = 30
     matchup_prior_games: int = 35
     international_leagues: frozenset[str] = frozenset(
@@ -114,6 +126,15 @@ class PipelineConfig:
             raise ValueError("international_weight_multiplier must be positive")
         if not (0.0 < self.patch_decay_base <= 1.0):
             raise ValueError("patch_decay_base must be in (0, 1]")
+        if self.min_patch is not None:
+            # Validate it parses as major[.minor] (compared numerically, not
+            # lexically, in features.parse_patch). Inlined here rather than
+            # importing features to avoid a circular import at module load.
+            head = str(self.min_patch).strip().split(".")[0]
+            if not head.isdigit():
+                raise ValueError(
+                    f"min_patch must be a patch string like '25.1' (got {self.min_patch!r})"
+                )
 
 
 # Module-level default instance, importable directly as

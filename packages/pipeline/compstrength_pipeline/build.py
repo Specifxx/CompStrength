@@ -201,11 +201,19 @@ def load_raw_games_and_bans(
             # fall back to the live Leaguepedia fetch rather than failing the
             # whole refresh -- both are real sources; we just want whichever
             # is reachable this run.
+            # Cap the Leaguepedia fallback: it makes one request per ~50-game
+            # chunk and rate-limits on shared CI IPs, so a huge window would
+            # get throttled. It fetches the MOST RECENT games first, which are
+            # exactly the highest-weighted patches (26.13, 26.12, ...) -- the
+            # older 25.x tail is exponentially down-weighted to ~nothing
+            # anyway, so grabbing the recent slice loses almost no signal.
+            fallback_games = min(target_games, 400)
             warnings.warn(
-                f"Oracle's Elixir Drive download failed ({exc}); "
-                "falling back to the live Leaguepedia Cargo fetch."
+                f"Oracle's Elixir Drive download failed ({exc}); falling back "
+                f"to a live Leaguepedia Cargo fetch of the {fallback_games} "
+                "most recent games."
             )
-            return leaguepedia_source.fetch_recent_games(target_games=target_games)
+            return leaguepedia_source.fetch_recent_games(target_games=fallback_games)
     if source == "leaguepedia":
         return leaguepedia_source.fetch_recent_games(target_games=target_games)
     return load_games_and_bans(oracles_elixir_path, oracles_elixir_url)
@@ -240,10 +248,12 @@ def run_pipeline_on_data(
             "Check the input data source."
         )
 
-    # Hard-restrict to the most recent `target_training_games` games up
-    # front (regardless of patch) so every downstream computation (resolved
-    # patch, champion features, pairwise synergy/matchup, and the training
-    # frame for the model) operates on exactly the same window.
+    # Restrict the data window up front so every downstream computation
+    # (resolved patch, champion features, pairwise synergy/matchup, and the
+    # model training frame) operates on exactly the same games:
+    #   1. drop patches older than config.min_patch (e.g. "25.1"), then
+    #   2. cap at the most recent config.target_training_games as a safety bound.
+    games_df, bans_df = features.restrict_to_min_patch(games_df, bans_df, config.min_patch)
     games_df, bans_df, patches_used = features.restrict_to_recent_games(
         games_df, bans_df, config.target_training_games
     )
