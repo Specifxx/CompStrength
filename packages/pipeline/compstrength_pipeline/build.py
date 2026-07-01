@@ -91,7 +91,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--target-games",
         type=int,
-        default=int(os.environ.get("COMPSTRENGTH_TARGET_GAMES", "0")) or None,
+        # Note: os.environ.get(key, "0") only falls back to "0" when the key
+        # is ABSENT -- GitHub Actions sets COMPSTRENGTH_TARGET_GAMES to an
+        # empty string (not unset) when the workflow_dispatch input is left
+        # blank, so int(os.environ.get(...)) would crash on int(''). Guard
+        # explicitly instead.
+        default=(int(os.environ["COMPSTRENGTH_TARGET_GAMES"]) or None)
+        if os.environ.get("COMPSTRENGTH_TARGET_GAMES")
+        else None,
         help=(
             "Override PipelineConfig.target_training_games (default 1000). "
             "Useful for a quick, fast --source leaguepedia smoke test with a "

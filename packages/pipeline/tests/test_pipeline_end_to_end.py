@@ -52,7 +52,6 @@ def test_pipeline_end_to_end_writes_expected_files(output_dir: Path):
     assert len(ratings_data["champions"]) > 0
     assert isinstance(ratings_data["patchesUsed"], list)
     assert len(ratings_data["patchesUsed"]) > 0
-    assert len(ratings_data["patchesUsed"]) > 0
 
     sample_champion = next(iter(ratings_data["champions"].values()))
     for key in (
@@ -112,3 +111,25 @@ def test_pipeline_main_writes_to_output_dir(output_dir: Path):
         assert key in backtest_data
     for key in ("accuracy", "logLoss", "brierScore", "baselineAccuracy", "coinFlipLogLoss"):
         assert key in backtest_data["metrics"]
+
+
+def test_parse_args_target_games_defaults_to_none_when_env_var_is_empty_string(monkeypatch):
+    """GitHub Actions sets an unfilled workflow_dispatch string input to an
+    empty string in the job env, not unset -- os.environ.get(key, "0") only
+    falls back when the key is absent, so this must be handled explicitly
+    rather than crashing on int('')."""
+    monkeypatch.setenv("COMPSTRENGTH_TARGET_GAMES", "")
+    args = build.parse_args([])
+    assert args.target_games is None
+
+
+def test_parse_args_target_games_reads_env_var_when_set(monkeypatch):
+    monkeypatch.setenv("COMPSTRENGTH_TARGET_GAMES", "60")
+    args = build.parse_args([])
+    assert args.target_games == 60
+
+
+def test_parse_args_target_games_cli_flag_overrides_env(monkeypatch):
+    monkeypatch.setenv("COMPSTRENGTH_TARGET_GAMES", "60")
+    args = build.parse_args(["--target-games", "25"])
+    assert args.target_games == 25
