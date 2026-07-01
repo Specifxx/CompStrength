@@ -79,6 +79,33 @@ standard, well-understood approach for "strength rating -> win probability"
 problems (it's the same family of model behind chess Elo and many sports
 analytics tools), but it is still a simplification of a much messier reality.
 
+**Every champion is selectable, in every role.** Champion ratings aren't
+limited to whichever champions happened to get pro games in the current
+window — the full known champion roster (`compstrength_pipeline/champions.py`,
+sourced live from Data Dragon with a bundled static fallback) is always
+included. An off-meta pick with zero recent pro games just falls back to its
+solo-queue-informed prior instead of being unselectable, so unconventional
+picks (a support-role Teemo, whatever) are always modelable, not just the
+current meta's staples.
+
+**International events (MSI, Worlds, EWC) count for more.** These pit the
+best team from every region against each other on one current patch, which
+makes them an unusually concentrated, high-signal sample of how the current
+meta actually resolves at the top level — worth more than an equivalent
+regional-split game. `PipelineConfig.international_weight_multiplier`
+(default `1.5x`) boosts these games' weight in every stat this pipeline
+computes (champion ratings, synergy, matchup), on top of the normal
+patch-recency decay. **A note on MSI 2026 specifically**: as of this
+writing MSI 2026 is still in progress (Play-In just concluded, Bracket Stage
+runs into mid-July), and this sandbox's network policy blocks the
+structured data sources (Oracle's Elixir, Leaguepedia) that would let the
+pipeline actually ingest it — search-engine snippets are not a reliable
+substitute (results for an in-progress tournament are prone to
+speculative/fabricated content, and no full per-game draft data was
+recoverable that way). Once deployed with real network access, the daily
+refresh workflow will pick up MSI 2026 games automatically the moment
+Oracle's Elixir publishes them — nothing else needs to change.
+
 ## Data sources
 
 - **[Oracle's Elixir](https://oracleselixir.com/)** — the primary source of

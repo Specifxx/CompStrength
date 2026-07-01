@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "trainedAt": "2026-07-01T08:58:16.023585+00:00",
+  "trainedAt": "2026-07-01T10:02:53.679315+00:00",
   "trainingGames": 58,
   "coefficients": {
-    "scoreDiffWeight": -0.2825608715554862,
+    "scoreDiffWeight": -0.28256087155548626,
     "synergyWeight": 1.5860359146226237,
     "matchupWeight": 0.41585392149296496,
-    "blueSideBias": 0.03882426540398147,
+    "blueSideBias": 0.03882426540398172,
     "intercept": 0.0
   },
   "metrics": {

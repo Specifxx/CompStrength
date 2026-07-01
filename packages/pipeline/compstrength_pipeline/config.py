@@ -49,6 +49,18 @@ class PipelineConfig:
         matchup_prior_games: Empirical-Bayes shrinkage strength (in
             decayed "pseudo-games") for the cross-team same-role matchup
             residual computed in ``pairwise.py``.
+        international_leagues: ``league`` column values (matched
+            case-insensitively) treated as top-level international events
+            (MSI, Worlds, EWC, ...) rather than regular regional season
+            play. These pit the best teams from every region against each
+            other on a single current patch, which makes them an
+            unusually concentrated, high-signal sample of how the current
+            meta actually resolves at the highest level -- worth weighting
+            up relative to an average regional-split game.
+        international_weight_multiplier: Extra multiplier (on top of the
+            normal patch-recency decay weight) applied to games whose
+            ``league`` is in ``international_leagues``. ``1.0`` disables
+            this entirely.
     """
 
     patch_half_life_days: int = 21
@@ -59,6 +71,10 @@ class PipelineConfig:
     num_recent_patches: int = 3
     synergy_prior_games: int = 8
     matchup_prior_games: int = 10
+    international_leagues: frozenset[str] = frozenset(
+        {"MSI", "WLDS", "WORLDS", "EWC"}
+    )
+    international_weight_multiplier: float = 1.5
 
     def __post_init__(self) -> None:
         if not (0.0 <= self.solo_queue_weight <= 1.0):
@@ -77,6 +93,8 @@ class PipelineConfig:
             raise ValueError("synergy_prior_games must be non-negative")
         if self.matchup_prior_games < 0:
             raise ValueError("matchup_prior_games must be non-negative")
+        if self.international_weight_multiplier <= 0:
+            raise ValueError("international_weight_multiplier must be positive")
 
 
 # Module-level default instance, importable directly as

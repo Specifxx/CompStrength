@@ -66,7 +66,7 @@ from dataclasses import dataclass
 import pandas as pd
 
 from compstrength_pipeline.config import PipelineConfig
-from compstrength_pipeline.features import decay_weight, logit
+from compstrength_pipeline.features import decay_weight, international_league_multiplier, logit
 
 
 @dataclass(frozen=True)
@@ -96,19 +96,32 @@ def _shrink_residual(residual_raw: float, games_decayed: float, prior_games: flo
 
 
 def _decayed_group_stats(
-    group: pd.DataFrame, reference_date: pd.Timestamp, half_life_days: float
+    group: pd.DataFrame,
+    reference_date: pd.Timestamp,
+    half_life_days: float,
+    international_leagues: frozenset[str] = frozenset(),
+    international_weight_multiplier: float = 1.0,
 ) -> tuple[float, float]:
     """Decayed (games, win_rate) for an arbitrary set of game-outcome rows.
 
     ``group`` must have ``date`` (tz-aware) and a binary ``win`` column
-    (1 if the perspective team/pairing won that game, else 0). Mirrors
-    ``features.compute_decayed_pro_stats`` but generalized to an arbitrary
-    "win" column rather than assuming one row per champion.
+    (1 if the perspective team/pairing won that game, else 0), and may have
+    a ``league`` column (used for the international-event weight boost --
+    see ``PipelineConfig.international_leagues``; absence is treated as "no
+    boost"). Mirrors ``features.compute_decayed_pro_stats`` but generalized
+    to an arbitrary "win" column rather than assuming one row per champion.
     """
     if group.empty:
         return 0.0, 0.0
     days_since = (reference_date - group["date"]).dt.total_seconds() / 86400.0
     weights = days_since.map(lambda d: decay_weight(d, half_life_days))
+    if "league" in group.columns:
+        league_boost = group["league"].map(
+            lambda lg: international_league_multiplier(
+                lg, international_leagues, international_weight_multiplier
+            )
+        )
+        weights = weights * league_boost
     total_weight = float(weights.sum())
     if total_weight <= 0:
         return 0.0, 0.0
@@ -131,6 +144,7 @@ def _build_team_game_rows(games_df: pd.DataFrame) -> pd.DataFrame:
                 "gameid": gameid,
                 "side": side,
                 "date": group["date"].iloc[0],
+                "league": group["league"].iloc[0] if "league" in group.columns else None,
                 "won": won,
                 "champions": sorted(group["champion"].tolist()),
                 "champs_by_role": champs_by_role,
@@ -176,13 +190,19 @@ def compute_synergy_table(
     for _, row in team_rows.iterrows():
         champs = row["champions"]
         for a, b in itertools.combinations(sorted(set(champs)), 2):
-            pair_rows.setdefault((a, b), []).append({"date": row["date"], "win": row["won"]})
+            pair_rows.setdefault((a, b), []).append(
+                {"date": row["date"], "win": row["won"], "league": row["league"]}
+            )
 
     result: dict[str, PairStat] = {}
     for (a, b), records in pair_rows.items():
         df = pd.DataFrame(records)
         games_decayed, win_rate_raw = _decayed_group_stats(
-            df, reference_date, config.patch_half_life_days
+            df,
+            reference_date,
+            config.patch_half_life_days,
+            international_leagues=config.international_leagues,
+            international_weight_multiplier=config.international_weight_multiplier,
         )
         if games_decayed <= 0:
             continue
@@ -248,17 +268,21 @@ def compute_matchup_table(
             # Directional: from champ_a's team's perspective vs champ_b, and
             # symmetrically from champ_b's team's perspective vs champ_a.
             pair_records.setdefault((champ_a, champ_b), []).append(
-                {"date": row_a["date"], "win": row_a["won"]}
+                {"date": row_a["date"], "win": row_a["won"], "league": row_a["league"]}
             )
             pair_records.setdefault((champ_b, champ_a), []).append(
-                {"date": row_b["date"], "win": row_b["won"]}
+                {"date": row_b["date"], "win": row_b["won"], "league": row_b["league"]}
             )
 
     result: dict[str, PairStat] = {}
     for (a, b), records in pair_records.items():
         df = pd.DataFrame(records)
         games_decayed, win_rate_raw = _decayed_group_stats(
-            df, reference_date, config.patch_half_life_days
+            df,
+            reference_date,
+            config.patch_half_life_days,
+            international_leagues=config.international_leagues,
+            international_weight_multiplier=config.international_weight_multiplier,
         )
         if games_decayed <= 0:
             continue

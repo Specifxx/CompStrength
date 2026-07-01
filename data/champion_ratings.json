@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-01T08:58:16.023564+00:00",
+  "generatedAt": "2026-07-01T10:02:53.679293+00:00",
   "patch": "14.4",
   "patchesUsed": [
     14.4,
@@ -50,6 +50,66 @@
       "banRate": 0.20689655172413793,
       "sampleConfidence": "low"
     },
+    "Alistar": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Ambessa": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Amumu": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Anivia": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Annie": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Aphelios": {
       "primaryRole": "BOTTOM",
       "proGames": 3,
@@ -60,6 +120,42 @@
       "strengthScore": -0.09846236495590031,
       "pickRate": 0.15517241379310345,
       "banRate": 0.22413793103448276,
+      "sampleConfidence": "low"
+    },
+    "Ashe": {
+      "primaryRole": "BOTTOM",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Aurelion Sol": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Aurora": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
       "sampleConfidence": "low"
     },
     "Azir": {
@@ -74,6 +170,54 @@
       "banRate": 0.25862068965517243,
       "sampleConfidence": "low"
     },
+    "Bard": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Bel'Veth": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Blitzcrank": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Brand": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Braum": {
       "primaryRole": "SUPPORT",
       "proGames": 4,
@@ -84,6 +228,18 @@
       "strengthScore": -0.030264930144221207,
       "pickRate": 0.2413793103448276,
       "banRate": 0.3275862068965517,
+      "sampleConfidence": "low"
+    },
+    "Briar": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
       "sampleConfidence": "low"
     },
     "Caitlyn": {
@@ -110,6 +266,30 @@
       "banRate": 0.1206896551724138,
       "sampleConfidence": "low"
     },
+    "Cassiopeia": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Cho'Gath": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Corki": {
       "primaryRole": "MID",
       "proGames": 5,
@@ -122,6 +302,66 @@
       "banRate": 0.20689655172413793,
       "sampleConfidence": "medium"
     },
+    "Darius": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Diana": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Dr. Mundo": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Draven": {
+      "primaryRole": "BOTTOM",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Ekko": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Elise": {
       "primaryRole": "JUNGLE",
       "proGames": 3,
@@ -132,6 +372,18 @@
       "strengthScore": 0.10987449703542375,
       "pickRate": 0.13793103448275862,
       "banRate": 0.20689655172413793,
+      "sampleConfidence": "low"
+    },
+    "Evelynn": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
       "sampleConfidence": "low"
     },
     "Ezreal": {
@@ -146,6 +398,18 @@
       "banRate": 0.1724137931034483,
       "sampleConfidence": "low"
     },
+    "Fiddlesticks": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Fiora": {
       "primaryRole": "TOP",
       "proGames": 5,
@@ -156,6 +420,42 @@
       "strengthScore": -0.1550090386580034,
       "pickRate": 0.22413793103448276,
       "banRate": 0.2413793103448276,
+      "sampleConfidence": "low"
+    },
+    "Fizz": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Galio": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Garen": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
       "sampleConfidence": "low"
     },
     "Gnar": {
@@ -182,6 +482,114 @@
       "banRate": 0.29310344827586204,
       "sampleConfidence": "low"
     },
+    "Gwen": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Hecarim": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Heimerdinger": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Hwei": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Illaoi": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Irelia": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Ivern": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Janna": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Jarvan IV": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Jarvan Iv": {
       "primaryRole": "JUNGLE",
       "proGames": 3,
@@ -204,6 +612,30 @@
       "strengthScore": -0.006849413696299335,
       "pickRate": 0.25862068965517243,
       "banRate": 0.20689655172413793,
+      "sampleConfidence": "low"
+    },
+    "Jayce": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Jhin": {
+      "primaryRole": "BOTTOM",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
       "sampleConfidence": "low"
     },
     "Jinx": {
@@ -242,6 +674,18 @@
       "banRate": 0.1896551724137931,
       "sampleConfidence": "medium"
     },
+    "Kalista": {
+      "primaryRole": "BOTTOM",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Karma": {
       "primaryRole": "SUPPORT",
       "proGames": 4,
@@ -254,6 +698,78 @@
       "banRate": 0.13793103448275862,
       "sampleConfidence": "low"
     },
+    "Karthus": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Kassadin": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Katarina": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Kayn": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Kennen": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Kha'Zix": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Kindred": {
       "primaryRole": "JUNGLE",
       "proGames": 2,
@@ -264,6 +780,42 @@
       "strengthScore": -0.041128711973939545,
       "pickRate": 0.15517241379310345,
       "banRate": 0.20689655172413793,
+      "sampleConfidence": "low"
+    },
+    "Kled": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Kog'Maw": {
+      "primaryRole": "BOTTOM",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "LeBlanc": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
       "sampleConfidence": "low"
     },
     "Leblanc": {
@@ -290,6 +842,42 @@
       "banRate": 0.1896551724137931,
       "sampleConfidence": "low"
     },
+    "Leona": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Lillia": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Lissandra": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Lulu": {
       "primaryRole": "SUPPORT",
       "proGames": 5,
@@ -302,6 +890,126 @@
       "banRate": 0.20689655172413793,
       "sampleConfidence": "medium"
     },
+    "Malphite": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Malzahar": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Maokai": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Master Yi": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Mel": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Milio": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Miss Fortune": {
+      "primaryRole": "BOTTOM",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Mordekaiser": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Morgana": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Naafiri": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Nami": {
       "primaryRole": "SUPPORT",
       "proGames": 5,
@@ -312,6 +1020,18 @@
       "strengthScore": -0.0705925412561426,
       "pickRate": 0.3275862068965517,
       "banRate": 0.2413793103448276,
+      "sampleConfidence": "low"
+    },
+    "Nasus": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
       "sampleConfidence": "low"
     },
     "Nautilus": {
@@ -326,6 +1046,18 @@
       "banRate": 0.20689655172413793,
       "sampleConfidence": "low"
     },
+    "Neeko": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Nidalee": {
       "primaryRole": "JUNGLE",
       "proGames": 5,
@@ -336,6 +1068,54 @@
       "strengthScore": -0.07476155000510874,
       "pickRate": 0.29310344827586204,
       "banRate": 0.25862068965517243,
+      "sampleConfidence": "low"
+    },
+    "Nilah": {
+      "primaryRole": "BOTTOM",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Nocturne": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Nunu & Willump": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Olaf": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
       "sampleConfidence": "low"
     },
     "Orianna": {
@@ -362,6 +1142,66 @@
       "banRate": 0.22413793103448276,
       "sampleConfidence": "low"
     },
+    "Pantheon": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Poppy": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Pyke": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Qiyana": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Quinn": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Rakan": {
       "primaryRole": "SUPPORT",
       "proGames": 4,
@@ -372,6 +1212,42 @@
       "strengthScore": 0.08327168080426062,
       "pickRate": 0.1896551724137931,
       "banRate": 0.2413793103448276,
+      "sampleConfidence": "low"
+    },
+    "Rammus": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Rek'Sai": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Rell": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
       "sampleConfidence": "low"
     },
     "Renata Glasc": {
@@ -398,6 +1274,30 @@
       "banRate": 0.20689655172413793,
       "sampleConfidence": "low"
     },
+    "Rengar": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Riven": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Rumble": {
       "primaryRole": "TOP",
       "proGames": 4,
@@ -408,6 +1308,18 @@
       "strengthScore": -0.02011382278698114,
       "pickRate": 0.20689655172413793,
       "banRate": 0.2413793103448276,
+      "sampleConfidence": "low"
+    },
+    "Ryze": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
       "sampleConfidence": "low"
     },
     "Samira": {
@@ -434,6 +1346,90 @@
       "banRate": 0.034482758620689655,
       "sampleConfidence": "low"
     },
+    "Senna": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Seraphine": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Sett": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Shaco": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Shen": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Shyvana": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Singed": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Sion": {
       "primaryRole": "TOP",
       "proGames": 2,
@@ -444,6 +1440,78 @@
       "strengthScore": 0.18954001925680541,
       "pickRate": 0.08620689655172414,
       "banRate": 0.2413793103448276,
+      "sampleConfidence": "low"
+    },
+    "Sivir": {
+      "primaryRole": "BOTTOM",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Skarner": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Smolder": {
+      "primaryRole": "BOTTOM",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Sona": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Soraka": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Swain": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
       "sampleConfidence": "low"
     },
     "Sylas": {
@@ -482,6 +1550,42 @@
       "banRate": 0.2413793103448276,
       "sampleConfidence": "low"
     },
+    "Talon": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Taric": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Teemo": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Thresh": {
       "primaryRole": "SUPPORT",
       "proGames": 2,
@@ -494,6 +1598,78 @@
       "banRate": 0.15517241379310345,
       "sampleConfidence": "low"
     },
+    "Tristana": {
+      "primaryRole": "BOTTOM",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Tryndamere": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Twisted Fate": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Twitch": {
+      "primaryRole": "BOTTOM",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Udyr": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Urgot": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Varus": {
       "primaryRole": "BOTTOM",
       "proGames": 2,
@@ -504,6 +1680,54 @@
       "strengthScore": 0.08886645223367555,
       "pickRate": 0.15517241379310345,
       "banRate": 0.1896551724137931,
+      "sampleConfidence": "low"
+    },
+    "Vayne": {
+      "primaryRole": "BOTTOM",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Veigar": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Vel'Koz": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Vex": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
       "sampleConfidence": "low"
     },
     "Vi": {
@@ -530,6 +1754,54 @@
       "banRate": 0.1724137931034483,
       "sampleConfidence": "low"
     },
+    "Viktor": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Vladimir": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Volibear": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Warwick": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Wukong": {
       "primaryRole": "JUNGLE",
       "proGames": 3,
@@ -554,6 +1826,78 @@
       "banRate": 0.22413793103448276,
       "sampleConfidence": "low"
     },
+    "Xerath": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Xin Zhao": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Yasuo": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Yone": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Yorick": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Yunara": {
+      "primaryRole": "BOTTOM",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Yuumi": {
       "primaryRole": "SUPPORT",
       "proGames": 5,
@@ -565,6 +1909,42 @@
       "pickRate": 0.29310344827586204,
       "banRate": 0.25862068965517243,
       "sampleConfidence": "medium"
+    },
+    "Zaahen": {
+      "primaryRole": "TOP",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Zac": {
+      "primaryRole": "JUNGLE",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Zed": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
     },
     "Zeri": {
       "primaryRole": "BOTTOM",
@@ -578,6 +1958,30 @@
       "banRate": 0.1896551724137931,
       "sampleConfidence": "low"
     },
+    "Ziggs": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
+    "Zilean": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
+    },
     "Zoe": {
       "primaryRole": "MID",
       "proGames": 6,
@@ -589,6 +1993,18 @@
       "pickRate": 0.3103448275862069,
       "banRate": 0.13793103448275862,
       "sampleConfidence": "medium"
+    },
+    "Zyra": {
+      "primaryRole": "SUPPORT",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
     }
   }
 }

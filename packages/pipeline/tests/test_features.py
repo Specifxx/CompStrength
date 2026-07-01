@@ -16,6 +16,7 @@ from compstrength_pipeline.features import (
     compute_prior_mean_win_rate,
     compute_strength_score,
     decay_weight,
+    international_league_multiplier,
     logit,
     restrict_to_recent_patches,
     sample_confidence_label,
@@ -296,8 +297,13 @@ def test_old_excluded_patch_does_not_affect_champion_rating(config: PipelineConf
         reference_date=pd.Timestamp("2026-03-01", tz="UTC"),
     )
 
-    # OldPatchChamp should not appear at all in the patch-restricted table.
-    assert "OldPatchChamp" not in result_df.index
+    # OldPatchChamp still appears (every champion does, via the full roster
+    # union -- see champions.py), but its excluded-patch pro games must have
+    # zero influence: proGames should be 0 and its rating should be driven
+    # purely by its solo-queue prior (0.5 here), not the leaked 100% pro WR.
+    assert "OldPatchChamp" in result_df.index
+    assert result_df.loc["OldPatchChamp", "proGames"] == 0
+    assert result_df.loc["OldPatchChamp", "blendedWinRate"] == pytest.approx(0.5, abs=0.01)
 
     # RecentChamp (100% win rate, most recent patch) should still be there
     # with a strength score above the neutral prior (it actually won).
@@ -314,3 +320,65 @@ def test_num_recent_patches_validation():
     # Valid values should not raise.
     PipelineConfig(num_recent_patches=1)
     PipelineConfig(num_recent_patches=5)
+
+
+# ---------------------------------------------------------------------------
+# International-event weighting (MSI/Worlds/EWC weighted up vs regular season)
+# ---------------------------------------------------------------------------
+
+
+def test_international_league_multiplier_matches_case_insensitively():
+    intl = frozenset({"MSI", "WORLDS"})
+    assert international_league_multiplier("msi", intl, 1.5) == 1.5
+    assert international_league_multiplier("MSI", intl, 1.5) == 1.5
+    assert international_league_multiplier(" Worlds ", intl, 1.5) == 1.5
+    assert international_league_multiplier("LCK", intl, 1.5) == 1.0
+    # Missing/non-string league values never get boosted.
+    assert international_league_multiplier(float("nan"), intl, 1.5) == 1.0
+    assert international_league_multiplier(None, intl, 1.5) == 1.0
+
+
+def test_msi_games_are_weighted_up_relative_to_regular_season(config: PipelineConfig):
+    reference_date = pd.Timestamp("2026-04-15", tz="UTC")
+    # Two otherwise-identical champions: one's only game is regular season,
+    # the other's only game is MSI, both on the same day. With a >1.0
+    # international multiplier, the MSI game must count for strictly more
+    # decayed "pseudo-games" even though both are single, same-day games.
+    regular = pd.DataFrame(
+        [{"date": reference_date, "result": 1, "league": "LCK"}]
+    )
+    international = pd.DataFrame(
+        [{"date": reference_date, "result": 1, "league": "MSI"}]
+    )
+
+    regular_games, _ = compute_decayed_pro_stats(
+        regular,
+        reference_date,
+        config.patch_half_life_days,
+        international_leagues=config.international_leagues,
+        international_weight_multiplier=config.international_weight_multiplier,
+    )
+    msi_games, _ = compute_decayed_pro_stats(
+        international,
+        reference_date,
+        config.patch_half_life_days,
+        international_leagues=config.international_leagues,
+        international_weight_multiplier=config.international_weight_multiplier,
+    )
+
+    assert msi_games == pytest.approx(regular_games * config.international_weight_multiplier)
+
+
+def test_international_multiplier_of_one_disables_boost(config: PipelineConfig):
+    reference_date = pd.Timestamp("2026-04-15", tz="UTC")
+    games = pd.DataFrame([{"date": reference_date, "result": 1, "league": "MSI"}])
+
+    boosted, _ = compute_decayed_pro_stats(
+        games, reference_date, config.patch_half_life_days,
+        international_leagues=config.international_leagues,
+        international_weight_multiplier=1.0,
+    )
+    unboosted, _ = compute_decayed_pro_stats(
+        games, reference_date, config.patch_half_life_days,
+    )
+    assert boosted == pytest.approx(unboosted)

@@ -50,29 +50,8 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
+from compstrength_pipeline.champions import get_full_champion_roster
 from compstrength_pipeline.config import PipelineConfig
-
-# Champion primary-role classification. This is a best-effort static map
-# covering the champions used in our fixtures/tests; in a live pipeline
-# this would ideally be sourced from Data Dragon's tags or from the
-# Oracle's Elixir / Leaguepedia position column's mode per champion.
-_ROLE_MAP: dict[str, str] = {
-    "Aatrox": "TOP", "Camille": "TOP", "Renekton": "TOP", "Gnar": "TOP",
-    "Jax": "TOP", "Ornn": "TOP", "Fiora": "TOP", "Gwen": "TOP",
-    "K'Sante": "TOP", "Rumble": "TOP", "Sion": "TOP", "Kennen": "TOP",
-    "Lee Sin": "JUNGLE", "Vi": "JUNGLE", "Viego": "JUNGLE", "Sejuani": "JUNGLE",
-    "Nidalee": "JUNGLE", "Kindred": "JUNGLE", "Wukong": "JUNGLE",
-    "Elise": "JUNGLE", "Jarvan Iv": "JUNGLE", "Graves": "JUNGLE",
-    "Azir": "MID", "Ahri": "MID", "Orianna": "MID", "Syndra": "MID",
-    "Akali": "MID", "Zoe": "MID", "Sylas": "MID", "Corki": "MID",
-    "Leblanc": "MID", "Taliyah": "MID", "Viktor": "MID",
-    "Jinx": "BOTTOM", "Kai'Sa": "BOTTOM", "Aphelios": "BOTTOM",
-    "Ezreal": "BOTTOM", "Xayah": "BOTTOM", "Zeri": "BOTTOM",
-    "Varus": "BOTTOM", "Samira": "BOTTOM", "Caitlyn": "BOTTOM",
-    "Nautilus": "SUPPORT", "Renata Glasc": "SUPPORT", "Rakan": "SUPPORT",
-    "Braum": "SUPPORT", "Karma": "SUPPORT", "Lulu": "SUPPORT",
-    "Yuumi": "SUPPORT", "Thresh": "SUPPORT", "Nami": "SUPPORT",
-}
 
 
 def logit(p: float) -> float:
@@ -196,10 +175,26 @@ def compute_champion_shrinkage(
     )
 
 
+def international_league_multiplier(
+    league: object,
+    international_leagues: frozenset[str],
+    multiplier: float,
+) -> float:
+    """``multiplier`` if ``league`` (matched case-insensitively) is an
+    international event, else ``1.0``. Missing/non-string ``league`` values
+    (e.g. NaN) are treated as a regular (non-international) game.
+    """
+    if not isinstance(league, str):
+        return 1.0
+    return multiplier if league.strip().upper() in international_leagues else 1.0
+
+
 def compute_decayed_pro_stats(
     champion_games: pd.DataFrame,
     reference_date: pd.Timestamp,
     half_life_days: float,
+    international_leagues: frozenset[str] = frozenset(),
+    international_weight_multiplier: float = 1.0,
 ) -> tuple[float, float]:
     """Compute (pro_games_decayed, pro_win_rate_raw) for one champion's games.
 
@@ -207,11 +202,22 @@ def compute_decayed_pro_stats(
         champion_games: Rows (already filtered to a single champion) with
             at least ``date`` (tz-aware timestamp) and ``result`` (0/1)
             columns. Should already be restricted to the desired trailing
-            window by the caller.
+            window by the caller. A ``league`` column is used if present
+            (see ``international_leagues``); its absence is treated as "no
+            international boost for any row".
         reference_date: The "current" date used to compute recency
             (typically the latest date in the whole dataset, i.e. "today"
             for the purposes of this pipeline run).
         half_life_days: Passed through to :func:`decay_weight`.
+        international_leagues: ``league`` values (case-insensitive) that
+            get the international weight boost -- see
+            ``PipelineConfig.international_leagues``.
+        international_weight_multiplier: Extra multiplier applied on top of
+            the recency-decay weight for games in ``international_leagues``
+            (e.g. MSI, Worlds) -- these concentrate the best teams from
+            every region playing on one current patch, so they're an
+            unusually high-signal sample of the current meta and are
+            weighted up relative to a typical regional-split game.
 
     Returns:
         ``(pro_games_decayed, pro_win_rate_raw)``. If ``champion_games``
@@ -222,6 +228,14 @@ def compute_decayed_pro_stats(
 
     days_since = (reference_date - champion_games["date"]).dt.total_seconds() / 86400.0
     weights = days_since.map(lambda d: decay_weight(d, half_life_days))
+
+    if "league" in champion_games.columns:
+        league_boost = champion_games["league"].map(
+            lambda lg: international_league_multiplier(
+                lg, international_leagues, international_weight_multiplier
+            )
+        )
+        weights = weights * league_boost
 
     total_weight = float(weights.sum())
     if total_weight <= 0:
@@ -383,7 +397,15 @@ def compute_champion_features(
     total_games = games_df["gameid"].nunique()
     total_bans = 0 if bans_df is None or bans_df.empty else len(bans_df)
 
-    champions = sorted(games_df["champion"].dropna().unique())
+    # The champion universe is the UNION of the full known roster (so every
+    # champion is selectable on the site, including ones with zero pro games
+    # in this window -- they simply fall back to their solo-queue-informed
+    # prior, same as any other sparse-data champion) and whatever actually
+    # appears in the data (so a brand-new champion missing from the roster
+    # snapshot still gets rated correctly rather than silently dropped).
+    full_roster = get_full_champion_roster()
+    data_champions = set(games_df["champion"].dropna().unique()) | set(solo_winrates.keys())
+    champions = sorted(set(full_roster.keys()) | data_champions)
     rows: dict[str, dict] = {}
 
     for champion in champions:
@@ -391,7 +413,11 @@ def compute_champion_features(
         champ_games = _select_pro_window(champ_games_all, reference_date, config.pro_window_days)
 
         pro_games_decayed, pro_win_rate_raw = compute_decayed_pro_stats(
-            champ_games, reference_date, config.patch_half_life_days
+            champ_games,
+            reference_date,
+            config.patch_half_life_days,
+            international_leagues=config.international_leagues,
+            international_weight_multiplier=config.international_weight_multiplier,
         )
 
         solo_win_rate, solo_games = solo_winrates.get(champion, (config.global_mean, 0))
@@ -404,7 +430,7 @@ def compute_champion_features(
             config=config,
         )
 
-        pick_count = len(champ_games_all["gameid"].unique())
+        pick_count = len(champ_games_all["gameid"].unique()) if not champ_games_all.empty else 0
         pick_rate = pick_count / total_games if total_games else 0.0
 
         ban_count = 0
@@ -413,7 +439,7 @@ def compute_champion_features(
         ban_rate = ban_count / total_games if total_games else 0.0
 
         rows[champion] = {
-            "primaryRole": _ROLE_MAP.get(champion, "MID"),
+            "primaryRole": full_roster.get(champion, "MID"),
             "proGames": int(round(shrinkage.pro_games_decayed)),
             "proWinRate": shrinkage.pro_win_rate_raw,
             "soloGames": solo_games,
