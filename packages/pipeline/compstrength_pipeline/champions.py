@@ -64,7 +64,7 @@ STATIC_CHAMPION_ROLES: dict[str, str] = {
     "Quinn": "TOP", "Renekton": "TOP", "Riven": "TOP", "Rumble": "TOP",
     "Sett": "TOP", "Shen": "TOP", "Singed": "TOP", "Sion": "TOP",
     "Teemo": "TOP", "Tryndamere": "TOP", "Urgot": "TOP", "Volibear": "TOP",
-    "Yorick": "TOP", "Zaahen": "TOP",
+    "Yorick": "TOP", "Zaahen": "TOP", "Gangplank": "TOP", "Kayle": "TOP",
     # Jungle
     "Amumu": "JUNGLE", "Bel'Veth": "JUNGLE", "Briar": "JUNGLE",
     "Elise": "JUNGLE", "Evelynn": "JUNGLE", "Fiddlesticks": "JUNGLE",
@@ -77,7 +77,7 @@ STATIC_CHAMPION_ROLES: dict[str, str] = {
     "Sejuani": "JUNGLE", "Shaco": "JUNGLE", "Shyvana": "JUNGLE",
     "Skarner": "JUNGLE", "Udyr": "JUNGLE", "Vi": "JUNGLE", "Viego": "JUNGLE",
     "Warwick": "JUNGLE", "Wukong": "JUNGLE", "Xin Zhao": "JUNGLE",
-    "Zac": "JUNGLE",
+    "Zac": "JUNGLE", "Gragas": "JUNGLE", "Trundle": "JUNGLE",
     # Mid
     "Ahri": "MID", "Akali": "MID", "Anivia": "MID", "Annie": "MID",
     "Aurelion Sol": "MID", "Aurora": "MID", "Azir": "MID", "Cassiopeia": "MID",
@@ -89,6 +89,7 @@ STATIC_CHAMPION_ROLES: dict[str, str] = {
     "Sylas": "MID", "Talon": "MID", "Taliyah": "MID", "Twisted Fate": "MID",
     "Veigar": "MID", "Vex": "MID", "Viktor": "MID", "Vladimir": "MID",
     "Yasuo": "MID", "Yone": "MID", "Zed": "MID", "Ziggs": "MID", "Zoe": "MID",
+    "Akshan": "MID", "Lux": "MID",
     # Bottom (ADC)
     "Aphelios": "BOTTOM", "Ashe": "BOTTOM", "Caitlyn": "BOTTOM",
     "Draven": "BOTTOM", "Ezreal": "BOTTOM", "Jhin": "BOTTOM",
@@ -97,6 +98,7 @@ STATIC_CHAMPION_ROLES: dict[str, str] = {
     "Samira": "BOTTOM", "Sivir": "BOTTOM", "Smolder": "BOTTOM",
     "Tristana": "BOTTOM", "Twitch": "BOTTOM", "Varus": "BOTTOM",
     "Vayne": "BOTTOM", "Xayah": "BOTTOM", "Yunara": "BOTTOM", "Zeri": "BOTTOM",
+    "Lucian": "BOTTOM",
     # Support
     "Alistar": "SUPPORT", "Bard": "SUPPORT", "Blitzcrank": "SUPPORT",
     "Brand": "SUPPORT", "Braum": "SUPPORT", "Janna": "SUPPORT",
@@ -108,6 +110,7 @@ STATIC_CHAMPION_ROLES: dict[str, str] = {
     "Soraka": "SUPPORT", "Swain": "SUPPORT", "Taric": "SUPPORT",
     "Thresh": "SUPPORT", "Vel'Koz": "SUPPORT", "Xerath": "SUPPORT",
     "Yuumi": "SUPPORT", "Zilean": "SUPPORT", "Zyra": "SUPPORT",
+    "Tahm Kench": "SUPPORT",
 }
 
 

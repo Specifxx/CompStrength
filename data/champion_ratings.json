@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-01T16:08:10.811541+00:00",
+  "generatedAt": "2026-07-01T16:14:05.397205+00:00",
   "patch": "16.12",
   "patchesUsed": [
     "16.12",
@@ -469,7 +469,7 @@
       "sampleConfidence": "medium"
     },
     "Gangplank": {
-      "primaryRole": "MID",
+      "primaryRole": "TOP",
       "proGames": 2,
       "proWinRate": 0.7698456714028132,
       "soloGames": 0,
@@ -505,7 +505,7 @@
       "sampleConfidence": "high"
     },
     "Gragas": {
-      "primaryRole": "MID",
+      "primaryRole": "JUNGLE",
       "proGames": 7,
       "proWinRate": 0.4958244302762963,
       "soloGames": 0,
@@ -769,7 +769,7 @@
       "sampleConfidence": "low"
     },
     "Kayle": {
-      "primaryRole": "MID",
+      "primaryRole": "TOP",
       "proGames": 1,
       "proWinRate": 0.19453234412659223,
       "soloGames": 0,
@@ -913,7 +913,7 @@
       "sampleConfidence": "medium"
     },
     "Lucian": {
-      "primaryRole": "MID",
+      "primaryRole": "BOTTOM",
       "proGames": 50,
       "proWinRate": 0.5190444311208866,
       "soloGames": 0,
@@ -1597,7 +1597,7 @@
       "sampleConfidence": "medium"
     },
     "Tahm Kench": {
-      "primaryRole": "MID",
+      "primaryRole": "SUPPORT",
       "proGames": 3,
       "proWinRate": 0.47376581394398953,
       "soloGames": 0,
@@ -1681,7 +1681,7 @@
       "sampleConfidence": "medium"
     },
     "Trundle": {
-      "primaryRole": "MID",
+      "primaryRole": "JUNGLE",
       "proGames": 24,
       "proWinRate": 0.4944393370455909,
       "soloGames": 0,
