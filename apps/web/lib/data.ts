@@ -5,6 +5,7 @@ import type {
   ChampionRatingsFile,
   ModelFile,
   SynergyFile,
+  TeamsFile,
 } from "./types";
 
 // The pipeline (packages/pipeline) writes its generated snapshot to
@@ -60,5 +61,17 @@ export function loadBacktestReport(): BacktestReportFile {
   if (process.env.NODE_ENV === "production" && backtestCache) return backtestCache;
   const data = readJson<BacktestReportFile>("backtest_report.json");
   backtestCache = data;
+  return data;
+}
+
+let teamsCache: TeamsFile | null = null;
+
+// teams.json (per-team Elo for the optional team-strength inputs) may not
+// exist on older snapshots — callers should catch DataNotReadyError and
+// degrade to draft-only prediction.
+export function loadTeams(): TeamsFile {
+  if (process.env.NODE_ENV === "production" && teamsCache) return teamsCache;
+  const data = readJson<TeamsFile>("teams.json");
+  teamsCache = data;
   return data;
 }

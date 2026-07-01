@@ -130,6 +130,44 @@ class PipelineConfig:
     # uninformative. Kept as machinery (False zeroes the feature so its
     # fitted weight is exactly 0) in case future data changes the picture.
     use_presence_feature: bool = False
+    # Team-strength feature: sequential pre-game Elo over the game history
+    # (see teams.py), consumed as (blue_elo - red_elo) / 400. This is the one
+    # feature class the literature consistently shows lifts pro-match
+    # prediction well above draft-only (~60%+ vs ~53-55%): team identity
+    # carries most of the predictable signal. Unlike synergy/matchup it is
+    # NOT in-sample-leaky (a game's feature only uses strictly-earlier
+    # games), so it tolerates lighter regularization. False disables it
+    # (feature zeroed, weight exactly 0), reverting to draft-only. On the
+    # site, teams are OPTIONAL inputs: leaving them blank feeds a 0 gap
+    # ("equal teams"), which reproduces the draft-only prediction.
+    use_team_feature: bool = True
+    # Premier leagues (owner directive): the strongest leagues' games should
+    # dominate the champion/synergy/matchup statistics. When
+    # premier_league_target_share is set, a per-run multiplier is computed so
+    # these leagues' combined share of total decayed training weight hits the
+    # target (e.g. 0.7 = LCK+LPL carry 70% of the weight), regardless of how
+    # many raw games each league contributes that window. None disables.
+    # Note this drives the same weighting machinery as major_leagues (which
+    # it overrides when active); international events keep their own boost.
+    # MEASURED COST (walk-forward, 4,451 held-out 2026 games, teams known):
+    # premier ON = 63.9% acc / 0.639 log-loss vs premier OFF = 64.1% / 0.632;
+    # draft-only mode pays more (52.5%/0.701 vs 53.1%/0.690). Kept ON per the
+    # owner's explicit directive; set premier_league_target_share=None to
+    # revert to the empirically-best uniform league weighting.
+    premier_leagues: frozenset[str] = frozenset({"LCK", "LPL"})
+    premier_league_target_share: float | None = 0.7
+    # Elo K-factor (rating movement per game) for the team feature. 32 beat
+    # 16/24/48 on the walk-forward backtest at the shipped feature scale.
+    elo_k: float = 32.0
+    # Divisor turning an Elo gap into the model feature. A regularization
+    # knob, not an Elo parameter: under L2, a bigger feature (smaller
+    # divisor) is penalized effectively less, letting the NON-leaky Elo
+    # feature carry real weight while the same heavy C keeps crushing the
+    # leaky synergy/matchup features. Swept 400 -> 200 -> 100 -> 50 -> 25 ->
+    # 15 on the real backtest: held-out log-loss improves monotonically to
+    # ~15-25 then flattens; 15 ships. Shipped in teams.json as params.eloScale
+    # so the frontend computes the identical feature.
+    elo_feature_scale: float = 15.0
 
     def __post_init__(self) -> None:
         if not (0.0 <= self.solo_queue_weight <= 1.0):
@@ -152,6 +190,14 @@ class PipelineConfig:
             raise ValueError("international_weight_multiplier must be positive")
         if self.major_league_weight_multiplier <= 0:
             raise ValueError("major_league_weight_multiplier must be positive")
+        if self.elo_k <= 0:
+            raise ValueError("elo_k must be positive")
+        if self.elo_feature_scale <= 0:
+            raise ValueError("elo_feature_scale must be positive")
+        if self.premier_league_target_share is not None and not (
+            0.0 < self.premier_league_target_share < 1.0
+        ):
+            raise ValueError("premier_league_target_share must be in (0, 1) or None")
         if not (0.0 < self.patch_decay_base <= 1.0):
             raise ValueError("patch_decay_base must be in (0, 1]")
         if self.min_patch is not None:

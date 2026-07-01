@@ -37,12 +37,23 @@ def _raw_game(gameid, completeness):
     return rows
 
 
-def test_drop_incomplete_removes_whole_partial_game():
-    raw = pd.DataFrame(_raw_game("complete1", "complete") + _raw_game("partial1", "partial"))
+def test_drop_incomplete_keeps_stats_partial_games_with_full_draft_data():
+    """The LPL case: EVERY LPL game is flagged datacompleteness='partial'
+    (missing in-game stats), but its DRAFT fields are fully populated. Such
+    games must be KEPT -- dropping on the flag excluded the entire LPL."""
+    raw = pd.DataFrame(_raw_game("complete1", "complete") + _raw_game("lpl1", "partial"))
     kept = _drop_incomplete(raw)
-    assert set(kept["gameid"]) == {"complete1"}
-    # Every row of the partial game is gone, not just some.
-    assert (kept["datacompleteness"] == "complete").all()
+    assert set(kept["gameid"]) == {"complete1", "lpl1"}
+
+
+def test_drop_incomplete_removes_games_with_missing_draft_fields():
+    """A game where any player row is missing a draft-critical field
+    (champion here) is dropped whole, regardless of its completeness flag."""
+    broken = _raw_game("broken1", "complete")
+    broken[3]["champion"] = None  # one player row loses its champion
+    raw = pd.DataFrame(_raw_game("ok1", "partial") + broken)
+    kept = _drop_incomplete(raw)
+    assert set(kept["gameid"]) == {"ok1"}
 
 
 def test_drop_incomplete_noop_without_column():
@@ -51,10 +62,10 @@ def test_drop_incomplete_noop_without_column():
     assert len(out) == len(raw)
 
 
-def test_extract_bans_excludes_partial_games():
+def test_extract_bans_keeps_draft_complete_partial_games():
     raw = pd.DataFrame(_raw_game("c", "complete") + _raw_game("p", "partial"))
     bans = extract_bans(raw)
-    assert set(bans["gameid"]) == {"c"}
+    assert set(bans["gameid"]) == {"c", "p"}
 
 
 def test_validate_rejects_too_small_file(tmp_path: Path):

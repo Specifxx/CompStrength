@@ -47,6 +47,9 @@ export interface ModelFile {
     // Meta-presence (pickRate + banRate) feature weight. Absent on older
     // snapshots — treat as `?? 0`.
     presenceWeight?: number;
+    // Team-strength (Elo gap / eloScale) feature weight. Absent on older
+    // snapshots — treat as `?? 0`.
+    teamEloWeight?: number;
   };
   metrics: {
     logLoss: number;
@@ -116,6 +119,14 @@ export interface BacktestReportFile {
     baselineAccuracy: number;
     coinFlipLogLoss: number;
   };
+  // Companion metrics from the draft-only refit (team feature zeroed) on the
+  // SAME held-out games. Present alongside teamFeatureUsed on new reports.
+  draftOnlyMetrics?: {
+    accuracy: number;
+    logLoss: number;
+    brierScore: number;
+  };
+  teamFeatureUsed?: boolean;
   calibration: BacktestCalibrationBucket[];
   // Composition of the data the model is built on, and held-out accuracy
   // broken down by patch/league. Optional so older reports still type-check.
@@ -148,6 +159,40 @@ export interface DraftTeam {
 export interface PredictRequest {
   blue: DraftTeam;
   red: DraftTeam;
+  // Optional org names (keys into teams.json). When BOTH are provided, the
+  // model adds the team-strength (Elo gap) term; when either is missing the
+  // gap is 0 ("assume equal teams") and the prediction is draft-only.
+  blueTeam?: string | null;
+  redTeam?: string | null;
+}
+
+/** One professional team's Elo rating snapshot (data/teams.json). */
+export interface TeamRating {
+  elo: number;
+  games: number;
+  league: string;
+  lastPlayed: string;
+}
+
+export interface TeamsFile {
+  generatedAt: string;
+  patch: string;
+  params: {
+    eloK: number;
+    eloScale: number;
+    initialElo: number;
+  };
+  teams: Record<string, TeamRating>;
+}
+
+/** Team-strength inputs actually applied to a prediction. */
+export interface TeamContext {
+  blueTeam: string;
+  redTeam: string;
+  blueElo: number;
+  redElo: number;
+  /** (blueElo - redElo) / eloScale — the model feature value. */
+  eloDiff: number;
 }
 
 export interface ChampionContribution {
@@ -185,4 +230,7 @@ export interface PredictResponse {
   };
   modelMetrics: ModelFile["metrics"];
   notablePairs: NotablePairs;
+  // Present only when both teams were provided AND found in teams.json —
+  // i.e. when the team-strength term actually contributed to the logit.
+  teamContext?: TeamContext | null;
 }

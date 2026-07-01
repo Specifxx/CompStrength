@@ -362,23 +362,37 @@ def fetch_oracles_elixir_for_year(year: int) -> pd.DataFrame:
 
 
 def _drop_incomplete(raw: pd.DataFrame) -> pd.DataFrame:
-    """Drop rows from games flagged partial/incomplete by Oracle's Elixir.
+    """Drop games whose DRAFT data is incomplete.
 
     Oracle's Elixir marks each row's ``datacompleteness`` as ``complete`` or
-    ``partial`` (a partial/forfeit/remade game can still have 10 player rows
-    with a valid ``result``, so the "exactly 10 rows" gate alone does not
-    exclude it). We drop every row belonging to any game that has a
-    non-``complete`` marker, so partial games never reach training. If the
-    column is absent (e.g. the Leaguepedia source or the synthetic fixture),
-    this is a no-op.
+    ``partial``, but "partial" means the in-game STATS are missing -- the
+    draft fields this model actually consumes (champion, side, position,
+    result, teams, bans, patch) are frequently fully present. The prime
+    example is the LPL: China doesn't share full telemetry, so EVERY LPL
+    game is flagged partial, yet its draft data is 100% populated --
+    dropping on the flag silently excluded the world's second-strongest
+    league from training entirely.
+
+    So instead of trusting the flag, judge what we actually need: a game is
+    dropped only if any of its PLAYER rows is missing a draft-critical field
+    (champion / side / position / result). The exactly-10-player-rows gate
+    in ``etl.build_raw_tables`` still catches structurally broken games. If
+    the relevant columns are absent (e.g. the Leaguepedia source), this is a
+    no-op.
     """
-    if "datacompleteness" not in raw.columns or "gameid" not in raw.columns:
+    if "gameid" not in raw.columns or "position" not in raw.columns:
         return raw
-    completeness = raw["datacompleteness"].astype(str).str.strip().str.lower()
-    incomplete_gameids = set(raw.loc[completeness != "complete", "gameid"])
-    if not incomplete_gameids:
+    required = [
+        c for c in ("champion", "side", "result") if c in raw.columns
+    ]
+    if not required:
         return raw
-    return raw[~raw["gameid"].isin(incomplete_gameids)].copy()
+    player_rows = raw[raw["position"].astype(str).str.lower() != _TEAM_ROW_POSITION]
+    bad_mask = player_rows[required].isna().any(axis=1)
+    bad_gameids = set(player_rows.loc[bad_mask, "gameid"])
+    if not bad_gameids:
+        return raw
+    return raw[~raw["gameid"].isin(bad_gameids)].copy()
 
 
 def _normalize_player_games(raw: pd.DataFrame) -> pd.DataFrame:

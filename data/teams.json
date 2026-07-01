@@ -1,0 +1,2129 @@
+{
+  "generatedAt": "2026-07-01T21:42:35.384591+00:00",
+  "patch": "16.12",
+  "params": {
+    "eloK": 32.0,
+    "eloScale": 15.0,
+    "initialElo": 1500.0
+  },
+  "teams": {
+    "3BL Esports": {
+      "elo": 1458.493024391535,
+      "games": 68,
+      "league": "AL",
+      "lastPlayed": "2026-05-08"
+    },
+    "4 Employed e 1 Budino": {
+      "elo": 1579.6799909062606,
+      "games": 12,
+      "league": "LIT",
+      "lastPlayed": "2026-02-21"
+    },
+    "4 Swines & A Bum": {
+      "elo": 1428.0763665742954,
+      "games": 7,
+      "league": "NLC",
+      "lastPlayed": "2026-02-19"
+    },
+    "7REX": {
+      "elo": 1467.446106965719,
+      "games": 14,
+      "league": "CD",
+      "lastPlayed": "2026-05-12"
+    },
+    "9Gaming Esports": {
+      "elo": 1385.6918472763114,
+      "games": 30,
+      "league": "VCS",
+      "lastPlayed": "2026-05-27"
+    },
+    "9z Globant": {
+      "elo": 1552.6795876697274,
+      "games": 26,
+      "league": "LRS",
+      "lastPlayed": "2026-06-02"
+    },
+    "A One Man Army": {
+      "elo": 1500.6414777119232,
+      "games": 2,
+      "league": "CCWS",
+      "lastPlayed": "2026-01-23"
+    },
+    "A One Man Army Prime": {
+      "elo": 1433.3359911881894,
+      "games": 10,
+      "league": "PRM",
+      "lastPlayed": "2026-02-20"
+    },
+    "ALMO Players": {
+      "elo": 1466.3321471873778,
+      "games": 35,
+      "league": "HLL",
+      "lastPlayed": "2026-05-19"
+    },
+    "Aeterna Esports": {
+      "elo": 1461.8407449518977,
+      "games": 16,
+      "league": "LIT",
+      "lastPlayed": "2026-05-01"
+    },
+    "Andromeda Gaming": {
+      "elo": 1467.7863122921462,
+      "games": 35,
+      "league": "HC",
+      "lastPlayed": "2026-06-07"
+    },
+    "Anonymo Esports": {
+      "elo": 1491.3118162785272,
+      "games": 34,
+      "league": "RL",
+      "lastPlayed": "2026-05-26"
+    },
+    "Anubis Gaming": {
+      "elo": 1696.3842850834637,
+      "games": 62,
+      "league": "EM",
+      "lastPlayed": "2026-06-12"
+    },
+    "Anyone's Legend": {
+      "elo": 1543.9483249716143,
+      "games": 86,
+      "league": "LPL",
+      "lastPlayed": "2026-06-08"
+    },
+    "Apex Mission Impossible": {
+      "elo": 1346.2959986417345,
+      "games": 24,
+      "league": "NACL",
+      "lastPlayed": "2026-06-18"
+    },
+    "Arctic Pandas": {
+      "elo": 1537.947480287675,
+      "games": 35,
+      "league": "NLC",
+      "lastPlayed": "2026-06-01"
+    },
+    "Arneb": {
+      "elo": 1581.88244616886,
+      "games": 51,
+      "league": "LJL",
+      "lastPlayed": "2026-06-13"
+    },
+    "Axolotl": {
+      "elo": 1436.0302031865185,
+      "games": 21,
+      "league": "LIT",
+      "lastPlayed": "2026-02-21"
+    },
+    "BAAM Esports": {
+      "elo": 1503.684418708472,
+      "games": 71,
+      "league": "AL",
+      "lastPlayed": "2026-05-20"
+    },
+    "BK ROG Esports": {
+      "elo": 1502.659628776475,
+      "games": 12,
+      "league": "LFL",
+      "lastPlayed": "2026-02-19"
+    },
+    "BNK FEARX": {
+      "elo": 1440.3839760028113,
+      "games": 90,
+      "league": "LCK",
+      "lastPlayed": "2026-05-30"
+    },
+    "BNK FEARX Youth": {
+      "elo": 1461.0255271094509,
+      "games": 64,
+      "league": "LCKC",
+      "lastPlayed": "2026-05-28"
+    },
+    "BRUTE": {
+      "elo": 1392.9351434377777,
+      "games": 44,
+      "league": "HM",
+      "lastPlayed": "2026-05-17"
+    },
+    "Bamboo Juice": {
+      "elo": 1398.1073832838374,
+      "games": 26,
+      "league": "LJL",
+      "lastPlayed": "2026-04-19"
+    },
+    "Barcz\u0105ca Esports": {
+      "elo": 1569.2586111640908,
+      "games": 56,
+      "league": "RL",
+      "lastPlayed": "2026-05-30"
+    },
+    "Barulhinhos": {
+      "elo": 1488.0410227768605,
+      "games": 19,
+      "league": "CD",
+      "lastPlayed": "2026-06-05"
+    },
+    "Bar\u00e7a eSports": {
+      "elo": 1540.747492988793,
+      "games": 43,
+      "league": "LES",
+      "lastPlayed": "2026-06-05"
+    },
+    "BeFive": {
+      "elo": 1506.6488801953176,
+      "games": 19,
+      "league": "EBL",
+      "lastPlayed": "2026-03-03"
+    },
+    "Berlin International Gaming": {
+      "elo": 1653.4870601128537,
+      "games": 81,
+      "league": "PRM",
+      "lastPlayed": "2026-05-28"
+    },
+    "Bilibili Gaming": {
+      "elo": 1748.6099151346846,
+      "games": 109,
+      "league": "LPL",
+      "lastPlayed": "2026-06-14"
+    },
+    "Bilibili Gaming Junior": {
+      "elo": 1483.599565868882,
+      "games": 5,
+      "league": "Asia Master",
+      "lastPlayed": "2026-06-11"
+    },
+    "Blue Otter": {
+      "elo": 1467.3145539781021,
+      "games": 35,
+      "league": "NACL",
+      "lastPlayed": "2026-06-20"
+    },
+    "Bohemian Guardians": {
+      "elo": 1375.0842324085645,
+      "games": 18,
+      "league": "HM",
+      "lastPlayed": "2026-05-29"
+    },
+    "Bomba Team": {
+      "elo": 1647.6965765995087,
+      "games": 57,
+      "league": "EM",
+      "lastPlayed": "2026-06-11"
+    },
+    "BoostGate Esports": {
+      "elo": 1403.130644576074,
+      "games": 27,
+      "league": "TCL",
+      "lastPlayed": "2026-05-19"
+    },
+    "Bubliki": {
+      "elo": 1503.7979092040612,
+      "games": 21,
+      "league": "EM",
+      "lastPlayed": "2026-06-08"
+    },
+    "Bulldog Esports": {
+      "elo": 1491.9784337607468,
+      "games": 23,
+      "league": "NLC",
+      "lastPlayed": "2026-05-29"
+    },
+    "Bushido Wildcats": {
+      "elo": 1467.5935209523686,
+      "games": 48,
+      "league": "TCL",
+      "lastPlayed": "2026-05-20"
+    },
+    "CAG OSAKA": {
+      "elo": 1407.2015996676714,
+      "games": 26,
+      "league": "LJL",
+      "lastPlayed": "2026-04-19"
+    },
+    "CCG Esports": {
+      "elo": 1516.1908694675558,
+      "games": 35,
+      "league": "NACL",
+      "lastPlayed": "2026-06-05"
+    },
+    "CITA Kaizen": {
+      "elo": 1761.662049511459,
+      "games": 61,
+      "league": "EM",
+      "lastPlayed": "2026-06-09"
+    },
+    "CITA Kaizen Academy": {
+      "elo": 1476.4271693670312,
+      "games": 25,
+      "league": "HC",
+      "lastPlayed": "2026-06-03"
+    },
+    "CTBC Flying Oyster": {
+      "elo": 1433.1138769259942,
+      "games": 52,
+      "league": "LCP",
+      "lastPlayed": "2026-05-23"
+    },
+    "CTBC Flying Oyster Academy": {
+      "elo": 1557.3461410513983,
+      "games": 18,
+      "league": "Asia Master",
+      "lastPlayed": "2026-06-11"
+    },
+    "Caldya Esport": {
+      "elo": 1492.8002862532344,
+      "games": 23,
+      "league": "NL",
+      "lastPlayed": "2026-06-06"
+    },
+    "Citadel Gaming": {
+      "elo": 1464.8871277216922,
+      "games": 20,
+      "league": "NACL",
+      "lastPlayed": "2026-05-15"
+    },
+    "Cloud9": {
+      "elo": 1508.0771736790045,
+      "games": 66,
+      "league": "LCS",
+      "lastPlayed": "2026-06-13"
+    },
+    "Colossal Gaming": {
+      "elo": 1550.2697409921843,
+      "games": 43,
+      "league": "LIT",
+      "lastPlayed": "2026-05-15"
+    },
+    "Contingent Esports": {
+      "elo": 1559.9840467834113,
+      "games": 9,
+      "league": "NACL",
+      "lastPlayed": "2026-06-18"
+    },
+    "Conviction": {
+      "elo": 1639.6242444103261,
+      "games": 32,
+      "league": "NACL",
+      "lastPlayed": "2026-06-05"
+    },
+    "Croatian Flair": {
+      "elo": 1452.298163787495,
+      "games": 21,
+      "league": "EBL",
+      "lastPlayed": "2026-04-28"
+    },
+    "Crusaders": {
+      "elo": 1494.9012322858755,
+      "games": 21,
+      "league": "LPLOL",
+      "lastPlayed": "2026-06-02"
+    },
+    "Crvena zvezda Esports": {
+      "elo": 1397.4143271182945,
+      "games": 9,
+      "league": "EBL",
+      "lastPlayed": "2026-02-11"
+    },
+    "Crystal Rose": {
+      "elo": 1340.0296903053295,
+      "games": 14,
+      "league": "NL",
+      "lastPlayed": "2026-05-24"
+    },
+    "Cuban Raft Raiders": {
+      "elo": 1484.0,
+      "games": 3,
+      "league": "LPLOL",
+      "lastPlayed": "2026-02-18"
+    },
+    "C\u00e3es de \u00c1gua": {
+      "elo": 1503.3389525496177,
+      "games": 6,
+      "league": "LPLOL",
+      "lastPlayed": "2026-02-26"
+    },
+    "DECOY 21": {
+      "elo": 1533.7884747827782,
+      "games": 10,
+      "league": "LIT",
+      "lastPlayed": "2026-05-21"
+    },
+    "DMG Esports": {
+      "elo": 1445.9325562579113,
+      "games": 33,
+      "league": "NLC",
+      "lastPlayed": "2026-05-27"
+    },
+    "DN SOOPers": {
+      "elo": 1219.220661827802,
+      "games": 77,
+      "league": "LCK",
+      "lastPlayed": "2026-05-30"
+    },
+    "DN SOOPers Academy": {
+      "elo": 1440.5806335557588,
+      "games": 55,
+      "league": "LAS",
+      "lastPlayed": "2026-05-09"
+    },
+    "DN SOOPers Challengers": {
+      "elo": 1605.8118583095156,
+      "games": 67,
+      "league": "LCKC",
+      "lastPlayed": "2026-05-29"
+    },
+    "DOCISK": {
+      "elo": 1437.4049691240361,
+      "games": 28,
+      "league": "RL",
+      "lastPlayed": "2026-05-21"
+    },
+    "Dark Passage": {
+      "elo": 1324.5578078189421,
+      "games": 28,
+      "league": "TCL",
+      "lastPlayed": "2026-05-12"
+    },
+    "Deacoy": {
+      "elo": 1469.6075903984772,
+      "games": 15,
+      "league": "LIT",
+      "lastPlayed": "2026-02-11"
+    },
+    "DeathMark E-Sports": {
+      "elo": 1463.1996344241895,
+      "games": 13,
+      "league": "NACL",
+      "lastPlayed": "2026-06-20"
+    },
+    "Deep Cross Gaming": {
+      "elo": 1583.868746986996,
+      "games": 85,
+      "league": "LCP",
+      "lastPlayed": "2026-06-07"
+    },
+    "Deer Gaming": {
+      "elo": 1491.6426264158897,
+      "games": 26,
+      "league": "NLC",
+      "lastPlayed": "2026-06-03"
+    },
+    "DetonatioN FocusMe": {
+      "elo": 1306.649508887453,
+      "games": 37,
+      "league": "LCP",
+      "lastPlayed": "2026-05-17"
+    },
+    "DetonatioN FocusMe Academy": {
+      "elo": 1423.0763532226683,
+      "games": 22,
+      "league": "LJL",
+      "lastPlayed": "2026-06-03"
+    },
+    "Dignitas": {
+      "elo": 1320.8913384265315,
+      "games": 28,
+      "league": "LCS",
+      "lastPlayed": "2026-05-17"
+    },
+    "Disguised": {
+      "elo": 1363.7953548117318,
+      "games": 38,
+      "league": "LCS",
+      "lastPlayed": "2026-05-16"
+    },
+    "Divernex": {
+      "elo": 1469.4136830104196,
+      "games": 8,
+      "league": "HW",
+      "lastPlayed": "2026-02-06"
+    },
+    "Diversion Gaming": {
+      "elo": 1374.572619135457,
+      "games": 26,
+      "league": "HC",
+      "lastPlayed": "2026-06-04"
+    },
+    "Dorado Gaming": {
+      "elo": 1404.2432678252942,
+      "games": 22,
+      "league": "NACL",
+      "lastPlayed": "2026-05-15"
+    },
+    "Dplus Kia": {
+      "elo": 1531.5894101124716,
+      "games": 97,
+      "league": "LCK",
+      "lastPlayed": "2026-06-07"
+    },
+    "Dplus Kia Academy": {
+      "elo": 1708.9866589462683,
+      "games": 65,
+      "league": "LAS",
+      "lastPlayed": "2026-05-17"
+    },
+    "Dplus Kia Challengers": {
+      "elo": 1712.3969620630896,
+      "games": 74,
+      "league": "Asia Master",
+      "lastPlayed": "2026-06-21"
+    },
+    "Dragons Esports": {
+      "elo": 1554.9163575370521,
+      "games": 49,
+      "league": "AL",
+      "lastPlayed": "2026-05-13"
+    },
+    "Dream Esports": {
+      "elo": 1492.6627031961355,
+      "games": 7,
+      "league": "LPLOL",
+      "lastPlayed": "2026-05-22"
+    },
+    "Dynasty": {
+      "elo": 1441.747528726569,
+      "games": 35,
+      "league": "ROL",
+      "lastPlayed": "2026-05-21"
+    },
+    "E WIE EINFACH E-SPORTS": {
+      "elo": 1668.419354987606,
+      "games": 59,
+      "league": "EM",
+      "lastPlayed": "2026-06-12"
+    },
+    "EDG Youth Team": {
+      "elo": 1464.9394289916909,
+      "games": 3,
+      "league": "Asia Master",
+      "lastPlayed": "2026-06-10"
+    },
+    "EDward Gaming": {
+      "elo": 1445.8453955301832,
+      "games": 44,
+      "league": "LPL",
+      "lastPlayed": "2026-06-03"
+    },
+    "EKO Esports": {
+      "elo": 1436.7846378917338,
+      "games": 27,
+      "league": "LIT",
+      "lastPlayed": "2026-05-14"
+    },
+    "EKSI EPTA": {
+      "elo": 1455.1924807194837,
+      "games": 4,
+      "league": "HLL",
+      "lastPlayed": "2026-05-19"
+    },
+    "EXILE esports": {
+      "elo": 1446.264714523176,
+      "games": 37,
+      "league": "HM",
+      "lastPlayed": "2026-05-26"
+    },
+    "EXILE esports Academy": {
+      "elo": 1511.9357439566459,
+      "games": 28,
+      "league": "HC",
+      "lastPlayed": "2026-06-13"
+    },
+    "Ei Nerd Esports": {
+      "elo": 1454.2373613963746,
+      "games": 14,
+      "league": "CD",
+      "lastPlayed": "2026-05-11"
+    },
+    "Eintracht Frankfurt": {
+      "elo": 1412.2823912866188,
+      "games": 35,
+      "league": "PRM",
+      "lastPlayed": "2026-05-11"
+    },
+    "Eintracht Spandau": {
+      "elo": 1713.8395080506248,
+      "games": 73,
+      "league": "EM",
+      "lastPlayed": "2026-06-14"
+    },
+    "Elegance": {
+      "elo": 1486.866254736599,
+      "games": 5,
+      "league": "LPLOL",
+      "lastPlayed": "2026-02-26"
+    },
+    "Epitomy Crash": {
+      "elo": 1469.4695015289756,
+      "games": 2,
+      "league": "LIT",
+      "lastPlayed": "2026-02-01"
+    },
+    "Epitomy Esports": {
+      "elo": 1516.9208127971217,
+      "games": 20,
+      "league": "LIT",
+      "lastPlayed": "2026-05-24"
+    },
+    "Epitomy Masters": {
+      "elo": 1493.8253991109682,
+      "games": 10,
+      "league": "LIT",
+      "lastPlayed": "2026-02-14"
+    },
+    "Epitomy Warriors": {
+      "elo": 1469.4695015289756,
+      "games": 2,
+      "league": "LIT",
+      "lastPlayed": "2026-05-15"
+    },
+    "Equinox Core": {
+      "elo": 1444.8928251483721,
+      "games": 4,
+      "league": "PCS",
+      "lastPlayed": "2026-05-26"
+    },
+    "Esprit Sh\u014dnen": {
+      "elo": 1455.467763962262,
+      "games": 18,
+      "league": "LFL",
+      "lastPlayed": "2026-05-21"
+    },
+    "Estral Esports": {
+      "elo": 1575.9372459246463,
+      "games": 26,
+      "league": "CD",
+      "lastPlayed": "2026-05-26"
+    },
+    "Ethereal Enigmas": {
+      "elo": 1670.7401389260708,
+      "games": 36,
+      "league": "HC",
+      "lastPlayed": "2026-06-14"
+    },
+    "FENNEL": {
+      "elo": 1732.609059762214,
+      "games": 41,
+      "league": "LJL",
+      "lastPlayed": "2026-06-14"
+    },
+    "FN Esports": {
+      "elo": 1596.068768990526,
+      "games": 70,
+      "league": "EM",
+      "lastPlayed": "2026-06-08"
+    },
+    "FURIA": {
+      "elo": 1714.5255300414572,
+      "games": 58,
+      "league": "CBLOL",
+      "lastPlayed": "2026-06-06"
+    },
+    "Falke Esports": {
+      "elo": 1365.9142357104745,
+      "games": 18,
+      "league": "LES",
+      "lastPlayed": "2026-05-21"
+    },
+    "Fast8": {
+      "elo": 1468.6189482530206,
+      "games": 31,
+      "league": "LJL",
+      "lastPlayed": "2026-04-19"
+    },
+    "Fluxo W7M": {
+      "elo": 1436.4158425517244,
+      "games": 46,
+      "league": "EWC",
+      "lastPlayed": "2026-06-10"
+    },
+    "FlyQuest": {
+      "elo": 1547.682986225749,
+      "games": 60,
+      "league": "LCS",
+      "lastPlayed": "2026-06-06"
+    },
+    "Fnatic": {
+      "elo": 1450.4586344875906,
+      "games": 45,
+      "league": "LEC",
+      "lastPlayed": "2026-05-04"
+    },
+    "Forsaken": {
+      "elo": 1601.3934442191858,
+      "games": 50,
+      "league": "EM",
+      "lastPlayed": "2026-06-12"
+    },
+    "Francesinhas": {
+      "elo": 1494.387418169865,
+      "games": 13,
+      "league": "LPLOL",
+      "lastPlayed": "2026-05-22"
+    },
+    "Frank Esports": {
+      "elo": 1562.257005225359,
+      "games": 23,
+      "league": "PCS",
+      "lastPlayed": "2026-06-03"
+    },
+    "French Flair": {
+      "elo": 1695.3210589213174,
+      "games": 40,
+      "league": "EM",
+      "lastPlayed": "2026-04-07"
+    },
+    "Frites Esports Club": {
+      "elo": 1745.8488904049777,
+      "games": 51,
+      "league": "EM",
+      "lastPlayed": "2026-06-09"
+    },
+    "Fuego": {
+      "elo": 1701.3849708845548,
+      "games": 24,
+      "league": "LRN",
+      "lastPlayed": "2026-06-09"
+    },
+    "Fukuoka SoftBank HAWKS gaming": {
+      "elo": 1464.3547940648814,
+      "games": 62,
+      "league": "LCP",
+      "lastPlayed": "2026-05-24"
+    },
+    "G2 Esports": {
+      "elo": 1781.895891668684,
+      "games": 81,
+      "league": "LEC",
+      "lastPlayed": "2026-06-07"
+    },
+    "G2 NORD": {
+      "elo": 1746.5625007513731,
+      "games": 86,
+      "league": "EM",
+      "lastPlayed": "2026-06-13"
+    },
+    "G3V E-sports": {
+      "elo": 1535.0471131336433,
+      "games": 31,
+      "league": "LRN",
+      "lastPlayed": "2026-06-09"
+    },
+    "GAM Esports": {
+      "elo": 1563.6274204175165,
+      "games": 66,
+      "league": "LCP",
+      "lastPlayed": "2026-06-06"
+    },
+    "GD Esports": {
+      "elo": 1484.0,
+      "games": 3,
+      "league": "LPLOL",
+      "lastPlayed": "2026-02-19"
+    },
+    "GIANTX iTero": {
+      "elo": 1482.6460349655872,
+      "games": 21,
+      "league": "LES",
+      "lastPlayed": "2026-05-21"
+    },
+    "GLORE": {
+      "elo": 1332.8269175761632,
+      "games": 14,
+      "league": "RL",
+      "lastPlayed": "2026-05-20"
+    },
+    "GMBLERS Esports": {
+      "elo": 1538.3753899126227,
+      "games": 57,
+      "league": "EM",
+      "lastPlayed": "2026-06-08"
+    },
+    "GOAL": {
+      "elo": 1586.7441794434324,
+      "games": 48,
+      "league": "EM",
+      "lastPlayed": "2026-06-09"
+    },
+    "GTZ Esports": {
+      "elo": 1435.1048694407386,
+      "games": 9,
+      "league": "LPLOL",
+      "lastPlayed": "2026-05-22"
+    },
+    "Galions": {
+      "elo": 1879.4807887938262,
+      "games": 94,
+      "league": "EM",
+      "lastPlayed": "2026-06-15"
+    },
+    "Galions Sharks": {
+      "elo": 1449.8654808905294,
+      "games": 16,
+      "league": "NL",
+      "lastPlayed": "2026-05-24"
+    },
+    "Gamespace Mediterranean College Esports": {
+      "elo": 1430.1102788970954,
+      "games": 32,
+      "league": "HLL",
+      "lastPlayed": "2026-05-19"
+    },
+    "Gen.G": {
+      "elo": 1712.9967190051095,
+      "games": 80,
+      "league": "LCK",
+      "lastPlayed": "2026-06-14"
+    },
+    "Gen.G Global Academy": {
+      "elo": 1271.6946164019814,
+      "games": 54,
+      "league": "LCKC",
+      "lastPlayed": "2026-05-29"
+    },
+    "Gen.G Scholars": {
+      "elo": 1480.999143997767,
+      "games": 67,
+      "league": "LAS",
+      "lastPlayed": "2026-05-17"
+    },
+    "GiantX": {
+      "elo": 1537.721832706429,
+      "games": 58,
+      "league": "LEC",
+      "lastPlayed": "2026-06-01"
+    },
+    "Gity Meavedronu": {
+      "elo": 1450.6658413353916,
+      "games": 5,
+      "league": "HW",
+      "lastPlayed": "2026-01-29"
+    },
+    "GnG Amazigh": {
+      "elo": 1427.7953538084246,
+      "games": 65,
+      "league": "AL",
+      "lastPlayed": "2026-06-05"
+    },
+    "Golden Lions": {
+      "elo": 1621.5606984504832,
+      "games": 26,
+      "league": "LRS",
+      "lastPlayed": "2026-06-09"
+    },
+    "Ground Zero Academy": {
+      "elo": 1439.1714030880626,
+      "games": 4,
+      "league": "PCS",
+      "lastPlayed": "2026-05-26"
+    },
+    "Ground Zero Gaming": {
+      "elo": 1349.33966822226,
+      "games": 53,
+      "league": "LCP",
+      "lastPlayed": "2026-05-16"
+    },
+    "HANJIN BRION": {
+      "elo": 1396.7056879386741,
+      "games": 68,
+      "league": "LCK",
+      "lastPlayed": "2026-06-06"
+    },
+    "HANJIN BRION Academy": {
+      "elo": 1319.5815268219455,
+      "games": 48,
+      "league": "LAS",
+      "lastPlayed": "2026-05-03"
+    },
+    "HANJIN BRION Challengers": {
+      "elo": 1351.3428219389193,
+      "games": 60,
+      "league": "LCKC",
+      "lastPlayed": "2026-05-28"
+    },
+    "HMBLE": {
+      "elo": 1689.9754362759872,
+      "games": 46,
+      "league": "EM",
+      "lastPlayed": "2026-06-11"
+    },
+    "Hanwha Life Esports": {
+      "elo": 1711.999049064026,
+      "games": 73,
+      "league": "LCK",
+      "lastPlayed": "2026-06-12"
+    },
+    "Hanwha Life Esports Academy": {
+      "elo": 1620.4008209567075,
+      "games": 55,
+      "league": "LAS",
+      "lastPlayed": "2026-05-16"
+    },
+    "Hanwha Life Esports Challengers": {
+      "elo": 1419.735053350464,
+      "games": 68,
+      "league": "LCKC",
+      "lastPlayed": "2026-05-28"
+    },
+    "Howl Esports": {
+      "elo": 1410.5920731714434,
+      "games": 14,
+      "league": "HLL",
+      "lastPlayed": "2026-02-18"
+    },
+    "Huskies Esports": {
+      "elo": 1483.67212496931,
+      "games": 15,
+      "league": "LIT",
+      "lastPlayed": "2026-05-22"
+    },
+    "INTZ": {
+      "elo": 1529.100194571553,
+      "games": 20,
+      "league": "CD",
+      "lastPlayed": "2026-05-19"
+    },
+    "Ici Japon Corp. Esport": {
+      "elo": 1434.3296745840846,
+      "games": 16,
+      "league": "LFL",
+      "lastPlayed": "2026-05-13"
+    },
+    "Icon Esports": {
+      "elo": 1396.358177579844,
+      "games": 12,
+      "league": "LRN",
+      "lastPlayed": "2026-03-31"
+    },
+    "Inferno Drive Tokyo": {
+      "elo": 1605.8281491987427,
+      "games": 40,
+      "league": "LJL",
+      "lastPlayed": "2026-04-19"
+    },
+    "Inside Games": {
+      "elo": 1455.956253182821,
+      "games": 7,
+      "league": "HW",
+      "lastPlayed": "2026-02-04"
+    },
+    "Instituto Polit\u00e9cnico de Santar\u00e9m": {
+      "elo": 1468.736306793522,
+      "games": 2,
+      "league": "LPLOL",
+      "lastPlayed": "2026-02-13"
+    },
+    "Invictus Gaming": {
+      "elo": 1422.9327650019143,
+      "games": 81,
+      "league": "LPL",
+      "lastPlayed": "2026-05-23"
+    },
+    "Invokers": {
+      "elo": 1527.8702292338412,
+      "games": 19,
+      "league": "CD",
+      "lastPlayed": "2026-06-09"
+    },
+    "JD Gaming": {
+      "elo": 1559.6886423783858,
+      "games": 108,
+      "league": "LPL",
+      "lastPlayed": "2026-06-06"
+    },
+    "JSK Esports": {
+      "elo": 1463.3484556382782,
+      "games": 40,
+      "league": "AL",
+      "lastPlayed": "2026-06-04"
+    },
+    "Joblife": {
+      "elo": 1448.0870533556117,
+      "games": 28,
+      "league": "LFL",
+      "lastPlayed": "2026-05-01"
+    },
+    "KIA.eSuba Academy": {
+      "elo": 1402.7954257829044,
+      "games": 21,
+      "league": "HC",
+      "lastPlayed": "2026-05-15"
+    },
+    "KT Rolster": {
+      "elo": 1499.7921873216076,
+      "games": 70,
+      "league": "LCK",
+      "lastPlayed": "2026-06-13"
+    },
+    "KT Rolster Academy": {
+      "elo": 1379.4929823710709,
+      "games": 53,
+      "league": "LAS",
+      "lastPlayed": "2026-05-09"
+    },
+    "KT Rolster Challengers": {
+      "elo": 1646.693868524078,
+      "games": 92,
+      "league": "Asia Master",
+      "lastPlayed": "2026-06-19"
+    },
+    "KaBuM! Ilha das Lendas": {
+      "elo": 1599.8027754686807,
+      "games": 26,
+      "league": "CD",
+      "lastPlayed": "2026-06-01"
+    },
+    "Karmine Corp": {
+      "elo": 1712.6253702386948,
+      "games": 84,
+      "league": "LEC",
+      "lastPlayed": "2026-06-07"
+    },
+    "Karmine Corp Blue": {
+      "elo": 1654.3114874733935,
+      "games": 59,
+      "league": "EM",
+      "lastPlayed": "2026-06-13"
+    },
+    "Karmine Corp Blue Stars": {
+      "elo": 1646.0934893135627,
+      "games": 26,
+      "league": "NL",
+      "lastPlayed": "2026-06-07"
+    },
+    "Kaufland Hangry Knights": {
+      "elo": 1433.9859006988904,
+      "games": 30,
+      "league": "PRM",
+      "lastPlayed": "2026-05-11"
+    },
+    "Keypulse Esports": {
+      "elo": 1468.0,
+      "games": 2,
+      "league": "LPLOL",
+      "lastPlayed": "2026-02-19"
+    },
+    "Kiwoom DRX": {
+      "elo": 1430.3220329957057,
+      "games": 80,
+      "league": "LCK",
+      "lastPlayed": "2026-05-29"
+    },
+    "Kiwoom DRX Challengers": {
+      "elo": 1545.9374634955109,
+      "games": 79,
+      "league": "LCKC",
+      "lastPlayed": "2026-05-28"
+    },
+    "Kleyton Rhasta": {
+      "elo": 1469.4695015289756,
+      "games": 2,
+      "league": "CD",
+      "lastPlayed": "2026-05-21"
+    },
+    "Kuma e-Sports": {
+      "elo": 1383.2857797467339,
+      "games": 14,
+      "league": "CD",
+      "lastPlayed": "2026-06-04"
+    },
+    "L Guide Gaming": {
+      "elo": 1500.9651227151494,
+      "games": 42,
+      "league": "LJL",
+      "lastPlayed": "2026-06-04"
+    },
+    "LGD Gaming": {
+      "elo": 1436.5795084229385,
+      "games": 45,
+      "league": "LPL",
+      "lastPlayed": "2026-06-05"
+    },
+    "LNG Esports": {
+      "elo": 1534.9288077075269,
+      "games": 39,
+      "league": "LPL",
+      "lastPlayed": "2026-05-23"
+    },
+    "LODIS": {
+      "elo": 1467.5144639332975,
+      "games": 24,
+      "league": "RL",
+      "lastPlayed": "2026-05-20"
+    },
+    "LOUD": {
+      "elo": 1502.4279665302274,
+      "games": 64,
+      "league": "EWC",
+      "lastPlayed": "2026-06-11"
+    },
+    "LUA Gaming": {
+      "elo": 1421.7479413250314,
+      "games": 19,
+      "league": "LES",
+      "lastPlayed": "2026-05-20"
+    },
+    "LYON": {
+      "elo": 1675.9659929278985,
+      "games": 71,
+      "league": "LCS",
+      "lastPlayed": "2026-06-14"
+    },
+    "LYON Academy": {
+      "elo": 1447.2016215993483,
+      "games": 16,
+      "league": "LRN",
+      "lastPlayed": "2026-05-12"
+    },
+    "La BOMBAS": {
+      "elo": 1433.1308670443293,
+      "games": 9,
+      "league": "NLC",
+      "lastPlayed": "2026-02-26"
+    },
+    "Lausanne-Sport Esports": {
+      "elo": 1416.2332003591225,
+      "games": 17,
+      "league": "NL",
+      "lastPlayed": "2026-05-24"
+    },
+    "Lenovo Legion Honv\u00e9d": {
+      "elo": 1511.1148356177086,
+      "games": 23,
+      "league": "EBL",
+      "lastPlayed": "2026-05-21"
+    },
+    "Leviatan": {
+      "elo": 1319.7548258707293,
+      "games": 41,
+      "league": "EWC",
+      "lastPlayed": "2026-06-08"
+    },
+    "Lille Esport": {
+      "elo": 1471.9531416057519,
+      "games": 29,
+      "league": "NL",
+      "lastPlayed": "2026-05-31"
+    },
+    "Los Ratones": {
+      "elo": 1495.5236051550464,
+      "games": 11,
+      "league": "LEC",
+      "lastPlayed": "2026-02-08"
+    },
+    "Lotus": {
+      "elo": 1459.376765392249,
+      "games": 9,
+      "league": "NACL",
+      "lastPlayed": "2026-06-19"
+    },
+    "Lund Esports Organization": {
+      "elo": 1480.3019747949018,
+      "games": 15,
+      "league": "NLC",
+      "lastPlayed": "2026-05-27"
+    },
+    "Lundqvist Lightside": {
+      "elo": 1440.8292898886612,
+      "games": 15,
+      "league": "NLC",
+      "lastPlayed": "2026-05-27"
+    },
+    "Lupus Esports": {
+      "elo": 1455.263400614315,
+      "games": 41,
+      "league": "EBL",
+      "lastPlayed": "2026-04-28"
+    },
+    "L\u00d8S": {
+      "elo": 1630.1832309677388,
+      "games": 71,
+      "league": "EWC",
+      "lastPlayed": "2026-06-14"
+    },
+    "MVK Esports": {
+      "elo": 1448.509676665288,
+      "games": 53,
+      "league": "LCP",
+      "lastPlayed": "2026-06-05"
+    },
+    "MVK Esports Academy": {
+      "elo": 1534.494285899577,
+      "games": 32,
+      "league": "VCS",
+      "lastPlayed": "2026-05-28"
+    },
+    "Macko Academy": {
+      "elo": 1459.770164915951,
+      "games": 5,
+      "league": "LIT",
+      "lastPlayed": "2026-02-02"
+    },
+    "Magaza Esports": {
+      "elo": 1535.067358822943,
+      "games": 27,
+      "league": "EM",
+      "lastPlayed": "2026-06-08"
+    },
+    "Malvinas Gaming": {
+      "elo": 1551.6898135913798,
+      "games": 27,
+      "league": "LRS",
+      "lastPlayed": "2026-05-19"
+    },
+    "Marere Invokers": {
+      "elo": 1595.747739536112,
+      "games": 9,
+      "league": "CD",
+      "lastPlayed": "2026-05-23"
+    },
+    "Maryville University": {
+      "elo": 1559.970051796807,
+      "games": 29,
+      "league": "NACL",
+      "lastPlayed": "2026-05-21"
+    },
+    "Maze Gaming": {
+      "elo": 1421.2383554864389,
+      "games": 15,
+      "league": "LRS",
+      "lastPlayed": "2026-04-14"
+    },
+    "Meavedron": {
+      "elo": 1496.8844820365744,
+      "games": 41,
+      "league": "HM",
+      "lastPlayed": "2026-05-31"
+    },
+    "Misa Esports": {
+      "elo": 1752.3374618612156,
+      "games": 63,
+      "league": "EM",
+      "lastPlayed": "2026-06-13"
+    },
+    "Movistar KOI": {
+      "elo": 1615.279666567463,
+      "games": 70,
+      "league": "LEC",
+      "lastPlayed": "2026-06-06"
+    },
+    "Movistar KOI F\u00e9nix": {
+      "elo": 1610.085077167366,
+      "games": 41,
+      "league": "LES",
+      "lastPlayed": "2026-06-05"
+    },
+    "Myth Esports": {
+      "elo": 1369.8133838131112,
+      "games": 30,
+      "league": "ROL",
+      "lastPlayed": "2026-05-14"
+    },
+    "NCG Esports": {
+      "elo": 1442.7862757441035,
+      "games": 18,
+      "league": "LRN",
+      "lastPlayed": "2026-04-14"
+    },
+    "NOVEX": {
+      "elo": 1512.4487436944428,
+      "games": 37,
+      "league": "LJL",
+      "lastPlayed": "2026-04-19"
+    },
+    "NRG": {
+      "elo": 1549.666515517951,
+      "games": 29,
+      "league": "NACL",
+      "lastPlayed": "2026-05-28"
+    },
+    "Natus Vincere": {
+      "elo": 1540.2802823792813,
+      "games": 56,
+      "league": "LEC",
+      "lastPlayed": "2026-05-30"
+    },
+    "Nerd's Gangster's Carecas": {
+      "elo": 1514.6577119246042,
+      "games": 12,
+      "league": "CD",
+      "lastPlayed": "2026-03-01"
+    },
+    "New Meta": {
+      "elo": 1586.857456434581,
+      "games": 57,
+      "league": "LJL",
+      "lastPlayed": "2026-06-03"
+    },
+    "NextGeneration Esports": {
+      "elo": 1303.9576429794952,
+      "games": 34,
+      "league": "AL",
+      "lastPlayed": "2026-06-03"
+    },
+    "Ng\u1ef1a H\u00ed Esports": {
+      "elo": 1436.0899641204787,
+      "games": 11,
+      "league": "VCS",
+      "lastPlayed": "2026-03-14"
+    },
+    "Nightbirds": {
+      "elo": 1681.3920089679111,
+      "games": 57,
+      "league": "EM",
+      "lastPlayed": "2026-06-08"
+    },
+    "Nine Lives Esports": {
+      "elo": 1441.2326808455655,
+      "games": 5,
+      "league": "NACL",
+      "lastPlayed": "2026-06-18"
+    },
+    "Ninjas in Pyjamas": {
+      "elo": 1491.526280128458,
+      "games": 67,
+      "league": "LPL",
+      "lastPlayed": "2026-05-24"
+    },
+    "Nongshim Esports Academy": {
+      "elo": 1570.8393438452315,
+      "games": 89,
+      "league": "Asia Master",
+      "lastPlayed": "2026-06-18"
+    },
+    "Nongshim RedForce": {
+      "elo": 1359.089106989401,
+      "games": 71,
+      "league": "LCK",
+      "lastPlayed": "2026-05-31"
+    },
+    "Nongshim RedForce Academy": {
+      "elo": 1348.2344915873834,
+      "games": 51,
+      "league": "LAS",
+      "lastPlayed": "2026-05-03"
+    },
+    "Nugget enterprises": {
+      "elo": 1469.4695015289756,
+      "games": 2,
+      "league": "CD",
+      "lastPlayed": "2026-05-21"
+    },
+    "Observant Force": {
+      "elo": 1437.4695015289756,
+      "games": 4,
+      "league": "HW",
+      "lastPlayed": "2026-01-30"
+    },
+    "Obsidian Oath": {
+      "elo": 1475.5445864648455,
+      "games": 6,
+      "league": "LIT",
+      "lastPlayed": "2026-05-16"
+    },
+    "Oh My God": {
+      "elo": 1375.1618225929926,
+      "games": 34,
+      "league": "LPL",
+      "lastPlayed": "2026-05-15"
+    },
+    "Once Upon A Team": {
+      "elo": 1451.3143158514933,
+      "games": 38,
+      "league": "ROL",
+      "lastPlayed": "2026-05-28"
+    },
+    "One More Esports": {
+      "elo": 1352.8540685977825,
+      "games": 53,
+      "league": "AL",
+      "lastPlayed": "2026-05-06"
+    },
+    "One Round Specialists": {
+      "elo": 1469.4695015289756,
+      "games": 6,
+      "league": "PCS",
+      "lastPlayed": "2026-04-27"
+    },
+    "Onion Team": {
+      "elo": 1385.0402819204903,
+      "games": 28,
+      "league": "HM",
+      "lastPlayed": "2026-05-17"
+    },
+    "Otter Side": {
+      "elo": 1651.6219696935352,
+      "games": 33,
+      "league": "EM",
+      "lastPlayed": "2026-06-08"
+    },
+    "Ovos Moles eSports": {
+      "elo": 1470.13853822723,
+      "games": 2,
+      "league": "LPLOL",
+      "lastPlayed": "2026-02-13"
+    },
+    "Ozarox Esports": {
+      "elo": 1494.90342672523,
+      "games": 20,
+      "league": "TCL",
+      "lastPlayed": "2026-05-26"
+    },
+    "P11 Esports": {
+      "elo": 1540.146277410847,
+      "games": 34,
+      "league": "LIT",
+      "lastPlayed": "2026-05-24"
+    },
+    "PCIFIC Esports": {
+      "elo": 1533.6470275468746,
+      "games": 50,
+      "league": "EM",
+      "lastPlayed": "2026-06-11"
+    },
+    "PREDIQT": {
+      "elo": 1459.962893785144,
+      "games": 5,
+      "league": "CD",
+      "lastPlayed": "2026-05-22"
+    },
+    "Pandinhas": {
+      "elo": 1470.6220945182126,
+      "games": 2,
+      "league": "CD",
+      "lastPlayed": "2026-05-21"
+    },
+    "Paranormal Invaders": {
+      "elo": 1461.9034649226319,
+      "games": 4,
+      "league": "HLL",
+      "lastPlayed": "2026-05-19"
+    },
+    "Partizan Sangal": {
+      "elo": 1747.1950236577443,
+      "games": 51,
+      "league": "EM",
+      "lastPlayed": "2026-06-11"
+    },
+    "Periquitos Zangados Gaming": {
+      "elo": 1499.4536513226117,
+      "games": 4,
+      "league": "LPLOL",
+      "lastPlayed": "2026-02-26"
+    },
+    "Polar Squad Esports": {
+      "elo": 1422.1985862783658,
+      "games": 19,
+      "league": "LRN",
+      "lastPlayed": "2026-05-05"
+    },
+    "Priority": {
+      "elo": 1585.9628667265142,
+      "games": 55,
+      "league": "HC",
+      "lastPlayed": "2026-06-14"
+    },
+    "Prodigy Invokers": {
+      "elo": 1469.4695015289756,
+      "games": 2,
+      "league": "CD",
+      "lastPlayed": "2026-02-27"
+    },
+    "Project Conquerors": {
+      "elo": 1572.8870683554098,
+      "games": 28,
+      "league": "NL",
+      "lastPlayed": "2026-06-07"
+    },
+    "Pyramid IV Esports": {
+      "elo": 1428.1303790530394,
+      "games": 10,
+      "league": "AL",
+      "lastPlayed": "2026-06-05"
+    },
+    "RAMPAGE": {
+      "elo": 1483.2513103901647,
+      "games": 8,
+      "league": "CD",
+      "lastPlayed": "2026-05-23"
+    },
+    "RAYN Clocks": {
+      "elo": 1542.823273956824,
+      "games": 46,
+      "league": "LJL",
+      "lastPlayed": "2026-06-04"
+    },
+    "RED Academy": {
+      "elo": 1472.916832355142,
+      "games": 14,
+      "league": "CD",
+      "lastPlayed": "2026-05-18"
+    },
+    "RED Canids": {
+      "elo": 1553.2610860004752,
+      "games": 62,
+      "league": "EWC",
+      "lastPlayed": "2026-06-14"
+    },
+    "REDPack Esports": {
+      "elo": 1444.2123735947137,
+      "games": 4,
+      "league": "EBL",
+      "lastPlayed": "2026-02-25"
+    },
+    "RMD Gaming": {
+      "elo": 1404.7473677938383,
+      "games": 15,
+      "league": "CD",
+      "lastPlayed": "2026-04-28"
+    },
+    "ROSSMANN Centaurs": {
+      "elo": 1283.8141366193988,
+      "games": 25,
+      "league": "PRM",
+      "lastPlayed": "2026-05-12"
+    },
+    "Rage Bait e-Sports": {
+      "elo": 1484.0,
+      "games": 3,
+      "league": "LPLOL",
+      "lastPlayed": "2026-02-12"
+    },
+    "Revolution Victory X": {
+      "elo": 1367.4794120309361,
+      "games": 13,
+      "league": "LJL",
+      "lastPlayed": "2026-02-08"
+    },
+    "Rising Gaming": {
+      "elo": 1709.5240483907987,
+      "games": 56,
+      "league": "LJL",
+      "lastPlayed": "2026-06-14"
+    },
+    "Ronaldo Team": {
+      "elo": 1486.113378264321,
+      "games": 11,
+      "league": "LPLOL",
+      "lastPlayed": "2026-05-29"
+    },
+    "Ruddy Corporation": {
+      "elo": 1506.437881750568,
+      "games": 34,
+      "league": "EM",
+      "lastPlayed": "2026-06-08"
+    },
+    "Rugby Club Hav\u00ed\u0159ov": {
+      "elo": 1368.588111150254,
+      "games": 17,
+      "league": "HC",
+      "lastPlayed": "2026-05-14"
+    },
+    "Rumble Victory eSports": {
+      "elo": 1469.4695015289756,
+      "games": 2,
+      "league": "CD",
+      "lastPlayed": "2026-05-21"
+    },
+    "S2G Esports": {
+      "elo": 1610.1238421354674,
+      "games": 29,
+      "league": "EM",
+      "lastPlayed": "2026-03-15"
+    },
+    "SDM Tigres": {
+      "elo": 1606.6147029460744,
+      "games": 30,
+      "league": "LRN",
+      "lastPlayed": "2026-06-02"
+    },
+    "SK Gaming": {
+      "elo": 1412.8700959332853,
+      "games": 38,
+      "league": "LEC",
+      "lastPlayed": "2026-05-02"
+    },
+    "SN CyberCore Esports": {
+      "elo": 1429.4205941231842,
+      "games": 32,
+      "league": "VCS",
+      "lastPlayed": "2026-06-14"
+    },
+    "SNOOZE Esports": {
+      "elo": 1453.023360942961,
+      "games": 4,
+      "league": "ROL",
+      "lastPlayed": "2026-06-11"
+    },
+    "SPAXFAMILY": {
+      "elo": 1448.088038607835,
+      "games": 14,
+      "league": "HW",
+      "lastPlayed": "2026-02-19"
+    },
+    "SPIKE Syndicate": {
+      "elo": 1423.2363359218175,
+      "games": 29,
+      "league": "EBL",
+      "lastPlayed": "2026-05-13"
+    },
+    "STAINED": {
+      "elo": 1454.9521211629274,
+      "games": 6,
+      "league": "CD",
+      "lastPlayed": "2026-03-01"
+    },
+    "SU Esports": {
+      "elo": 1502.7047722259658,
+      "games": 45,
+      "league": "TCL",
+      "lastPlayed": "2026-05-22"
+    },
+    "SabOOr T1": {
+      "elo": 1469.4695015289756,
+      "games": 2,
+      "league": "CD",
+      "lastPlayed": "2026-02-27"
+    },
+    "Saigon Dino": {
+      "elo": 1526.7011468319129,
+      "games": 55,
+      "league": "VCS",
+      "lastPlayed": "2026-06-20"
+    },
+    "Saigon Warriors": {
+      "elo": 1649.9985386304036,
+      "games": 56,
+      "league": "VCS",
+      "lastPlayed": "2026-06-20"
+    },
+    "Senshi eSports": {
+      "elo": 1468.4843740156946,
+      "games": 37,
+      "league": "ROL",
+      "lastPlayed": "2026-05-21"
+    },
+    "Sentinels": {
+      "elo": 1520.1260072399566,
+      "games": 61,
+      "league": "LCS",
+      "lastPlayed": "2026-05-30"
+    },
+    "Seven Dark": {
+      "elo": 1422.2708300462448,
+      "games": 21,
+      "league": "LRS",
+      "lastPlayed": "2026-05-05"
+    },
+    "Shadow Keepers Esports": {
+      "elo": 1519.3615825114557,
+      "games": 11,
+      "league": "PCS",
+      "lastPlayed": "2026-06-01"
+    },
+    "Shifters": {
+      "elo": 1442.9699769259694,
+      "games": 40,
+      "league": "EWC",
+      "lastPlayed": "2026-05-14"
+    },
+    "Shopify Rebellion": {
+      "elo": 1348.3628186007566,
+      "games": 28,
+      "league": "LCS",
+      "lastPlayed": "2026-05-31"
+    },
+    "SillySilly Gaming": {
+      "elo": 1559.8818222333052,
+      "games": 21,
+      "league": "Asia Master",
+      "lastPlayed": "2026-06-05"
+    },
+    "Skillcamp": {
+      "elo": 1422.339733612732,
+      "games": 23,
+      "league": "LFL",
+      "lastPlayed": "2026-05-01"
+    },
+    "Solary": {
+      "elo": 1832.2379790600376,
+      "games": 79,
+      "league": "EM",
+      "lastPlayed": "2026-06-15"
+    },
+    "Spartans EU": {
+      "elo": 1463.3522021352533,
+      "games": 14,
+      "league": "HLL",
+      "lastPlayed": "2026-05-07"
+    },
+    "StoneHenge Esports": {
+      "elo": 1391.5286770992611,
+      "games": 18,
+      "league": "LIT",
+      "lastPlayed": "2026-05-23"
+    },
+    "StoneHenge Esports Academy": {
+      "elo": 1439.2307458807165,
+      "games": 4,
+      "league": "LIT",
+      "lastPlayed": "2026-05-17"
+    },
+    "Super Stars": {
+      "elo": 1518.9280684426737,
+      "games": 10,
+      "league": "AL",
+      "lastPlayed": "2026-04-01"
+    },
+    "Supernova": {
+      "elo": 1539.6953515803054,
+      "games": 30,
+      "league": "NACL",
+      "lastPlayed": "2026-05-28"
+    },
+    "T1": {
+      "elo": 1712.5423172055334,
+      "games": 80,
+      "league": "LCK",
+      "lastPlayed": "2026-06-14"
+    },
+    "T1 Esports Academy": {
+      "elo": 1639.9861538208834,
+      "games": 101,
+      "league": "Asia Master",
+      "lastPlayed": "2026-06-21"
+    },
+    "T1 Esports Academy Rookies": {
+      "elo": 1701.7237417630984,
+      "games": 64,
+      "league": "LAS",
+      "lastPlayed": "2026-05-17"
+    },
+    "TITANS": {
+      "elo": 1418.0074330905313,
+      "games": 10,
+      "league": "LIT",
+      "lastPlayed": "2026-04-30"
+    },
+    "TLN Pirates": {
+      "elo": 1582.1320889256083,
+      "games": 41,
+      "league": "LFL",
+      "lastPlayed": "2026-05-28"
+    },
+    "TQ DURPA KASHLQ": {
+      "elo": 1423.4551491042369,
+      "games": 11,
+      "league": "EBL",
+      "lastPlayed": "2026-05-20"
+    },
+    "Team Heretics": {
+      "elo": 1290.8373866309296,
+      "games": 40,
+      "league": "LEC",
+      "lastPlayed": "2026-05-03"
+    },
+    "Team Heretics Academy": {
+      "elo": 1753.442484183512,
+      "games": 48,
+      "league": "EM",
+      "lastPlayed": "2026-06-13"
+    },
+    "Team Insidious": {
+      "elo": 1558.908112899599,
+      "games": 36,
+      "league": "HLL",
+      "lastPlayed": "2026-05-14"
+    },
+    "Team Liquid": {
+      "elo": 1589.4529954134823,
+      "games": 63,
+      "league": "LCS",
+      "lastPlayed": "2026-06-14"
+    },
+    "Team Phantasma": {
+      "elo": 1591.9693825874274,
+      "games": 49,
+      "league": "HLL",
+      "lastPlayed": "2026-05-13"
+    },
+    "Team Phoenix": {
+      "elo": 1384.419837073679,
+      "games": 23,
+      "league": "TCL",
+      "lastPlayed": "2026-05-15"
+    },
+    "Team Secret": {
+      "elo": 1543.5160413872745,
+      "games": 4,
+      "league": "EWC",
+      "lastPlayed": "2026-05-20"
+    },
+    "Team Secret Whales": {
+      "elo": 1705.3170735998742,
+      "games": 70,
+      "league": "LCP",
+      "lastPlayed": "2026-06-07"
+    },
+    "Team Solid": {
+      "elo": 1519.9483659861041,
+      "games": 21,
+      "league": "CD",
+      "lastPlayed": "2026-06-09"
+    },
+    "Team Spawn Peek": {
+      "elo": 1455.0910704552282,
+      "games": 7,
+      "league": "EBL",
+      "lastPlayed": "2026-05-20"
+    },
+    "Team Vitality": {
+      "elo": 1497.1255209364933,
+      "games": 56,
+      "league": "LEC",
+      "lastPlayed": "2026-05-31"
+    },
+    "Team WE": {
+      "elo": 1537.0577909365368,
+      "games": 84,
+      "league": "LPL",
+      "lastPlayed": "2026-06-13"
+    },
+    "TeamOrangeGaming": {
+      "elo": 1560.6887798554956,
+      "games": 35,
+      "league": "PRM",
+      "lastPlayed": "2026-05-20"
+    },
+    "The AstroDucks": {
+      "elo": 1445.0097645999253,
+      "games": 4,
+      "league": "LIT",
+      "lastPlayed": "2026-02-07"
+    },
+    "The Bandits": {
+      "elo": 1523.0119689115484,
+      "games": 56,
+      "league": "ROL",
+      "lastPlayed": "2026-06-02"
+    },
+    "The New Kings": {
+      "elo": 1405.551621232989,
+      "games": 21,
+      "league": "LRS",
+      "lastPlayed": "2026-05-12"
+    },
+    "The ParadOx": {
+      "elo": 1389.081423361982,
+      "games": 33,
+      "league": "HLL",
+      "lastPlayed": "2026-05-19"
+    },
+    "The Secret Club": {
+      "elo": 1519.0892916863309,
+      "games": 41,
+      "league": "EBL",
+      "lastPlayed": "2026-05-27"
+    },
+    "ThunderTalk Gaming": {
+      "elo": 1455.8650086450352,
+      "games": 42,
+      "league": "LPL",
+      "lastPlayed": "2026-06-02"
+    },
+    "Top Esports": {
+      "elo": 1624.378030699026,
+      "games": 86,
+      "league": "LPL",
+      "lastPlayed": "2026-06-14"
+    },
+    "Top Esports Challenger": {
+      "elo": 1546.0655322662903,
+      "games": 10,
+      "league": "Asia Master",
+      "lastPlayed": "2026-06-15"
+    },
+    "Trupe dos Falange": {
+      "elo": 1501.0521338732187,
+      "games": 4,
+      "league": "CD",
+      "lastPlayed": "2026-05-22"
+    },
+    "Tu Pap\u00e1 Esports": {
+      "elo": 1357.8524952109672,
+      "games": 13,
+      "league": "LRS",
+      "lastPlayed": "2026-04-14"
+    },
+    "UB Alma Mater": {
+      "elo": 1326.8916342276364,
+      "games": 19,
+      "league": "LES",
+      "lastPlayed": "2026-05-20"
+    },
+    "UCAM Esports": {
+      "elo": 1678.7204609738683,
+      "games": 55,
+      "league": "EM",
+      "lastPlayed": "2026-06-14"
+    },
+    "UEC eSports PlusPlus": {
+      "elo": 1360.0819105769451,
+      "games": 14,
+      "league": "LJL",
+      "lastPlayed": "2026-02-08"
+    },
+    "UTeSports": {
+      "elo": 1365.0105380271732,
+      "games": 12,
+      "league": "LJL",
+      "lastPlayed": "2026-04-19"
+    },
+    "Ultra Prime": {
+      "elo": 1447.4546588517078,
+      "games": 25,
+      "league": "LPL",
+      "lastPlayed": "2026-05-15"
+    },
+    "Unicorns of Love Sexy Edition": {
+      "elo": 1565.3653605178008,
+      "games": 64,
+      "league": "PRM",
+      "lastPlayed": "2026-05-21"
+    },
+    "Uwinks": {
+      "elo": 1587.2545647780007,
+      "games": 52,
+      "league": "LJL",
+      "lastPlayed": "2026-06-13"
+    },
+    "V3 Esports": {
+      "elo": 1293.4402425121161,
+      "games": 26,
+      "league": "LJL",
+      "lastPlayed": "2026-04-19"
+    },
+    "VARREL YOUTH": {
+      "elo": 1552.579534477862,
+      "games": 25,
+      "league": "LJL",
+      "lastPlayed": "2026-04-19"
+    },
+    "Vantex Esports": {
+      "elo": 1497.0998707523322,
+      "games": 16,
+      "league": "EM",
+      "lastPlayed": "2026-03-12"
+    },
+    "Vasco E-Sports": {
+      "elo": 1546.2870059810045,
+      "games": 12,
+      "league": "CD",
+      "lastPlayed": "2026-05-22"
+    },
+    "VelbeliKaizokudan": {
+      "elo": 1406.4656881640221,
+      "games": 26,
+      "league": "LJL",
+      "lastPlayed": "2026-04-19"
+    },
+    "Verdant": {
+      "elo": 1662.757678138939,
+      "games": 43,
+      "league": "EM",
+      "lastPlayed": "2026-06-09"
+    },
+    "VfB eSports": {
+      "elo": 1384.5357170625937,
+      "games": 18,
+      "league": "PRM",
+      "lastPlayed": "2026-05-12"
+    },
+    "Viper Night Raider": {
+      "elo": 1475.9940434225314,
+      "games": 6,
+      "league": "PCS",
+      "lastPlayed": "2026-05-27"
+    },
+    "Vitality Rising Bees": {
+      "elo": 1468.0,
+      "games": 2,
+      "league": "LFL",
+      "lastPlayed": "2026-01-29"
+    },
+    "Vitality.Bee": {
+      "elo": 1496.1476931923455,
+      "games": 29,
+      "league": "LFL",
+      "lastPlayed": "2026-05-21"
+    },
+    "Vivo Keyd Stars": {
+      "elo": 1458.143046610233,
+      "games": 50,
+      "league": "EWC",
+      "lastPlayed": "2026-06-13"
+    },
+    "Vivo Keyd Stars Academy": {
+      "elo": 1612.94830064328,
+      "games": 23,
+      "league": "CD",
+      "lastPlayed": "2026-06-01"
+    },
+    "Volticons": {
+      "elo": 1667.1565983117698,
+      "games": 33,
+      "league": "LRS",
+      "lastPlayed": "2026-06-09"
+    },
+    "WLGaming Esports": {
+      "elo": 1689.857517074162,
+      "games": 62,
+      "league": "EM",
+      "lastPlayed": "2026-06-12"
+    },
+    "Washed Gaming": {
+      "elo": 1457.057423657264,
+      "games": 5,
+      "league": "EBL",
+      "lastPlayed": "2026-05-13"
+    },
+    "Way Gaming Esports": {
+      "elo": 1468.0,
+      "games": 2,
+      "league": "LPLOL",
+      "lastPlayed": "2026-02-12"
+    },
+    "Weibo Gaming": {
+      "elo": 1511.9019677917536,
+      "games": 84,
+      "league": "LPL",
+      "lastPlayed": "2026-05-24"
+    },
+    "Weibo Gaming Youth Team": {
+      "elo": 1473.8628306306261,
+      "games": 5,
+      "league": "Asia Master",
+      "lastPlayed": "2026-06-11"
+    },
+    "Winthrop University": {
+      "elo": 1588.3188916148167,
+      "games": 40,
+      "league": "NACL",
+      "lastPlayed": "2026-06-04"
+    },
+    "Witchcraft": {
+      "elo": 1557.1847202771949,
+      "games": 10,
+      "league": "EM",
+      "lastPlayed": "2026-03-14"
+    },
+    "Xu Ji Basalt": {
+      "elo": 1438.9390030579511,
+      "games": 4,
+      "league": "PCS",
+      "lastPlayed": "2026-04-27"
+    },
+    "Yang Yang Gaming": {
+      "elo": 1454.5737624849066,
+      "games": 17,
+      "league": "LJL",
+      "lastPlayed": "2026-04-19"
+    },
+    "Yumeea": {
+      "elo": 1468.0,
+      "games": 2,
+      "league": "LFL",
+      "lastPlayed": "2026-01-29"
+    },
+    "ZEN Esports": {
+      "elo": 1515.7058506643223,
+      "games": 24,
+      "league": "VCS",
+      "lastPlayed": "2026-06-19"
+    },
+    "ZYB Esport": {
+      "elo": 1439.8663961436055,
+      "games": 26,
+      "league": "LFL",
+      "lastPlayed": "2026-05-13"
+    },
+    "Zena Esports": {
+      "elo": 1487.0635163060463,
+      "games": 25,
+      "league": "LIT",
+      "lastPlayed": "2026-05-08"
+    },
+    "ZennIT": {
+      "elo": 1418.0876368486483,
+      "games": 43,
+      "league": "ROL",
+      "lastPlayed": "2026-06-11"
+    },
+    "Zephyr Esport": {
+      "elo": 1409.7902375585556,
+      "games": 16,
+      "league": "NL",
+      "lastPlayed": "2026-05-24"
+    },
+    "ZeroZone Gaming": {
+      "elo": 1415.8378794306157,
+      "games": 14,
+      "league": "LPLOL",
+      "lastPlayed": "2026-05-22"
+    },
+    "Zerolag Esports": {
+      "elo": 1412.9210929588376,
+      "games": 8,
+      "league": "HLL",
+      "lastPlayed": "2026-05-19"
+    },
+    "Zeu5 Esports": {
+      "elo": 1448.4085518340657,
+      "games": 28,
+      "league": "LRN",
+      "lastPlayed": "2026-05-19"
+    },
+    "devils.one inStreamly": {
+      "elo": 1431.2525414215695,
+      "games": 23,
+      "league": "RL",
+      "lastPlayed": "2026-05-21"
+    },
+    "eSuba": {
+      "elo": 1597.5890629907874,
+      "games": 46,
+      "league": "HM",
+      "lastPlayed": "2026-06-02"
+    },
+    "emBRAZA! Esports": {
+      "elo": 1515.8646571356328,
+      "games": 5,
+      "league": "CD",
+      "lastPlayed": "2026-05-22"
+    },
+    "mCon esports": {
+      "elo": 1494.150541074248,
+      "games": 57,
+      "league": "EM",
+      "lastPlayed": "2026-06-08"
+    },
+    "paiN Gaming": {
+      "elo": 1395.5674845269268,
+      "games": 37,
+      "league": "EWC",
+      "lastPlayed": "2026-06-10"
+    },
+    "paiN Gaming Academy": {
+      "elo": 1573.9732411853277,
+      "games": 30,
+      "league": "CD",
+      "lastPlayed": "2026-05-27"
+    },
+    "wangting": {
+      "elo": 1503.8251807690126,
+      "games": 8,
+      "league": "PCS",
+      "lastPlayed": "2026-05-27"
+    }
+  }
+}

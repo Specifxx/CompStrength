@@ -1,7 +1,8 @@
 """Fits a logistic regression predicting blue-side win probability from
-four historical-data-driven predictors: the aggregate champion strength
+five historical-data-driven predictors: the aggregate champion strength
 differential, within-team pairwise synergy, cross-team same-role matchup
-history, and meta presence (how contested each champion is in pro drafts).
+history, meta presence (how contested each champion is in pro drafts), and
+team strength (pre-game Elo gap; see teams.py).
 
 Features:
     ``score_diff``    = sum(blue side 5 champions' strengthScore) -
@@ -23,15 +24,23 @@ Features:
                          strength signal than a small-sample win rate.
                          Zeroed (weight exactly 0) when
                          ``config.use_presence_feature`` is off.
+    ``team_elo_diff`` = (blue team's pre-game Elo - red team's) /
+                         config.elo_feature_scale. Computed by a chronological
+                         Elo pass (teams.py); a game's value depends only on
+                         strictly EARLIER games, so unlike synergy/matchup it
+                         does not leak in-sample. 0 when teams are unknown
+                         ("assume equal teams"), which is also how the site
+                         behaves when the optional team inputs are blank.
 Label: ``did blue side win`` (1/0)
 
-We fit a 4-feature logistic regression:
+We fit a 5-feature logistic regression:
 
     P(blue wins) = sigmoid(
         scoreDiffWeight * score_diff
         + synergyWeight * synergy_diff
         + matchupWeight * matchup_diff
         + presenceWeight * presence_diff
+        + teamEloWeight * team_elo_diff
         + blueSideBias
     )
 
@@ -197,9 +206,10 @@ def build_training_frame(
     synergy_residuals: dict[str, float] | None = None,
     matchup_residuals: dict[str, float] | None = None,
     champion_presence: dict[str, float] | None = None,
+    team_elo_diffs: dict[str, float] | None = None,
 ) -> pd.DataFrame:
     """Build a per-game training frame with columns [gameid, score_diff,
-    synergy_diff, matchup_diff, presence_diff, blue_win].
+    synergy_diff, matchup_diff, presence_diff, team_elo_diff, blue_win].
 
     Args:
         games_df: Cleaned per-player-game table with exactly 10 rows per
@@ -221,6 +231,7 @@ def build_training_frame(
     synergy_residuals = synergy_residuals or {}
     matchup_residuals = matchup_residuals or {}
     champion_presence = champion_presence or {}
+    team_elo_diffs = team_elo_diffs or {}
 
     records = []
     for gameid, group in games_df.groupby("gameid"):
@@ -248,6 +259,9 @@ def build_training_frame(
                 "synergy_diff": synergy_diff,
                 "matchup_diff": matchup_diff,
                 "presence_diff": presence_diff,
+                # Pre-game Elo gap for this exact game (leak-free; see
+                # teams.py). 0 when unknown -- i.e. "assume equal teams".
+                "team_elo_diff": team_elo_diffs.get(gameid, 0.0),
                 "blue_win": blue_win,
             }
         )
@@ -255,7 +269,9 @@ def build_training_frame(
     return pd.DataFrame(records)
 
 
-FEATURE_COLUMNS = ["score_diff", "synergy_diff", "matchup_diff", "presence_diff"]
+FEATURE_COLUMNS = [
+    "score_diff", "synergy_diff", "matchup_diff", "presence_diff", "team_elo_diff"
+]
 
 
 def train_model(
@@ -264,6 +280,7 @@ def train_model(
     synergy_residuals: dict[str, float] | None = None,
     matchup_residuals: dict[str, float] | None = None,
     champion_presence: dict[str, float] | None = None,
+    team_elo_diffs: dict[str, float] | None = None,
 ) -> ModelResult:
     """Fit the logistic regression model and compute evaluation metrics.
 
@@ -287,7 +304,7 @@ def train_model(
     """
     training = build_training_frame(
         games_df, champion_strength, synergy_residuals, matchup_residuals,
-        champion_presence,
+        champion_presence, team_elo_diffs,
     )
     n = len(training)
 
@@ -313,6 +330,7 @@ def train_model(
                 "synergyWeight": 0.0,
                 "matchupWeight": 0.0,
                 "presenceWeight": 0.0,
+                "teamEloWeight": 0.0,
                 "blueSideBias": 0.0,
                 "intercept": 0.0,
             },
@@ -340,6 +358,7 @@ def train_model(
             "synergyWeight": 0.0,
             "matchupWeight": 0.0,
             "presenceWeight": 0.0,
+            "teamEloWeight": 0.0,
             "blueSideBias": float(np.log(constant_prob / (1 - constant_prob))),
             "intercept": 0.0,
         }
@@ -364,6 +383,7 @@ def train_model(
     synergy_weight = float(model.coef_[0][1])
     matchup_weight = float(model.coef_[0][2])
     presence_weight = float(model.coef_[0][3])
+    team_elo_weight = float(model.coef_[0][4])
     intercept = float(model.intercept_[0])
 
     preds_proba = model.predict_proba(X)[:, 1]
@@ -389,6 +409,7 @@ def train_model(
         "synergyWeight": synergy_weight,
         "matchupWeight": matchup_weight,
         "presenceWeight": presence_weight,
+        "teamEloWeight": team_elo_weight,
         "blueSideBias": intercept,
         "intercept": 0.0,
     }

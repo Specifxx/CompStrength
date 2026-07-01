@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ChampionPicker } from "./ChampionPicker";
+import { TeamPicker } from "./TeamPicker";
 import { ResultBreakdown } from "./ResultBreakdown";
 import { NotablePairs } from "./NotablePairs";
 import { WinBar } from "./WinBar";
@@ -20,6 +21,7 @@ import {
   type ModelFile,
   type PredictResponse,
   type SynergyFile,
+  type TeamsFile,
 } from "@/lib/types";
 
 const EMPTY_TEAM: DraftTeam = {
@@ -37,6 +39,7 @@ export function DraftBuilder({
   model,
   synergy,
   backtest,
+  teams,
 }: {
   champions: ChampionListItem[];
   ratings: ChampionRatingsFile;
@@ -44,11 +47,14 @@ export function DraftBuilder({
   model: ModelFile;
   synergy: SynergyFile;
   backtest?: BacktestReportFile | null;
+  teams?: TeamsFile | null;
 }) {
   const [blue, setBlue] = useState<DraftTeam>({ ...EMPTY_TEAM });
   const [red, setRed] = useState<DraftTeam>({ ...EMPTY_TEAM });
   const [result, setResult] = useState<PredictResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [blueOrg, setBlueOrg] = useState<string | null>(null);
+  const [redOrg, setRedOrg] = useState<string | null>(null);
 
   const blueTaken = useMemo(
     () => new Set(Object.values(blue).filter((v): v is string => !!v)),
@@ -70,7 +76,11 @@ export function DraftBuilder({
       // Computed entirely client-side — no network round-trip. lib/predict.ts
       // is pure/isomorphic TS, so it runs identically here and on the
       // /api/predict route (which stays available for programmatic use).
-      const prediction = predictMatchup(blue, red, ratings, model, synergy);
+      const prediction = predictMatchup(blue, red, ratings, model, synergy, {
+        blueTeam: blueOrg,
+        redTeam: redOrg,
+        teams,
+      });
       setResult(prediction);
     } catch (err) {
       if (err instanceof IncompleteDraftError || err instanceof UnknownChampionError) {
@@ -85,6 +95,8 @@ export function DraftBuilder({
   function reset() {
     setBlue({ ...EMPTY_TEAM });
     setRed({ ...EMPTY_TEAM });
+    setBlueOrg(null);
+    setRedOrg(null);
     setResult(null);
     setError(null);
   }
@@ -119,6 +131,9 @@ export function DraftBuilder({
             Blue Side
           </h2>
           <div className="flex flex-col gap-3">
+            {teams && Object.keys(teams.teams).length > 0 && (
+              <TeamPicker side="blue" value={blueOrg} teams={teams} onChange={setBlueOrg} />
+            )}
             {ROLES.map((role) => (
               <ChampionPicker
                 key={role}
@@ -138,6 +153,9 @@ export function DraftBuilder({
             Red Side
           </h2>
           <div className="flex flex-col gap-3">
+            {teams && Object.keys(teams.teams).length > 0 && (
+              <TeamPicker side="red" value={redOrg} teams={teams} onChange={setRedOrg} />
+            )}
             {ROLES.map((role) => (
               <ChampionPicker
                 key={role}
@@ -185,6 +203,50 @@ export function DraftBuilder({
       {result && (
         <section className="flex flex-col gap-6 rounded-lg border border-slate-800 bg-slate-900/40 p-5">
           <WinBar blueWinProbability={result.blueWinProbability} />
+
+          {/* Fair odds: the decimal odds at which a bet on each side would be
+              exactly break-even IF the model probability is right. Offered
+              odds ABOVE the fair number = positive expected value per the
+              model (before the bookmaker's margin and the model's own error
+              bars). */}
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-sm">
+            <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Fair odds
+            </span>
+            <span className="text-sky-300">
+              Blue {(1 / Math.max(result.blueWinProbability, 1e-6)).toFixed(2)}
+            </span>
+            <span className="text-rose-300">
+              Red {(1 / Math.max(result.redWinProbability, 1e-6)).toFixed(2)}
+            </span>
+            <span className="text-xs text-slate-500">
+              (decimal; offered odds above these = model sees value)
+            </span>
+          </div>
+
+          {result.teamContext ? (
+            <p className="text-sm text-slate-400">
+              Team strength applied:{" "}
+              <span className="text-sky-300">{result.teamContext.blueTeam}</span>{" "}
+              <span className="font-mono text-slate-300">
+                {Math.round(result.teamContext.blueElo)}
+              </span>{" "}
+              vs{" "}
+              <span className="text-rose-300">{result.teamContext.redTeam}</span>{" "}
+              <span className="font-mono text-slate-300">
+                {Math.round(result.teamContext.redElo)}
+              </span>{" "}
+              Elo — team strength is the strongest single predictor; the draft
+              adjusts it.
+            </p>
+          ) : (
+            <p className="text-sm text-slate-500">
+              {(blueOrg ? 1 : 0) + (redOrg ? 1 : 0) === 1
+                ? "Team strength needs BOTH teams selected — only one is set, so this is a draft-only prediction."
+                : "Draft-only prediction (no teams selected). Pick both teams above to include team strength — the strongest single predictor."}
+            </p>
+          )}
+
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <ResultBreakdown side="blue" contributions={result.breakdown.blue} />
             <ResultBreakdown side="red" contributions={result.breakdown.red} />
@@ -193,15 +255,37 @@ export function DraftBuilder({
           {backtest && Number.isFinite(backtest.metrics.accuracy) ? (
             // Show the HONEST walk-forward held-out numbers (same as the
             // Methodology page), NOT the model.json in-sample metrics, which
-            // are inflated by synergy/matchup leakage. Draft alone is a weak
-            // signal, so held-out accuracy sits near the pick-majority baseline.
+            // are inflated by synergy/matchup leakage. The two modes differ a
+            // lot (teams carry most of the signal), so show the numbers that
+            // match how THIS prediction was made: with-teams metrics when the
+            // team term applied, the draft-only companion metrics otherwise.
             <p className="text-xs text-slate-500">
-              Held-out accuracy {(backtest.metrics.accuracy * 100).toFixed(1)}% vs.{" "}
-              {(backtest.metrics.baselineAccuracy * 100).toFixed(1)}% pick-majority
-              baseline; log-loss {backtest.metrics.logLoss.toFixed(3)} vs.{" "}
-              {backtest.metrics.coinFlipLogLoss.toFixed(3)} coin-flip (walk-forward
-              backtest on {backtest.testGames.toLocaleString()} real pro games).
-              Draft alone is a weak predictor at the pro level — see{" "}
+              {result.teamContext || !backtest.draftOnlyMetrics ? (
+                <>
+                  Held-out accuracy {(backtest.metrics.accuracy * 100).toFixed(1)}%
+                  vs. {(backtest.metrics.baselineAccuracy * 100).toFixed(1)}%
+                  pick-majority baseline; log-loss{" "}
+                  {backtest.metrics.logLoss.toFixed(3)} vs.{" "}
+                  {backtest.metrics.coinFlipLogLoss.toFixed(3)} coin-flip
+                  (walk-forward backtest on{" "}
+                  {backtest.testGames.toLocaleString()} real pro games, teams
+                  known).
+                </>
+              ) : (
+                <>
+                  Held-out DRAFT-ONLY accuracy{" "}
+                  {(backtest.draftOnlyMetrics.accuracy * 100).toFixed(1)}% vs.{" "}
+                  {(backtest.metrics.baselineAccuracy * 100).toFixed(1)}%
+                  pick-majority baseline; log-loss{" "}
+                  {backtest.draftOnlyMetrics.logLoss.toFixed(3)} vs.{" "}
+                  {backtest.metrics.coinFlipLogLoss.toFixed(3)} coin-flip. Draft
+                  alone is a weak predictor — select both teams for the model
+                  that reaches{" "}
+                  {(backtest.metrics.accuracy * 100).toFixed(1)}% held-out
+                  accuracy.
+                </>
+              )}{" "}
+              See{" "}
               <Link href="/methodology" className="text-sky-400 hover:underline">
                 Methodology
               </Link>

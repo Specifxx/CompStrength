@@ -5,6 +5,7 @@ import {
   loadChampionRatings,
   loadModel,
   loadSynergy,
+  loadTeams,
 } from "@/lib/data";
 import type {
   BacktestReportFile,
@@ -12,6 +13,7 @@ import type {
   ChampionRatingsFile,
   ModelFile,
   SynergyFile,
+  TeamsFile,
 } from "@/lib/types";
 
 function loadHomeData(): {
@@ -21,6 +23,7 @@ function loadHomeData(): {
   model: ModelFile;
   synergy: SynergyFile;
   backtest: BacktestReportFile | null;
+  teams: TeamsFile | null;
 } | null {
   try {
     const ratings = loadChampionRatings();
@@ -55,7 +58,17 @@ function loadHomeData(): {
       if (!(err instanceof DataNotReadyError)) throw err;
       backtest = null;
     }
-    return { champions, ratings, patch: ratings.patch, model, synergy, backtest };
+    // teams.json powers the optional team-strength inputs; absent on older
+    // snapshots -> the pickers simply don't render and prediction stays
+    // draft-only.
+    let teams: TeamsFile | null;
+    try {
+      teams = loadTeams();
+    } catch (err) {
+      if (!(err instanceof DataNotReadyError)) throw err;
+      teams = null;
+    }
+    return { champions, ratings, patch: ratings.patch, model, synergy, backtest, teams };
   } catch (err) {
     if (err instanceof DataNotReadyError) return null;
     throw err;
@@ -90,6 +103,7 @@ export default function HomePage() {
       model={data.model}
       synergy={data.synergy}
       backtest={data.backtest}
+      teams={data.teams}
     />
   );
 }

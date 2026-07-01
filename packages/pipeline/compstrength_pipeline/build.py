@@ -32,7 +32,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from compstrength_pipeline import backtest, etl, features, pairwise, train_model
+from compstrength_pipeline import backtest, etl, features, pairwise, teams, train_model
 from compstrength_pipeline.config import DEFAULT_CONFIG, PipelineConfig
 from compstrength_pipeline.sources import leaguepedia as leaguepedia_source
 from compstrength_pipeline.sources import oracles_elixir as oracles_elixir_source
@@ -262,7 +262,7 @@ def run_pipeline_on_data(
     soloqueue_source,
     patch: str | None,
     config: PipelineConfig = DEFAULT_CONFIG,
-) -> tuple[dict, dict, dict]:
+) -> tuple[dict, dict, dict, dict]:
     """Run ETL -> features -> pairwise -> train_model on already-fetched data.
 
     This is the pure/reusable core: it takes raw (not yet ETL-cleaned)
@@ -304,6 +304,10 @@ def run_pipeline_on_data(
     solo_winrates = soloqueue_source.get_champion_winrates(resolved_patch)
 
     reference_date = games_df["date"].max()
+    # Owner directive: premier leagues (LCK+LPL) carry a fixed share (~70%)
+    # of the decayed training weight. Solves for the multiplier on this exact
+    # window and threads it through the existing league-weight machinery.
+    config = features.apply_premier_league_weighting(config, games_df, reference_date)
     champion_features_df = features.compute_champion_features(
         games_df=games_df,
         bans_df=bans_df,
@@ -331,9 +335,21 @@ def run_pipeline_on_data(
     synergy_residuals = pairwise.synergy_lookup(synergy_table)
     matchup_residuals = pairwise.matchup_lookup(matchup_table)
 
+    # Team-strength feature: one chronological Elo pass over the same
+    # restricted window. Each TRAINING game's feature is its PRE-game Elo gap
+    # (leak-free; see teams.py); the artifact ships the POST-pass "as of
+    # today" ratings for the frontend's optional team inputs.
+    team_elo_diffs: dict[str, float] = {}
+    elo_result = None
+    if config.use_team_feature:
+        elo_result = teams.compute_team_elo(games_df, k=config.elo_k)
+        team_elo_diffs = teams.elo_diff_by_gameid(
+            elo_result, feature_scale=config.elo_feature_scale
+        )
+
     model_result = train_model.train_model(
         games_df, champion_strength, synergy_residuals, matchup_residuals,
-        champion_presence,
+        champion_presence, team_elo_diffs,
     )
 
     champion_ratings_payload = _build_champion_ratings_payload(
@@ -343,8 +359,9 @@ def run_pipeline_on_data(
     synergy_payload = _build_synergy_payload(
         synergy_table, matchup_table, resolved_patch, patches_used, config
     )
+    teams_payload = _build_teams_payload(elo_result, resolved_patch, config)
 
-    return champion_ratings_payload, model_payload, synergy_payload
+    return champion_ratings_payload, model_payload, synergy_payload, teams_payload
 
 
 def soloqueue_source_for(source: str, soloqueue_fixture: str):
@@ -372,7 +389,7 @@ def run_pipeline(
     config: PipelineConfig = DEFAULT_CONFIG,
     source: str = "fixture",
     year: int | None = None,
-) -> tuple[dict, dict, dict]:
+) -> tuple[dict, dict, dict, dict]:
     """Fetch from ``source`` and run the full pipeline. See
     :func:`run_pipeline_on_data` for the reusable, already-fetched-data core
     (used by ``main()`` so the backtest doesn't re-fetch).
@@ -476,8 +493,41 @@ def _build_synergy_payload(
     }
 
 
+def _build_teams_payload(
+    elo_result, patch: str, config: PipelineConfig
+) -> dict:
+    """``data/teams.json``: per-team Elo "as of today" for the frontend's
+    optional team inputs. Empty ``teams`` when the feature is disabled or no
+    team names were present in the data."""
+    teams_payload = {}
+    if elo_result is not None:
+        for team, elo in sorted(elo_result.ratings.items()):
+            teams_payload[team] = {
+                "elo": float(elo),
+                "games": int(elo_result.games_played.get(team, 0)),
+                "league": elo_result.last_league.get(team, ""),
+                "lastPlayed": elo_result.last_played.get(team, ""),
+            }
+    return {
+        "generatedAt": datetime.now(timezone.utc).isoformat(),
+        "patch": patch,
+        "params": {
+            "eloK": config.elo_k,
+            # The FEATURE divisor (regularization knob), which is what the
+            # frontend must divide the Elo gap by -- not Elo's own 400 curve.
+            "eloScale": config.elo_feature_scale,
+            "initialElo": teams.INITIAL_ELO,
+        },
+        "teams": teams_payload,
+    }
+
+
 def write_outputs(
-    champion_ratings: dict, model: dict, synergy: dict, output_dir: str
+    champion_ratings: dict,
+    model: dict,
+    synergy: dict,
+    output_dir: str,
+    teams_payload: dict | None = None,
 ) -> tuple[Path, Path, Path]:
     out_dir = Path(output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -497,6 +547,12 @@ def write_outputs(
     with synergy_path.open("w", encoding="utf-8") as f:
         json.dump(synergy, f, indent=2, sort_keys=False)
         f.write("\n")
+
+    if teams_payload is not None:
+        teams_path = out_dir / "teams.json"
+        with teams_path.open("w", encoding="utf-8") as f:
+            json.dump(teams_payload, f, indent=2, sort_keys=False)
+            f.write("\n")
 
     return ratings_path, model_path, synergy_path
 
@@ -593,12 +649,16 @@ def main(argv: list[str] | None = None) -> None:
     )
     soloqueue_source = soloqueue_source_for(args.source, args.soloqueue_fixture)
 
-    champion_ratings, model, synergy = run_pipeline_on_data(
+    champion_ratings, model, synergy, teams_payload = run_pipeline_on_data(
         raw_games_df, raw_bans_df, soloqueue_source, args.patch, config
     )
 
     ratings_path, model_path, synergy_path = write_outputs(
-        champion_ratings, model, synergy, args.output_dir
+        champion_ratings, model, synergy, args.output_dir, teams_payload
+    )
+    print(
+        f"Wrote {Path(args.output_dir) / 'teams.json'} "
+        f"({len(teams_payload['teams'])} teams, eloK={teams_payload['params']['eloK']})"
     )
 
     n_champions = len(champion_ratings["champions"])

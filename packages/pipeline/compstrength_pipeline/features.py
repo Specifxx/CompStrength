@@ -275,6 +275,72 @@ def league_weight_multiplier(
     return 1.0
 
 
+def apply_premier_league_weighting(config, games_df: pd.DataFrame, reference_date):
+    """Return a config whose league weighting makes the premier leagues
+    (LCK/LPL by default) carry ``premier_league_target_share`` of the total
+    decayed training weight.
+
+    Owner directive: the strongest leagues should dominate the statistics
+    (LCK+LPL combined ~70%), regardless of how many raw games each league
+    contributes in the window. We solve for the multiplier ``m`` such that
+
+        m * W_premier / (m * W_premier + W_rest) = target
+
+    where the ``W``s are the decayed (day-decay x patch-decay, incl. the
+    international boost) weight sums over the given games. The result is fed
+    through the existing ``major_leagues`` weighting machinery (overriding
+    it while active). Computed per snapshot -- in the backtest that's each
+    fold's TRAIN set, so it stays leak-free. Returns ``config`` unchanged
+    when disabled, when no premier games exist in the window (can't
+    reweight what isn't there -- a warning is emitted), or when premier
+    games are all there is.
+    """
+    import dataclasses
+
+    target = config.premier_league_target_share
+    if target is None or games_df.empty or "league" not in games_df.columns:
+        return config
+
+    per_game = games_df.drop_duplicates("gameid")
+    days = (reference_date - per_game["date"]).dt.total_seconds() / 86400.0
+    weights = days.map(lambda d: decay_weight(d, config.patch_half_life_days))
+    if "patch" in per_game.columns:
+        distances = patch_ordinal_distances(games_df)
+        weights = weights * patch_weight_series(
+            per_game["patch"], distances, config.patch_decay_base
+        )
+    intl_boost = per_game["league"].map(
+        lambda lg: league_weight_multiplier(
+            lg, config.international_leagues, config.international_weight_multiplier
+        )
+    )
+    weights = weights * intl_boost
+
+    premier = {lg.upper() for lg in config.premier_leagues}
+    is_premier = per_game["league"].map(
+        lambda lg: isinstance(lg, str) and lg.strip().upper() in premier
+    )
+    w_premier = float(weights[is_premier].sum())
+    w_rest = float(weights[~is_premier].sum())
+
+    if w_premier <= 0:
+        warnings.warn(
+            "premier_league_target_share is set but no premier-league games "
+            f"({sorted(config.premier_leagues)}) exist in this window; "
+            "league weights left unchanged."
+        )
+        return config
+    if w_rest <= 0:
+        return config  # premier games are all there is; weighting is moot
+
+    multiplier = (target * w_rest) / ((1.0 - target) * w_premier)
+    return dataclasses.replace(
+        config,
+        major_leagues=config.premier_leagues,
+        major_league_weight_multiplier=multiplier,
+    )
+
+
 def patch_weight_series(
     patches: pd.Series,
     patch_distances: dict[str, int] | None,

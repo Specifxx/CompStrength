@@ -148,9 +148,76 @@ export default function MethodologyPage() {
                 </dd>
               </div>
             </dl>
+            {report.teamFeatureUsed && report.draftOnlyMetrics && (
+              <div className="mt-4 rounded-md border border-slate-800 bg-slate-950/40 p-3">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                  With teams vs. draft only (same held-out games)
+                </p>
+                <table className="w-full text-left text-sm">
+                  <thead className="text-xs uppercase text-slate-500">
+                    <tr>
+                      <th className="pb-1 pr-2">Inputs</th>
+                      <th className="pb-1 pr-2">Accuracy</th>
+                      <th className="pb-1 pr-2">Log loss</th>
+                      <th className="pb-1">Brier</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-t border-slate-800">
+                      <td className="py-1 pr-2 text-slate-300">Teams + draft</td>
+                      <td className="py-1 pr-2 text-emerald-400">{pct(report.metrics.accuracy)}</td>
+                      <td className="py-1 pr-2 text-slate-300">{report.metrics.logLoss.toFixed(3)}</td>
+                      <td className="py-1 text-slate-300">{report.metrics.brierScore.toFixed(3)}</td>
+                    </tr>
+                    <tr className="border-t border-slate-800">
+                      <td className="py-1 pr-2 text-slate-300">Draft only</td>
+                      <td className="py-1 pr-2 text-slate-400">{pct(report.draftOnlyMetrics.accuracy)}</td>
+                      <td className="py-1 pr-2 text-slate-400">{report.draftOnlyMetrics.logLoss.toFixed(3)}</td>
+                      <td className="py-1 text-slate-400">{report.draftOnlyMetrics.brierScore.toFixed(3)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p className="mt-2 text-xs text-slate-500">
+                  Team strength (Elo over game history) carries most of the
+                  predictable signal in pro play; the draft refines it. Select
+                  both teams on the draft builder to get the top row&apos;s
+                  model.
+                </p>
+              </div>
+            )}
             {report.note && (
               <p className="mt-4 text-xs text-slate-500">{report.note}</p>
             )}
+          </section>
+
+          <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-5">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-sky-400">
+              Comparing against bookmaker odds
+            </h2>
+            <div className="flex flex-col gap-2 text-sm text-slate-400">
+              <p>
+                Every prediction shows <span className="text-slate-200">fair decimal odds</span>{" "}
+                (1 &divide; probability) for each side. If a bookmaker offers
+                longer odds than the fair number on a side, the model sees
+                positive expected value on that side &mdash; before costs.
+              </p>
+              <p>
+                Be honest about the bar: a bookmaker&apos;s implied
+                probabilities contain a built-in margin (typically ~4&ndash;7%
+                across both sides), and closing lines on major leagues are
+                sharp. To profit you need the model&apos;s calibration edge to
+                exceed that margin consistently &mdash; check the log-loss and
+                calibration table above, not just accuracy, and treat
+                small-sample leagues (see the breakdown below) with extra
+                skepticism. One structural caveat: team Elo is anchored across
+                leagues only by the few inter-league games (MSI, Worlds, EWC),
+                so ratings are most trustworthy for matchups WITHIN a league or
+                at international events &mdash; an isolated league&apos;s
+                ratings can drift high or low as a block. Nothing on this page
+                is betting advice; it&apos;s a measured, walk-forward-validated
+                probability estimate with known error bars.
+              </p>
+            </div>
           </section>
 
           {report.dataComposition && report.dataComposition.totalGames > 0 && (
@@ -163,7 +230,12 @@ export default function MethodologyPage() {
                 professional games, drawn from the leagues and patches below.
                 More recent patches are weighted exponentially more (the
                 &ldquo;weight&rdquo; column is each patch&apos;s share of full
-                weight); older games still contribute, just less.
+                weight); older games still contribute, just less. On top of
+                that, premier leagues (LCK + LPL) are up-weighted to carry
+                ~70% of the total training weight, and international events
+                (MSI/Worlds/EWC) get their own boost &mdash; so the champion
+                statistics reflect the highest level of play even though
+                minor leagues supply more raw games.
               </p>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>

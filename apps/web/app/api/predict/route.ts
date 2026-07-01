@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { DataNotReadyError, loadChampionRatings, loadModel, loadSynergy } from "@/lib/data";
+import { DataNotReadyError, loadChampionRatings, loadModel, loadSynergy, loadTeams } from "@/lib/data";
 import {
   IncompleteDraftError,
   UnknownChampionError,
@@ -31,11 +31,25 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const blueTeam = typeof body.blueTeam === "string" ? body.blueTeam : null;
+  const redTeam = typeof body.redTeam === "string" ? body.redTeam : null;
+
   try {
     const ratings = loadChampionRatings();
     const model = loadModel();
     const synergy = loadSynergy();
-    const result = predictMatchup(body.blue, body.red, ratings, model, synergy);
+    // teams.json is optional (older snapshots) -- degrade to draft-only.
+    let teams = null;
+    try {
+      teams = loadTeams();
+    } catch (err) {
+      if (!(err instanceof DataNotReadyError)) throw err;
+    }
+    const result = predictMatchup(body.blue, body.red, ratings, model, synergy, {
+      blueTeam,
+      redTeam,
+      teams,
+    });
     return NextResponse.json(result);
   } catch (err) {
     if (err instanceof DataNotReadyError) {

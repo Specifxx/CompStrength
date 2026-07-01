@@ -70,6 +70,12 @@ def test_run_backtest_end_to_end_produces_expected_schema(cleaned_games_and_bans
 
     assert isinstance(report["note"], str) and len(report["note"]) > 0
 
+    # With-teams vs draft-only companion metrics.
+    assert report["teamFeatureUsed"] is True
+    for key in ("accuracy", "logLoss", "brierScore"):
+        assert key in report["draftOnlyMetrics"]
+        assert math.isfinite(report["draftOnlyMetrics"][key])
+
     # Per-segment breakdowns + data composition (drive the Methodology page).
     assert "breakdowns" in report and "dataComposition" in report
     for seg in ("byPatch", "byLeague"):

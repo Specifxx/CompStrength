@@ -373,6 +373,56 @@ def test_target_training_games_validation():
 # ---------------------------------------------------------------------------
 
 
+def test_apply_premier_league_weighting_hits_target_share():
+    from compstrength_pipeline.features import (
+        apply_premier_league_weighting,
+        league_weight_multiplier,
+    )
+
+    ref = pd.Timestamp("2026-06-15", tz="UTC")
+    # Same date/patch for every game -> uniform base weights, so shares are
+    # just game counts: 2 premier (LCK/LPL) vs 6 rest.
+    rows = []
+    for i, lg in enumerate(["LCK", "LPL"] + ["LCKC"] * 6):
+        rows.append(
+            {"gameid": f"g{i}", "date": ref, "patch": "16.12", "league": lg,
+             "champion": "Ahri"}
+        )
+    games = pd.DataFrame(rows)
+    cfg = PipelineConfig(premier_league_target_share=0.7)
+
+    weighted = apply_premier_league_weighting(cfg, games, ref)
+    m = weighted.major_league_weight_multiplier
+    assert weighted.major_leagues == cfg.premier_leagues
+    # Verify the solved multiplier actually yields a 70% premier share.
+    w_premier = 2 * m
+    w_rest = 6.0
+    assert w_premier / (w_premier + w_rest) == pytest.approx(0.7)
+    # ...and it flows through the row-level weighting function.
+    assert league_weight_multiplier(
+        "LCK", cfg.international_leagues, cfg.international_weight_multiplier,
+        weighted.major_leagues, m,
+    ) == pytest.approx(m)
+
+
+def test_apply_premier_league_weighting_disabled_or_absent():
+    from compstrength_pipeline.features import apply_premier_league_weighting
+
+    ref = pd.Timestamp("2026-06-15", tz="UTC")
+    games = pd.DataFrame(
+        [{"gameid": "g0", "date": ref, "patch": "16.12", "league": "LCKC",
+          "champion": "Ahri"}]
+    )
+    # Disabled -> unchanged config object.
+    off = PipelineConfig(premier_league_target_share=None)
+    assert apply_premier_league_weighting(off, games, ref) is off
+    # No premier games in window -> warn and leave weights unchanged.
+    on = PipelineConfig(premier_league_target_share=0.7)
+    with pytest.warns(UserWarning, match="no premier-league games"):
+        out = apply_premier_league_weighting(on, games, ref)
+    assert out.major_league_weight_multiplier == on.major_league_weight_multiplier
+
+
 def test_league_weight_multiplier_tiers():
     from compstrength_pipeline.features import league_weight_multiplier
 

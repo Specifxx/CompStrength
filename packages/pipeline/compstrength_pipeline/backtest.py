@@ -41,7 +41,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import log_loss
 
-from compstrength_pipeline import etl, features, pairwise, train_model
+from compstrength_pipeline import etl, features, pairwise, teams, train_model
 from compstrength_pipeline.config import DEFAULT_CONFIG, PipelineConfig
 from compstrength_pipeline.sources.soloqueue import SoloQueueSource, StaticSoloQueueSource
 
@@ -87,12 +87,14 @@ def _predict_proba(
     synergy_diff: float,
     matchup_diff: float,
     presence_diff: float = 0.0,
+    team_elo_diff: float = 0.0,
 ) -> float:
     """Mirror the frontend's combination rule (see train_model.py docstring):
 
         logit = intercept + scoreDiffWeight * scoreDiff
                 + synergyWeight * synergyDiff + matchupWeight * matchupDiff
-                + presenceWeight * presenceDiff + blueSideBias
+                + presenceWeight * presenceDiff
+                + teamEloWeight * teamEloDiff + blueSideBias
     """
     logit_val = (
         coefficients.get("intercept", 0.0)
@@ -100,6 +102,7 @@ def _predict_proba(
         + coefficients.get("synergyWeight", 0.0) * synergy_diff
         + coefficients.get("matchupWeight", 0.0) * matchup_diff
         + coefficients.get("presenceWeight", 0.0) * presence_diff
+        + coefficients.get("teamEloWeight", 0.0) * team_elo_diff
         + coefficients.get("blueSideBias", 0.0)
     )
     return 1.0 / (1.0 + math.exp(-logit_val))
@@ -112,21 +115,38 @@ def _fit_snapshot_and_predict(
     solo_source: SoloQueueSource,
     config: PipelineConfig,
     reference_date: pd.Timestamp,
-) -> list[tuple[float, int, str, str]]:
+    team_elo_diffs: dict[str, float] | None = None,
+) -> list[tuple[float, int, str, str, float]]:
     """Fit the full pipeline on ``train_games_df`` (as of ``reference_date``)
     and predict blue-win-probability for every game in ``test_games_df``.
 
-    Returns a list of ``(predicted_proba, actual_blue_win, league, patch)``
+    Returns a list of
+    ``(predicted_proba, actual_blue_win, league, patch, draft_only_proba)``
     tuples, one per gameid in ``test_games_df`` (skipping any gameid that
     doesn't have both a blue and red side, which shouldn't happen post-ETL but
     is handled defensively). ``league``/``patch`` are carried so the aggregate
     report can break held-out accuracy down by league and by patch.
+
+    ``team_elo_diffs`` maps gameid -> pre-game Elo gap (see ``teams.py``);
+    the per-game PRE-game values only depend on strictly earlier games, so
+    sharing one global Elo pass across folds is leak-free. Two models are fit
+    per fold: the full one (with the team feature) drives ``predicted_proba``
+    and a draft-only refit (team feature zeroed) drives ``draft_only_proba``,
+    so the report can honestly separate "how good is the model when you know
+    the teams" from "when you only know the draft". When the team feature is
+    disabled the two are identical.
     """
     if train_games_df.empty:
         return []
 
     resolved_patch = _resolve_patch_for_snapshot(train_games_df)
     solo_winrates = solo_source.get_champion_winrates(resolved_patch)
+
+    # Premier-league (LCK+LPL) target-share weighting, solved on this fold's
+    # TRAIN set only (leak-free).
+    config = features.apply_premier_league_weighting(
+        config, train_games_df, reference_date
+    )
 
     champion_features_df = features.compute_champion_features(
         games_df=train_games_df,
@@ -166,15 +186,32 @@ def _fit_snapshot_and_predict(
     synergy_residuals = pairwise.synergy_lookup(synergy_table)
     matchup_residuals = pairwise.matchup_lookup(matchup_table)
 
+    team_elo_diffs = team_elo_diffs or {}
     model_result = train_model.train_model(
         restricted_train_games,
         champion_strength,
         synergy_residuals,
         matchup_residuals,
         champion_presence,
+        team_elo_diffs,
+    )
+    # Draft-only companion fit (team feature zeroed) for the honest
+    # "you don't know the teams" metrics. Cheap: only the LR refits; all the
+    # expensive feature computation above is shared.
+    draft_only_result = (
+        train_model.train_model(
+            restricted_train_games,
+            champion_strength,
+            synergy_residuals,
+            matchup_residuals,
+            champion_presence,
+            None,
+        )
+        if team_elo_diffs
+        else model_result
     )
 
-    predictions: list[tuple[float, int, str, str]] = []
+    predictions: list[tuple[float, int, str, str, float]] = []
     for gameid, group in test_games_df.groupby("gameid"):
         blue_rows = group[group["side"].str.lower() == "blue"]
         red_rows = group[group["side"].str.lower() == "red"]
@@ -196,9 +233,27 @@ def _fit_snapshot_and_predict(
         presence_diff = train_model.compute_presence_diff(
             champion_presence, blue_champs, red_champs
         )
+        team_elo_diff = team_elo_diffs.get(gameid, 0.0)
 
         proba = _predict_proba(
-            model_result.coefficients, score_diff, synergy_diff, matchup_diff, presence_diff
+            model_result.coefficients,
+            score_diff,
+            synergy_diff,
+            matchup_diff,
+            presence_diff,
+            team_elo_diff,
+        )
+        draft_only_proba = (
+            _predict_proba(
+                draft_only_result.coefficients,
+                score_diff,
+                synergy_diff,
+                matchup_diff,
+                presence_diff,
+                0.0,
+            )
+            if team_elo_diffs
+            else proba
         )
         actual = int(blue_rows["result"].iloc[0] == 1)
         league = (
@@ -211,7 +266,7 @@ def _fit_snapshot_and_predict(
             if "patch" in blue_rows.columns and pd.notna(blue_rows["patch"].iloc[0])
             else "Unknown"
         )
-        predictions.append((proba, actual, league, patch))
+        predictions.append((proba, actual, league, patch, draft_only_proba))
 
     return predictions
 
@@ -450,6 +505,18 @@ def run_backtest(
     # Fold i covers games with date in [boundaries[i-1] (or -inf), boundaries[i] (or +inf)).
     fold_edges = [None] + boundaries + [None]
 
+    # ONE chronological Elo pass over everything, shared by all folds: each
+    # game's recorded feature is its PRE-game Elo gap, which depends only on
+    # strictly earlier games, so this is leak-free by construction (see
+    # teams.py). Disabled -> empty dict -> the feature is zero everywhere and
+    # its fitted weight is exactly 0.
+    team_elo_diffs: dict[str, float] = {}
+    if config.use_team_feature:
+        team_elo_diffs = teams.elo_diff_by_gameid(
+            teams.compute_team_elo(games_df, k=config.elo_k),
+            feature_scale=config.elo_feature_scale,
+        )
+
     all_predictions: list[tuple[float, int]] = []
     folds_run = 0
     skipped_fold_notes: list[str] = []
@@ -493,6 +560,7 @@ def run_backtest(
                 solo_source,
                 config,
                 reference_date,
+                team_elo_diffs,
             )
         except Exception as exc:  # noqa: BLE001 - one bad fold shouldn't sink the backtest
             warnings.warn(f"Backtest fold {i + 1}/{chosen_k} failed: {exc!r}")
@@ -522,6 +590,16 @@ def run_backtest(
     coin_flip_probs = np.full_like(probs, 0.5)
     coin_flip_log_loss = float(log_loss(outcomes, coin_flip_probs, labels=[0, 1]))
 
+    # Draft-only companion metrics (team feature zeroed): "how good is the
+    # model when you only know the draft". Identical to the main metrics when
+    # the team feature is disabled.
+    draft_probs = np.array([rec[4] for rec in all_predictions])
+    draft_only_metrics = {
+        "accuracy": float(np.mean((draft_probs >= 0.5).astype(int) == outcomes)),
+        "logLoss": float(log_loss(outcomes, draft_probs, labels=[0, 1])),
+        "brierScore": float(np.mean((draft_probs - outcomes) ** 2)),
+    }
+
     calibration = _calibration_table(all_predictions)
     breakdowns = {
         "byPatch": _segment_breakdown(all_predictions, field_index=3, sort_key="patch"),
@@ -547,6 +625,12 @@ def run_backtest(
             "baselineAccuracy": baseline_accuracy,
             "coinFlipLogLoss": coin_flip_log_loss,
         },
+        # With config.use_team_feature on, "metrics" above are WITH the team
+        # feature (both teams known -- the realistic pre-match scenario, and
+        # the one relevant for comparing against bookmaker odds); this block
+        # is the same held-out games scored by the draft-only companion fit.
+        "draftOnlyMetrics": draft_only_metrics,
+        "teamFeatureUsed": bool(team_elo_diffs),
         "calibration": calibration,
         "dataComposition": data_composition,
         "breakdowns": breakdowns,

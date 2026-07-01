@@ -8,6 +8,8 @@ import {
   type PredictResponse,
   type Role,
   type SynergyFile,
+  type TeamContext,
+  type TeamsFile,
 } from "./types";
 
 function sigmoid(x: number): number {
@@ -81,12 +83,39 @@ function topNotablePairs(
     .slice(0, n);
 }
 
+/** Optional team-strength inputs for {@link predictMatchup}. */
+export interface TeamOptions {
+  blueTeam?: string | null;
+  redTeam?: string | null;
+  teams?: TeamsFile | null;
+}
+
+/** Resolve the team-strength (Elo gap) term. Both-or-nothing: the term only
+ *  applies when BOTH org names are given and found in teams.json — a single
+ *  known team vs an unspecified opponent would silently be treated as
+ *  "vs a perfectly average team", which is misleading rather than neutral. */
+function resolveTeamContext(options: TeamOptions | undefined): TeamContext | null {
+  if (!options?.teams || !options.blueTeam || !options.redTeam) return null;
+  const blueRating = options.teams.teams[options.blueTeam];
+  const redRating = options.teams.teams[options.redTeam];
+  if (!blueRating || !redRating) return null;
+  const scale = options.teams.params.eloScale || 400;
+  return {
+    blueTeam: options.blueTeam,
+    redTeam: options.redTeam,
+    blueElo: blueRating.elo,
+    redElo: redRating.elo,
+    eloDiff: (blueRating.elo - redRating.elo) / scale,
+  };
+}
+
 export function predictMatchup(
   blue: DraftTeam,
   red: DraftTeam,
   ratings: ChampionRatingsFile,
   model: ModelFile,
   synergy: SynergyFile,
+  teamOptions?: TeamOptions,
 ): PredictResponse {
   const blueBreakdown = buildSide("blue", blue, ratings);
   const redBreakdown = buildSide("red", red, ratings);
@@ -141,6 +170,11 @@ export function predictMatchup(
     blueChampions.reduce((s, c) => s + presenceOf(c), 0) -
     redChampions.reduce((s, c) => s + presenceOf(c), 0);
 
+  // Team-strength term (0 unless both teams are provided and known —
+  // mirrors the pipeline, where an unknown gameid contributes a 0 gap).
+  const teamContext = resolveTeamContext(teamOptions);
+  const teamEloDiff = teamContext?.eloDiff ?? 0;
+
   const {
     scoreDiffWeight,
     blueSideBias,
@@ -148,6 +182,7 @@ export function predictMatchup(
     synergyWeight = 0,
     matchupWeight = 0,
     presenceWeight = 0,
+    teamEloWeight = 0,
   } = model.coefficients;
   const logit =
     intercept +
@@ -155,6 +190,7 @@ export function predictMatchup(
     synergyWeight * synergyDiff +
     matchupWeight * matchupDiff +
     presenceWeight * presenceDiff +
+    teamEloWeight * teamEloDiff +
     blueSideBias;
   const blueWinProbability = sigmoid(logit);
 
@@ -172,5 +208,6 @@ export function predictMatchup(
       synergy: topNotablePairs(notableSynergyCandidates, 3),
       matchup: topNotablePairs(notableMatchupCandidates, 3),
     },
+    teamContext,
   };
 }

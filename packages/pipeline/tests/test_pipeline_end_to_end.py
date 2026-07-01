@@ -21,7 +21,7 @@ def output_dir(tmp_path: Path) -> Path:
 
 
 def test_pipeline_end_to_end_writes_expected_files(output_dir: Path):
-    champion_ratings, model, synergy = build.run_pipeline(
+    champion_ratings, model, synergy, teams_payload = build.run_pipeline(
         oracles_elixir_path=str(ORACLES_ELIXIR_FIXTURE),
         oracles_elixir_url=None,
         soloqueue_fixture=str(SOLOQUEUE_FIXTURE),
@@ -29,12 +29,29 @@ def test_pipeline_end_to_end_writes_expected_files(output_dir: Path):
     )
 
     ratings_path, model_path, synergy_path = build.write_outputs(
-        champion_ratings, model, synergy, str(output_dir)
+        champion_ratings, model, synergy, str(output_dir), teams_payload
     )
 
     assert ratings_path.exists()
     assert model_path.exists()
     assert synergy_path.exists()
+
+    # teams.json schema
+    teams_path = output_dir / "teams.json"
+    assert teams_path.exists()
+    with teams_path.open() as f:
+        teams_data = json.load(f)
+    for key in ("generatedAt", "patch", "params", "teams"):
+        assert key in teams_data
+    for key in ("eloK", "eloScale", "initialElo"):
+        assert key in teams_data["params"]
+    assert isinstance(teams_data["teams"], dict) and len(teams_data["teams"]) > 0
+    sample_team = next(iter(teams_data["teams"].values()))
+    for key in ("elo", "games", "league", "lastPlayed"):
+        assert key in sample_team
+    # Elo is zero-sum around the initial rating, so the mean stays ~1500.
+    elos = [t["elo"] for t in teams_data["teams"].values()]
+    assert abs(sum(elos) / len(elos) - 1500.0) < 1.0
 
     with ratings_path.open() as f:
         ratings_data = json.load(f)
@@ -63,7 +80,10 @@ def test_pipeline_end_to_end_writes_expected_files(output_dir: Path):
     # model.json top-level schema
     for key in ("version", "trainedAt", "trainingGames", "coefficients", "metrics"):
         assert key in model_data
-    for key in ("scoreDiffWeight", "synergyWeight", "matchupWeight", "blueSideBias", "intercept"):
+    for key in (
+        "scoreDiffWeight", "synergyWeight", "matchupWeight", "presenceWeight",
+        "teamEloWeight", "blueSideBias", "intercept",
+    ):
         assert key in model_data["coefficients"]
     for key in ("logLoss", "accuracy", "baselineAccuracy"):
         assert key in model_data["metrics"]
