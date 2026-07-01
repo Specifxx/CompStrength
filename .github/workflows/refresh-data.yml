@@ -55,9 +55,28 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e packages/pipeline
 
+      # Past-season Oracle's Elixir CSVs are frozen once the season ends, but
+      # the shared Google Drive files are frequently over Google's per-file
+      # download quota ("too many users..."). Cache each past season's CSV the
+      # first time ANY daily run manages to download it; every later run then
+      # reuses the cached copy instead of gambling on Drive quota. The key is
+      # unique per run and restore-keys picks the newest previous cache, so
+      # the cache "ratchets": an empty first save is later replaced by a
+      # populated one as soon as one download succeeds. The CURRENT season's
+      # file updates daily and is deliberately never cached (see
+      # sources/oracles_elixir.py).
+      - name: Cache past-season Oracle's Elixir CSVs
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/compstrength-oe
+          key: oe-past-seasons-${{ github.run_id }}
+          restore-keys: |
+            oe-past-seasons-
+
       - name: Run data pipeline (real match data from Oracle's Elixir bulk CSV)
         env:
           COMPSTRENGTH_TARGET_GAMES: ${{ github.event.inputs.target_games }}
+          COMPSTRENGTH_OE_CACHE_DIR: ~/.cache/compstrength-oe
         run: python -m compstrength_pipeline.build --source oracles-elixir
 
       - name: Check for data changes

@@ -35,8 +35,10 @@ network involved at all.
 from __future__ import annotations
 
 import io
+import shutil
 import tempfile
 import warnings
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -203,10 +205,33 @@ def download_oracles_elixir_csv(year: int, dest: str | Path | None = None) -> Pa
             f"{sorted(ORACLES_ELIXIR_DRIVE_IDS)}; mirror years: {sorted(ORACLES_ELIXIR_MIRROR_URLS)}."
         )
 
+    import os
+
+    # Persistent cache for PAST seasons (opt-in via COMPSTRENGTH_OE_CACHE_DIR;
+    # the CI refresh workflow points this at an actions/cache-backed dir). A
+    # finished season's CSV is frozen forever, so once ANY run manages to
+    # download it -- the shared Drive file is frequently over Google's
+    # per-file quota -- every later run reuses the cached copy instead of
+    # gambling on Drive again. The CURRENT season's file updates daily and is
+    # therefore never served from (or saved to) this cache.
+    cache_dir = os.environ.get("COMPSTRENGTH_OE_CACHE_DIR")
+    is_past_season = year < datetime.now(timezone.utc).year
+    cache_path: Path | None = None
+    if cache_dir and is_past_season:
+        cache_path = (
+            Path(os.path.expanduser(cache_dir))
+            / f"{year}_LoL_esports_match_data_from_OraclesElixir.csv"
+        )
+        if cache_path.exists():
+            try:
+                _validate_downloaded_csv(cache_path, year, "past-season cache")
+                print(f"Using cached Oracle's Elixir {year} CSV: {cache_path}")
+                return cache_path
+            except DataSourceUnavailableError as exc:
+                warnings.warn(f"Ignoring corrupt cached {year} CSV: {exc}")
+
     if dest is None:
         fd, dest_str = tempfile.mkstemp(prefix=f"oracleselixir_{year}_", suffix=".csv")
-        import os
-
         os.close(fd)
         dest = dest_str
     dest = Path(dest)
@@ -224,10 +249,18 @@ def download_oracles_elixir_csv(year: int, dest: str | Path | None = None) -> Pa
             continue
         try:
             _validate_downloaded_csv(dest, year, label)
-            return dest
         except DataSourceUnavailableError as exc:
             warnings.warn(f"Discarding {label}: {exc}")
             continue
+        if cache_path is not None:
+            # Frozen past season: persist so future runs never need Drive.
+            try:
+                cache_path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(dest, cache_path)
+                print(f"Cached Oracle's Elixir {year} CSV for future runs: {cache_path}")
+            except OSError as exc:  # cache failure must never fail the download
+                warnings.warn(f"Could not cache {year} CSV: {exc}")
+        return dest
 
     raise DataSourceUnavailableError(
         f"Could not obtain a valid Oracle's Elixir {year} CSV from any source "
