@@ -1,6 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { ChampionRatingsFile, ModelFile } from "./types";
+import type {
+  BacktestReportFile,
+  ChampionRatingsFile,
+  ModelFile,
+  SynergyFile,
+} from "./types";
 
 // The pipeline (packages/pipeline) writes its generated snapshot to
 // <repo root>/data/*.json. This app lives at <repo root>/apps/web, so we
@@ -24,6 +29,8 @@ function readJson<T>(filename: string): T {
 
 let ratingsCache: ChampionRatingsFile | null = null;
 let modelCache: ModelFile | null = null;
+let synergyCache: SynergyFile | null = null;
+let backtestCache: BacktestReportFile | null = null;
 
 export function loadChampionRatings(): ChampionRatingsFile {
   if (process.env.NODE_ENV === "production" && ratingsCache) return ratingsCache;
@@ -36,5 +43,22 @@ export function loadModel(): ModelFile {
   if (process.env.NODE_ENV === "production" && modelCache) return modelCache;
   const data = readJson<ModelFile>("model.json");
   modelCache = data;
+  return data;
+}
+
+// synergy.json is emitted by the pipeline alongside champion_ratings.json /
+// model.json, but may not exist yet on a given checkout — callers should
+// catch DataNotReadyError exactly like the other loaders.
+export function loadSynergy(): SynergyFile {
+  if (process.env.NODE_ENV === "production" && synergyCache) return synergyCache;
+  const data = readJson<SynergyFile>("synergy.json");
+  synergyCache = data;
+  return data;
+}
+
+export function loadBacktestReport(): BacktestReportFile {
+  if (process.env.NODE_ENV === "production" && backtestCache) return backtestCache;
+  const data = readJson<BacktestReportFile>("backtest_report.json");
+  backtestCache = data;
   return data;
 }

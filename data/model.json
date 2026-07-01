@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "trainedAt": "2026-07-01T08:43:59.867067+00:00",
+  "trainingGames": 20,
+  "coefficients": {
+    "scoreDiffWeight": 1.5729361293550763,
+    "blueSideBias": 0.25638057382779667,
+    "intercept": 0.0
+  },
+  "metrics": {
+    "logLoss": 0.46091781899664863,
+    "accuracy": 0.8,
+    "baselineAccuracy": 0.55,
+    "note": "Small-sample fit (20 games): coefficients/metrics are illustrative only and will be noisy until more historical data accumulates."
+  }
+}

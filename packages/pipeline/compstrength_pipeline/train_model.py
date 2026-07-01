@@ -11,10 +11,15 @@ We fit a 1-feature logistic regression:
 
 using scikit-learn's ``LogisticRegression``. ``blueSideBias`` captures any
 residual blue-side advantage (e.g. first pick / vision / river control)
-not explained by champion strength alone. We report ``intercept``
-separately for clarity in the output JSON (it is the same fitted
-intercept as ``blueSideBias``; both keys are included per the required
-output schema).
+not explained by champion strength alone.
+
+Both ``blueSideBias`` and ``intercept`` keys are included per the required
+output schema, but since this is a single-feature model there is only one
+fitted bias term. The consuming frontend (``apps/web/lib/predict.ts``)
+combines them additively as
+``logit = intercept + scoreDiffWeight * scoreDiff + blueSideBias``, so to
+avoid double-counting the bias we put the full fitted intercept into
+``blueSideBias`` and leave ``intercept`` at ``0.0``.
 
 If there is too little data to fit meaningfully (e.g. our small fixture,
 or too few games / no variance in the label), sklearn will still return a
@@ -151,7 +156,7 @@ def train_model(
         coefficients = {
             "scoreDiffWeight": 0.0,
             "blueSideBias": float(np.log(constant_prob / (1 - constant_prob))),
-            "intercept": float(np.log(constant_prob / (1 - constant_prob))),
+            "intercept": 0.0,
         }
         preds_proba = np.full_like(y, fill_value=constant_prob, dtype=float)
         metrics = {
@@ -180,10 +185,18 @@ def train_model(
         "note": note,
     }
 
+    # NOTE: the frontend combines these as
+    #   logit = intercept + scoreDiffWeight * scoreDiff + blueSideBias
+    # (see apps/web/lib/predict.ts), i.e. it *adds* both bias-like terms.
+    # Since this is a single-feature logistic regression, sklearn only
+    # fits one bias term; we put the full fitted bias into `blueSideBias`
+    # (the side of the model conceptually responsible for a blue-side
+    # advantage not explained by champion strength) and leave `intercept`
+    # at 0 so the two terms are not double-counted downstream.
     coefficients = {
         "scoreDiffWeight": score_diff_weight,
         "blueSideBias": intercept,
-        "intercept": intercept,
+        "intercept": 0.0,
     }
 
     return ModelResult(coefficients=coefficients, metrics=metrics, training_games=n)

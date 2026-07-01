@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/api/predict": ["../../data/*.json"],
     "/api/champions": ["../../data/*.json"],
+    "/": ["../../data/*.json"],
+    "/methodology": ["../../data/*.json"],
   },
 };
 

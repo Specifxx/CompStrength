@@ -221,7 +221,10 @@ def extract_bans(raw: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(columns=CANONICAL_BAN_COLUMNS)
 
     id_cols = ["gameid", "team"]
-    long = team_rows.melt(
+    # Team rows carry an (empty) "champion" column too, which would collide
+    # with melt()'s value_name="champion" below -- select only the columns
+    # we actually need before melting.
+    long = team_rows[id_cols + available_ban_cols].melt(
         id_vars=id_cols,
         value_vars=available_ban_cols,
         var_name="ban_col",
