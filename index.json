@@ -1,0 +1,122 @@
+[
+ {
+  "url": "https://lol-api-champion.op.gg/api/kr/champions/ranked/versions",
+  "status": 200,
+  "bytes": 26,
+  "secs": 0.65
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/na/champions/ranked/versions",
+  "status": 200,
+  "bytes": 26,
+  "secs": 0.41
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/euw/champions/ranked/versions",
+  "status": 200,
+  "bytes": 26,
+  "secs": 0.26
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/global/champions/ranked/versions",
+  "status": 200,
+  "bytes": 26,
+  "secs": 0.43
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/kr/champions/ranked?tier=all&version=16.13",
+  "status": 200,
+  "bytes": 184122,
+  "secs": 0.8
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/kr/champions/ranked?tier=gold_plus&version=16.13",
+  "status": 200,
+  "bytes": 182249,
+  "secs": 0.9
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/kr/champions/ranked?tier=platinum_plus&version=16.13",
+  "status": 200,
+  "bytes": 181298,
+  "secs": 0.95
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/kr/champions/ranked?tier=emerald_plus&version=16.13",
+  "status": 200,
+  "bytes": 181049,
+  "secs": 0.82
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/kr/champions/ranked?tier=diamond_plus&version=16.13",
+  "status": 200,
+  "bytes": 182200,
+  "secs": 0.78
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/kr/champions/ranked?tier=master_plus&version=16.13",
+  "status": 200,
+  "bytes": 177127,
+  "secs": 0.44
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/kr/champions/ranked?tier=grandmaster&version=16.13",
+  "status": 200,
+  "bytes": 125016,
+  "secs": 0.49
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/kr/champions/ranked?tier=challenger&version=16.13",
+  "status": 200,
+  "bytes": 109291,
+  "secs": 0.94
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/kr/champions/ranked?tier=master&version=16.13",
+  "status": 200,
+  "bytes": 177464,
+  "secs": 0.94
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/kr/champions/ranked?tier=emerald_plus&version=16.13",
+  "status": 200,
+  "bytes": 181049,
+  "secs": 0.06
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/kr/champions/ranked?tier=emerald_plus&version=16.12",
+  "status": 200,
+  "bytes": 179255,
+  "secs": 1.46
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/na/champions/ranked?tier=emerald_plus&version=16.13",
+  "status": 200,
+  "bytes": 193041,
+  "secs": 1.38
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/global/champions/ranked?tier=emerald_plus&version=16.13",
+  "status": 200,
+  "bytes": 189593,
+  "secs": 0.61
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/kr/champions/ranked?tier=emerald_plus",
+  "status": 200,
+  "bytes": 181049,
+  "secs": 1.33
+ },
+ {
+  "url": "https://ddragon.leagueoflegends.com/api/versions.json",
+  "status": 200,
+  "bytes": 5149,
+  "secs": 0.12
+ },
+ {
+  "url": "https://ddragon.leagueoflegends.com/cdn/16.13.1/data/en_US/champion.json",
+  "status": 200,
+  "bytes": 159026,
+  "secs": 0.15
+ }
+]
