@@ -35,6 +35,7 @@ import pandas as pd
 from compstrength_pipeline import backtest, etl, features, pairwise, teams, train_model
 from compstrength_pipeline.config import DEFAULT_CONFIG, PipelineConfig
 from compstrength_pipeline.sources import leaguepedia as leaguepedia_source
+from compstrength_pipeline.sources import soloqueue as soloqueue_module
 from compstrength_pipeline.sources import oracles_elixir as oracles_elixir_source
 from compstrength_pipeline.sources.oracles_elixir import (
     extract_bans,
@@ -320,8 +321,21 @@ def run_pipeline_on_data(
     # the experiment fleet: 55.4% vs 52.5% held-out draft-only accuracy).
     # Overrides the EB-logit strengthScore in the artifact; the EB stats
     # (proWinRate/blendedWinRate/sampleConfidence) remain as display fields.
+    # Solo-queue-informed prior: use the latest snapshot of the committed
+    # history fixture as of the data's reference date (same as-of code path
+    # the backtest uses, so the measured gain is exactly what ships).
+    solo_history = soloqueue_module.load_solo_history(
+        REPO_ROOT / "data" / "soloqueue_history.json"
+    )
+    solo_prior = (
+        soloqueue_module.solo_winrates_asof(solo_history, reference_date)
+        if solo_history
+        else None
+    )
+    if solo_prior is not None:
+        print(f"solo-queue prior: {len(solo_prior)} champions (as of {reference_date.date()})")
     wr_strength, loo_score_diffs = features.compute_wr_strength(
-        games_df, reference_date, config
+        games_df, reference_date, config, solo_prior
     )
     champion_features_df["strengthScore"] = [
         wr_strength.get(c, 0.0) for c in champion_features_df.index
@@ -611,7 +625,12 @@ def write_backtest_report_on_data(
 
     try:
         games_df, bans_df = etl.build_raw_tables(raw_games_df, raw_bans_df)
-        report = backtest.run_backtest(games_df, bans_df, soloqueue_source, config)
+        solo_history = soloqueue_module.load_solo_history(
+            REPO_ROOT / "data" / "soloqueue_history.json"
+        )
+        report = backtest.run_backtest(
+            games_df, bans_df, soloqueue_source, config, solo_history=solo_history
+        )
     except Exception as exc:  # noqa: BLE001 - build must never crash on backtest failure
         warnings.warn(f"Backtest failed, writing a degraded report instead: {exc!r}")
         report = _degraded_backtest_report(exc)

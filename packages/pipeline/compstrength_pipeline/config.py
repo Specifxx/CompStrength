@@ -174,6 +174,28 @@ class PipelineConfig:
     # two-season production backtest; 40 gave the best draft-only accuracy
     # with identical calibration.
     strength_feature_scale: float = 40.0
+    # Solo-queue-informed prior for the champion-strength signal: instead of
+    # shrinking a champion's pro winrate toward a FLAT 0.5, shrink toward
+    # 0.5 + wr_prior_solo_weight * (solo_wr - solo_mean), clipped to
+    # +-wr_prior_clip. Centering on the games-weighted solo mean cancels any
+    # rank-tier bias in the source; the clip bounds how far solo queue alone
+    # can move a champion with no pro games. Only champions with at least
+    # wr_prior_min_solo_games solo games get a non-flat prior.
+    #
+    # MEASURED (K=8 walk-forward, 15,973 games, timestamped leakage-free solo
+    # history data/soloqueue_history.json): weights 0.5/1.0/1.5 all land
+    # WITHIN NOISE of the flat prior -- current-season draft-only 55.40-55.50%
+    # vs 55.57% flat, log-loss 0.6836 vs 0.6837, with-teams unchanged. Reason:
+    # with two seasons of pro data and 25-pseudo-game shrinkage, nearly every
+    # champion that actually gets DRAFTED in pro has ample pro evidence, so
+    # the prior only binds for champions who almost never appear in the test
+    # set. Shipped OFF (0.0 = exact flat-prior behavior). The machinery,
+    # fixture, and daily snapshot append stay: a BRAND-NEW champion release
+    # (zero pro games, plentiful solo games) is the one real beneficiary, and
+    # flipping this weight is a one-line change if that case matters later.
+    wr_prior_solo_weight: float = 0.0
+    wr_prior_min_solo_games: int = 2000
+    wr_prior_clip: float = 0.06
     # Elo K-factor (rating movement per game) for the team feature. 32 beat
     # 16/24/48 on the walk-forward backtest at the shipped feature scale.
     elo_k: float = 32.0
@@ -214,6 +236,12 @@ class PipelineConfig:
             raise ValueError("major_league_weight_multiplier must be positive")
         if self.elo_k <= 0:
             raise ValueError("elo_k must be positive")
+        if not (0.0 <= self.wr_prior_solo_weight <= 2.0):
+            raise ValueError("wr_prior_solo_weight must be in [0, 2]")
+        if self.wr_prior_min_solo_games < 0:
+            raise ValueError("wr_prior_min_solo_games must be non-negative")
+        if not (0.0 < self.wr_prior_clip <= 0.5):
+            raise ValueError("wr_prior_clip must be in (0, 0.5]")
         if not (0.0 <= self.elo_season_carryover <= 1.0):
             raise ValueError("elo_season_carryover must be in [0, 1]")
         if self.champion_wr_half_life_days <= 0:

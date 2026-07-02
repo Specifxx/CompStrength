@@ -49,6 +49,8 @@ import json
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+import pandas as pd
+
 from compstrength_pipeline.config import LOLALYTICS_TIERLIST_URL_TEMPLATE
 
 # type alias: champion name -> (winrate, games)
@@ -208,3 +210,67 @@ class StaticSoloQueueSource(SoloQueueSource):
     def available_patches(self) -> list[str]:
         """Return the list of patches present in the fixture."""
         return list(self._data.keys())
+
+
+# ---------------------------------------------------------------------------
+# Timestamped solo-queue history (data/soloqueue_history.json)
+# ---------------------------------------------------------------------------
+#
+# Built once by .github/workflows/build-soloqueue-history.yml from the git
+# history of a public repo that archives lolalytics-derived per-champion
+# solo-queue stats ~twice a day. Each snapshot carries the COMMIT TIMESTAMP
+# at which the data verifiably existed, so the walk-forward backtest can do
+# a leakage-free "as of" join: a fold may only read snapshots committed
+# strictly before its boundary. Snapshot champion entries are
+# [wins, matches, previousWins, previousMatches] (current patch-to-date at
+# the commit + the full prior patch), so (wins+previousWins) /
+# (matches+previousMatches) is a large, purely-backward-looking sample.
+
+
+def load_solo_history(path: str | Path) -> list[tuple[pd.Timestamp, dict]]:
+    """Load the history fixture -> chronologically sorted
+    ``[(commit_ts, {champion: [w, m, pw, pm]}), ...]``. Empty list if the
+    file is absent (callers then keep the flat prior)."""
+    p = Path(path)
+    if not p.exists():
+        return []
+    with p.open("r", encoding="utf-8") as f:
+        fixture = json.load(f)
+    out = []
+    for snap in fixture.get("snapshots", []):
+        try:
+            ts = pd.Timestamp(snap["ts"])
+            if ts.tzinfo is None:
+                ts = ts.tz_localize("UTC")
+        except (KeyError, ValueError):
+            continue
+        out.append((ts, snap.get("champions", {})))
+    out.sort(key=lambda x: x[0])
+    return out
+
+
+def solo_winrates_asof(
+    history: list[tuple[pd.Timestamp, dict]], as_of
+) -> ChampionWinrates:
+    """``{champion: (winrate, games)}`` from the LATEST snapshot committed at
+    or before ``as_of`` (leakage rule: never read data from the future).
+    Empty dict when no snapshot predates ``as_of``."""
+    chosen = None
+    for ts, champs in history:
+        if ts <= as_of:
+            chosen = champs
+        else:
+            break
+    if not chosen:
+        return {}
+    result: ChampionWinrates = {}
+    for name, vals in chosen.items():
+        try:
+            w, m, pw, pm = (int(v) for v in vals[:4])
+        except (TypeError, ValueError):
+            continue
+        games = m + pm
+        if games <= 0:
+            continue
+        result[str(name)] = ((w + pw) / games, games)
+    return result

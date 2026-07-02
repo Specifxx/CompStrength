@@ -276,7 +276,10 @@ def league_weight_multiplier(
 
 
 def compute_wr_strength(
-    games_df: pd.DataFrame, reference_date, config
+    games_df: pd.DataFrame,
+    reference_date,
+    config,
+    solo_prior: dict[str, tuple[float, int]] | None = None,
 ) -> tuple[dict[str, float], dict[str, float]]:
     """The draft-only champion-strength signal that won the experiment fleet:
     shrunk, calendar-decayed champion win rate.
@@ -322,12 +325,40 @@ def compute_wr_strength(
     w_tot = totals["w"].to_dict()
     ww_tot = totals["ww"].to_dict()
 
+    # Solo-queue-informed prior mean per champion (see PipelineConfig
+    # wr_prior_* fields): shrink toward 0.5 + weight * (solo_wr - solo_mean)
+    # instead of a flat 0.5. Centering on the games-weighted solo mean
+    # cancels rank-tier bias in the source; the clip bounds how far solo
+    # queue alone can move a champion with no pro games. Contains NO pro-game
+    # outcomes, so the leave-one-game-out logic below is unaffected. With
+    # weight 0 or no solo data this reduces exactly to the flat prior.
+    prior_mean: dict[str, float] = {}
+    if solo_prior and config.wr_prior_solo_weight > 0.0:
+        eligible = {
+            c: (wr, g)
+            for c, (wr, g) in solo_prior.items()
+            if g >= config.wr_prior_min_solo_games
+        }
+        total_g = sum(g for _, g in eligible.values())
+        if total_g > 0:
+            solo_mean = sum(wr * g for wr, g in eligible.values()) / total_g
+            clip = config.wr_prior_clip
+            weight = config.wr_prior_solo_weight
+            prior_mean = {
+                c: 0.5 + max(-clip, min(clip, weight * (wr - solo_mean)))
+                for c, (wr, _g) in eligible.items()
+            }
+
     def _strength(champ: str, w_minus: float = 0.0, ww_minus: float = 0.0) -> float:
         w = w_tot.get(champ, 0.0) - w_minus
         ww = ww_tot.get(champ, 0.0) - ww_minus
-        return ((ww + shrink * 0.5) / (w + shrink) - 0.5) * scale
+        prior = prior_mean.get(champ, 0.5)
+        return ((ww + shrink * prior) / (w + shrink) - 0.5) * scale
 
-    strength = {c: _strength(c) for c in w_tot}
+    # Union with prior_mean keys so a champion with solo data but zero pro
+    # games in the window still gets its prior-informed strength
+    # ((prior - 0.5) * scale) rather than being absent (-> treated as 0).
+    strength = {c: _strength(c) for c in set(w_tot) | set(prior_mean)}
 
     # Per-game LOO score diffs for the training frame.
     loo_diffs: dict[str, float] = {}

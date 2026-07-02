@@ -43,6 +43,7 @@ from sklearn.metrics import log_loss
 
 from compstrength_pipeline import etl, features, pairwise, teams, train_model
 from compstrength_pipeline.config import DEFAULT_CONFIG, PipelineConfig
+from compstrength_pipeline.sources import soloqueue as soloqueue_module
 from compstrength_pipeline.sources.soloqueue import SoloQueueSource, StaticSoloQueueSource
 
 # 8 folds: with two seasons (~16k games) a 4-fold split leaves each fold's
@@ -121,6 +122,7 @@ def _fit_snapshot_and_predict(
     config: PipelineConfig,
     reference_date: pd.Timestamp,
     team_elo_diffs: dict[str, float] | None = None,
+    solo_history: list | None = None,
 ) -> list[tuple[float, int, str, str, float]]:
     """Fit the full pipeline on ``train_games_df`` (as of ``reference_date``)
     and predict blue-win-probability for every game in ``test_games_df``.
@@ -163,8 +165,15 @@ def _fit_snapshot_and_predict(
     # Champion strength = shrunk decayed win rate (see
     # features.compute_wr_strength), computed on this fold's TRAIN games
     # only; loo_score_diffs feed the training frame (leave-one-game-out).
+    # Leakage-free as-of join: only solo-queue snapshots COMMITTED before
+    # this fold's boundary are visible to this fold's prior.
+    solo_prior = (
+        soloqueue_module.solo_winrates_asof(solo_history, reference_date)
+        if solo_history
+        else None
+    )
     wr_strength, loo_score_diffs = features.compute_wr_strength(
-        train_games_df, reference_date, config
+        train_games_df, reference_date, config, solo_prior
     )
     champion_strength = wr_strength
     # Meta-presence feature: pickRate + banRate over this fold's training
@@ -460,6 +469,7 @@ def run_backtest(
     solo_source: SoloQueueSource,
     config: PipelineConfig = DEFAULT_CONFIG,
     k_folds: int = DEFAULT_K_FOLDS,
+    solo_history: list | None = None,
 ) -> dict:
     """Run walk-forward cross-validation over ``games_df``/``bans_df``.
 
@@ -577,6 +587,7 @@ def run_backtest(
                 config,
                 reference_date,
                 team_elo_diffs,
+                solo_history,
             )
         except Exception as exc:  # noqa: BLE001 - one bad fold shouldn't sink the backtest
             warnings.warn(f"Backtest fold {i + 1}/{chosen_k} failed: {exc!r}")
