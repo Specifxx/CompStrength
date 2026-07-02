@@ -123,6 +123,27 @@ def test_elo_diff_by_gameid_scaling_and_metadata():
     assert result.last_played["T1"] == "2026-01-05"
 
 
+def test_season_carryover_regresses_ratings_at_year_boundary():
+    """At a calendar-year boundary, every rating keeps only `carryover` of
+    its deviation from 1500 (roster turnover)."""
+    games = pd.DataFrame(
+        _game("g1", "2025-06-01", "T1", "GEN", blue_win=1)
+        + _game("g2", "2025-06-02", "T1", "GEN", blue_win=1)
+        + _game("g3", "2026-01-15", "T1", "GEN", blue_win=1)
+    )
+    full = compute_team_elo(games, season_carryover=1.0)
+    reg = compute_team_elo(games, season_carryover=0.5)
+    # Pre-game rating for the first 2026 game reflects the regression.
+    full_pre = full.per_game.loc["g3"]["blue_elo_pre"]
+    reg_pre = reg.per_game.loc["g3"]["blue_elo_pre"]
+    assert full_pre > INITIAL_ELO
+    assert reg_pre == pytest.approx(INITIAL_ELO + 0.5 * (full_pre - INITIAL_ELO))
+    # Within a season nothing regresses: g2's pre-game ratings identical.
+    assert reg.per_game.loc["g2"]["blue_elo_pre"] == pytest.approx(
+        full.per_game.loc["g2"]["blue_elo_pre"]
+    )
+
+
 def test_empty_and_teamless_games_handled():
     empty = pd.DataFrame(columns=["gameid", "date", "side", "team", "position", "champion", "result"])
     result = compute_team_elo(empty)

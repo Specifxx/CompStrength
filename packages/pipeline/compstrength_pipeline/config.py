@@ -177,6 +177,10 @@ class PipelineConfig:
     # Elo K-factor (rating movement per game) for the team feature. 32 beat
     # 16/24/48 on the walk-forward backtest at the shipped feature scale.
     elo_k: float = 32.0
+    # Fraction of a team's Elo deviation kept across a season boundary
+    # (rosters change). Measured: 0.7 beats 1.0/0.85/0.5/0.25 on 2026
+    # pre-game Elo predictions (64.11%/0.6326 vs 63.86%/0.6357 at 1.0).
+    elo_season_carryover: float = 0.7
     # Divisor turning an Elo gap into the model feature. A regularization
     # knob, not an Elo parameter: under L2, a bigger feature (smaller
     # divisor) is penalized effectively less, letting the NON-leaky Elo
@@ -210,6 +214,8 @@ class PipelineConfig:
             raise ValueError("major_league_weight_multiplier must be positive")
         if self.elo_k <= 0:
             raise ValueError("elo_k must be positive")
+        if not (0.0 <= self.elo_season_carryover <= 1.0):
+            raise ValueError("elo_season_carryover must be in [0, 1]")
         if self.champion_wr_half_life_days <= 0:
             raise ValueError("champion_wr_half_life_days must be positive")
         if self.champion_wr_shrink_games < 0:

@@ -359,7 +359,7 @@ def run_pipeline_on_data(
     team_elo_diffs: dict[str, float] = {}
     elo_result = None
     if config.use_team_feature:
-        elo_result = teams.compute_team_elo(games_df, k=config.elo_k)
+        elo_result = teams.compute_team_elo(games_df, k=config.elo_k, season_carryover=config.elo_season_carryover)
         team_elo_diffs = teams.elo_diff_by_gameid(
             elo_result, feature_scale=config.elo_feature_scale
         )

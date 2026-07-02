@@ -33,6 +33,14 @@ import pandas as pd
 DEFAULT_ELO_K = 24.0
 ELO_SCALE = 400.0
 INITIAL_ELO = 1500.0
+# Between-season regression toward the mean: at each calendar-year (season)
+# boundary in the chronological pass, every rating keeps this fraction of its
+# deviation from INITIAL_ELO. Rosters turn over between seasons, so a team's
+# old-season rating is real but partially stale information. Measured on
+# 15,973 real games (2026 pre-game Elo predictions): carryover 0.7 improves
+# the Elo-only signal from 63.86%/0.6357 to 64.11%/0.6326 vs full carryover.
+# 1.0 disables (old behavior).
+DEFAULT_SEASON_CARRYOVER = 0.7
 
 
 @dataclass
@@ -94,7 +102,9 @@ def _per_game_rows(games_df: pd.DataFrame) -> pd.DataFrame:
 
 
 def compute_team_elo(
-    games_df: pd.DataFrame, k: float = DEFAULT_ELO_K
+    games_df: pd.DataFrame,
+    k: float = DEFAULT_ELO_K,
+    season_carryover: float = DEFAULT_SEASON_CARRYOVER,
 ) -> TeamEloResult:
     """Run one chronological Elo pass over ``games_df``.
 
@@ -102,6 +112,9 @@ def compute_team_elo(
         games_df: Cleaned per-player-game table (post ``etl.build_raw_tables``)
             with gameid/date/side/team/result columns (league optional).
         k: Elo K-factor (rating movement per game).
+        season_carryover: Fraction of each rating's deviation from
+            ``INITIAL_ELO`` kept across a season (calendar-year) boundary
+            (see ``DEFAULT_SEASON_CARRYOVER``). ``1.0`` disables.
 
     Returns:
         A :class:`TeamEloResult`; see its docstring. ``per_game`` records the
@@ -115,7 +128,24 @@ def compute_team_elo(
     last_played: dict[str, str] = {}
 
     records = []
+    prev_year: int | None = None
     for row in game_rows.itertuples(index=False):
+        # Season boundary: regress every rating toward the mean (roster
+        # turnover makes old-season ratings partially stale).
+        year = pd.Timestamp(row.date).year if pd.notna(row.date) else prev_year
+        if (
+            season_carryover < 1.0
+            and prev_year is not None
+            and year is not None
+            and year != prev_year
+        ):
+            ratings = {
+                t: INITIAL_ELO + season_carryover * (r - INITIAL_ELO)
+                for t, r in ratings.items()
+            }
+        if year is not None:
+            prev_year = year
+
         blue, red = row.blue_team, row.red_team
         blue_elo = ratings.get(blue, INITIAL_ELO)
         red_elo = ratings.get(red, INITIAL_ELO)
