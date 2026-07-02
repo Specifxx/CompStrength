@@ -45,7 +45,12 @@ from compstrength_pipeline import etl, features, pairwise, teams, train_model
 from compstrength_pipeline.config import DEFAULT_CONFIG, PipelineConfig
 from compstrength_pipeline.sources.soloqueue import SoloQueueSource, StaticSoloQueueSource
 
-DEFAULT_K_FOLDS = 4
+# 8 folds: with two seasons (~16k games) a 4-fold split leaves each fold's
+# frozen model up to ~4,000 games stale by the end of its test window,
+# badly understating a product that retrains DAILY. ~2k-game folds keep the
+# simulated staleness closer to reality while every fold still has ample
+# test data. Auto-reduces on small datasets (see module docstring).
+DEFAULT_K_FOLDS = 8
 MIN_K_FOLDS = 2
 MIN_TEST_GAMES_PER_FOLD = 5
 
@@ -155,7 +160,13 @@ def _fit_snapshot_and_predict(
         config=config,
         reference_date=reference_date,
     )
-    champion_strength = champion_features_df["strengthScore"].to_dict()
+    # Champion strength = shrunk decayed win rate (see
+    # features.compute_wr_strength), computed on this fold's TRAIN games
+    # only; loo_score_diffs feed the training frame (leave-one-game-out).
+    wr_strength, loo_score_diffs = features.compute_wr_strength(
+        train_games_df, reference_date, config
+    )
+    champion_strength = wr_strength
     # Meta-presence feature: pickRate + banRate over this fold's training
     # window (train-only, so no leakage into the fold's test games).
     champion_presence = (
@@ -177,11 +188,14 @@ def _fit_snapshot_and_predict(
         )
     )
 
+    strength_for_pairwise = {
+        c: v * 4.0 / config.strength_feature_scale for c, v in champion_strength.items()
+    }
     synergy_table = pairwise.compute_synergy_table(
-        restricted_train_games, champion_strength, config, reference_date=reference_date
+        restricted_train_games, strength_for_pairwise, config, reference_date=reference_date
     )
     matchup_table = pairwise.compute_matchup_table(
-        restricted_train_games, champion_strength, config, reference_date=reference_date
+        restricted_train_games, strength_for_pairwise, config, reference_date=reference_date
     )
     synergy_residuals = pairwise.synergy_lookup(synergy_table)
     matchup_residuals = pairwise.matchup_lookup(matchup_table)
@@ -194,6 +208,7 @@ def _fit_snapshot_and_predict(
         matchup_residuals,
         champion_presence,
         team_elo_diffs,
+        loo_score_diffs,
     )
     # Draft-only companion fit (team feature zeroed) for the honest
     # "you don't know the teams" metrics. Cheap: only the LR refits; all the
@@ -206,6 +221,7 @@ def _fit_snapshot_and_predict(
             matchup_residuals,
             champion_presence,
             None,
+            loo_score_diffs,
         )
         if team_elo_diffs
         else model_result
@@ -600,6 +616,32 @@ def run_backtest(
         "brierScore": float(np.mean((draft_probs - outcomes) ** 2)),
     }
 
+    # CURRENT-SEASON slice of the SAME predictions (test games on the newest
+    # patch major, e.g. all 16.x = the 2026 season). With multi-season data
+    # the all-folds average includes early-history folds whose models trained
+    # on very little data -- informative about the method, but the number
+    # that matches what a user faces TODAY (predicting current-season games
+    # with all history available) is this slice.
+    current_season_metrics = None
+    patch_majors = [
+        (features.parse_patch(rec[3]) or (0,))[0] for rec in all_predictions
+    ]
+    newest_major = max(patch_majors) if patch_majors else 0
+    cs_mask = np.array([mj == newest_major for mj in patch_majors])
+    if newest_major > 0 and 0 < cs_mask.sum() < len(outcomes):
+        cs_out = outcomes[cs_mask]
+        cs_probs = probs[cs_mask]
+        cs_draft = draft_probs[cs_mask]
+        current_season_metrics = {
+            "testGames": int(cs_mask.sum()),
+            "patchMajor": int(newest_major),
+            "accuracy": float(np.mean((cs_probs >= 0.5).astype(int) == cs_out)),
+            "logLoss": float(log_loss(cs_out, cs_probs, labels=[0, 1])),
+            "baselineAccuracy": float(max(cs_out.mean(), 1 - cs_out.mean())),
+            "draftOnlyAccuracy": float(np.mean((cs_draft >= 0.5).astype(int) == cs_out)),
+            "draftOnlyLogLoss": float(log_loss(cs_out, cs_draft, labels=[0, 1])),
+        }
+
     calibration = _calibration_table(all_predictions)
     breakdowns = {
         "byPatch": _segment_breakdown(all_predictions, field_index=3, sort_key="patch"),
@@ -630,6 +672,7 @@ def run_backtest(
         # the one relevant for comparing against bookmaker odds); this block
         # is the same held-out games scored by the draft-only companion fit.
         "draftOnlyMetrics": draft_only_metrics,
+        "currentSeasonMetrics": current_season_metrics,
         "teamFeatureUsed": bool(team_elo_diffs),
         "calibration": calibration,
         "dataComposition": data_composition,

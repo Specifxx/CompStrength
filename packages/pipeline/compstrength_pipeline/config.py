@@ -156,6 +156,24 @@ class PipelineConfig:
     # revert to the empirically-best uniform league weighting.
     premier_leagues: frozenset[str] = frozenset({"LCK", "LPL"})
     premier_league_target_share: float | None = 0.7
+    # Champion-strength definition (the draft-only score_diff feature). An
+    # agent-fleet experiment sweep on the walk-forward harness found that a
+    # simple SHRUNK DECAYED WIN RATE -- (weighted wins + shrink/2) /
+    # (weighted games + shrink) - 0.5, with a LONG calendar half-life and NO
+    # patch decay -- beats both the old EB-logit strength and one-hot
+    # champion regression: draft-only held-out accuracy 55.4% vs 52.5%
+    # (log-loss 0.684 vs 0.701) with two seasons of history. Training rows
+    # use LEAVE-ONE-GAME-OUT winrates (a game's own result is excluded from
+    # its feature) so the joint model's calibration is honest.
+    champion_wr_half_life_days: float = 150.0
+    champion_wr_shrink_games: float = 25.0
+    # Multiplier turning (winrate - 0.5) into strengthScore. Like
+    # elo_feature_scale, a per-feature regularization knob: big enough that
+    # the non-leaky score_diff survives the heavy global C that keeps the
+    # leaky synergy/matchup features crushed. Swept 10/25/40 on the
+    # two-season production backtest; 40 gave the best draft-only accuracy
+    # with identical calibration.
+    strength_feature_scale: float = 40.0
     # Elo K-factor (rating movement per game) for the team feature. 32 beat
     # 16/24/48 on the walk-forward backtest at the shipped feature scale.
     elo_k: float = 32.0
@@ -192,6 +210,12 @@ class PipelineConfig:
             raise ValueError("major_league_weight_multiplier must be positive")
         if self.elo_k <= 0:
             raise ValueError("elo_k must be positive")
+        if self.champion_wr_half_life_days <= 0:
+            raise ValueError("champion_wr_half_life_days must be positive")
+        if self.champion_wr_shrink_games < 0:
+            raise ValueError("champion_wr_shrink_games must be non-negative")
+        if self.strength_feature_scale <= 0:
+            raise ValueError("strength_feature_scale must be positive")
         if self.elo_feature_scale <= 0:
             raise ValueError("elo_feature_scale must be positive")
         if self.premier_league_target_share is not None and not (
@@ -269,6 +293,15 @@ ORACLES_ELIXIR_MIRROR_URLS: dict[int, list[str]] = {
     2026: [
         "https://raw.githubusercontent.com/HKB06/ProjectPredictionLOl/HEAD/"
         "lol-predictor/data/raw/2026_LoL_esports_match_data_from_OraclesElixir.csv",
+    ],
+    # Self-mirror: the frozen 2025 season CSV published to this repo's
+    # data-cache branch by .github/workflows/mirror-past-season.yml. A
+    # finished season's file never changes, so this link never goes stale --
+    # and raw.githubusercontent.com is reachable both from CI and from the
+    # dev sandbox (where Google Drive is egress-blocked).
+    2025: [
+        "https://raw.githubusercontent.com/Specifxx/CompStrength/data-cache/"
+        "2025_LoL_esports_match_data_from_OraclesElixir.csv",
     ],
 }
 

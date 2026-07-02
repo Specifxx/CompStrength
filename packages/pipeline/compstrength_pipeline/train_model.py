@@ -207,6 +207,7 @@ def build_training_frame(
     matchup_residuals: dict[str, float] | None = None,
     champion_presence: dict[str, float] | None = None,
     team_elo_diffs: dict[str, float] | None = None,
+    score_diff_by_game: dict[str, float] | None = None,
 ) -> pd.DataFrame:
     """Build a per-game training frame with columns [gameid, score_diff,
     synergy_diff, matchup_diff, presence_diff, team_elo_diff, blue_win].
@@ -232,6 +233,7 @@ def build_training_frame(
     matchup_residuals = matchup_residuals or {}
     champion_presence = champion_presence or {}
     team_elo_diffs = team_elo_diffs or {}
+    score_diff_by_game = score_diff_by_game or {}
 
     records = []
     for gameid, group in games_df.groupby("gameid"):
@@ -243,7 +245,14 @@ def build_training_frame(
         blue_champs = blue_rows["champion"].tolist()
         red_champs = red_rows["champion"].tolist()
 
-        score_diff = compute_score_diff(champion_strength, blue_champs, red_champs)
+        # Leave-one-game-out score diff when available (see
+        # features.compute_wr_strength): the training feature must not
+        # contain the game's own outcome. Prediction-time score diffs use
+        # the plain full-data champion strengths (compute_score_diff).
+        score_diff = score_diff_by_game.get(
+            gameid,
+            compute_score_diff(champion_strength, blue_champs, red_champs),
+        )
         synergy_diff = compute_synergy_diff(synergy_residuals, blue_champs, red_champs)
         presence_diff = compute_presence_diff(champion_presence, blue_champs, red_champs)
 
@@ -281,6 +290,7 @@ def train_model(
     matchup_residuals: dict[str, float] | None = None,
     champion_presence: dict[str, float] | None = None,
     team_elo_diffs: dict[str, float] | None = None,
+    score_diff_by_game: dict[str, float] | None = None,
 ) -> ModelResult:
     """Fit the logistic regression model and compute evaluation metrics.
 
@@ -304,7 +314,7 @@ def train_model(
     """
     training = build_training_frame(
         games_df, champion_strength, synergy_residuals, matchup_residuals,
-        champion_presence, team_elo_diffs,
+        champion_presence, team_elo_diffs, score_diff_by_game,
     )
     n = len(training)
 

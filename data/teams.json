@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-01T23:18:03.350046+00:00",
-  "patch": "16.13",
+  "generatedAt": "2026-07-02T00:15:24.468906+00:00",
+  "patch": "16.12",
   "params": {
     "eloK": 32.0,
     "eloScale": 15.0,
@@ -14,7 +14,7 @@
       "lastPlayed": "2025-10-24"
     },
     "3BL Esports": {
-      "elo": 1438.6430743775911,
+      "elo": 1438.6274149900423,
       "games": 75,
       "league": "AL",
       "lastPlayed": "2026-05-08"
@@ -80,10 +80,10 @@
       "lastPlayed": "2025-04-04"
     },
     "ALMO Players": {
-      "elo": 1443.6073809921277,
-      "games": 37,
+      "elo": 1468.4228230638655,
+      "games": 35,
       "league": "HLL",
-      "lastPlayed": "2026-06-30"
+      "lastPlayed": "2026-05-19"
     },
     "AaB Esport": {
       "elo": 1468.0659054464875,
@@ -128,13 +128,13 @@
       "lastPlayed": "2025-02-13"
     },
     "Anonymo Esports": {
-      "elo": 1430.0459696987878,
+      "elo": 1430.0270381967127,
       "games": 83,
       "league": "RL",
       "lastPlayed": "2026-05-26"
     },
     "Anubis Gaming": {
-      "elo": 1692.1123088509833,
+      "elo": 1692.0632052111378,
       "games": 138,
       "league": "EM",
       "lastPlayed": "2026-06-12"
@@ -164,7 +164,7 @@
       "lastPlayed": "2025-05-09"
     },
     "Arctic Pandas": {
-      "elo": 1558.4901323061667,
+      "elo": 1558.4831668597772,
       "games": 35,
       "league": "NLC",
       "lastPlayed": "2026-06-01"
@@ -200,7 +200,7 @@
       "lastPlayed": "2025-09-27"
     },
     "BAAM Esports": {
-      "elo": 1487.352740191156,
+      "elo": 1487.3202060544404,
       "games": 148,
       "league": "AL",
       "lastPlayed": "2026-05-20"
@@ -266,7 +266,7 @@
       "lastPlayed": "2026-04-19"
     },
     "Barcz\u0105ca Esports": {
-      "elo": 1551.5873517437317,
+      "elo": 1551.5627022603344,
       "games": 72,
       "league": "RL",
       "lastPlayed": "2026-05-30"
@@ -278,7 +278,7 @@
       "lastPlayed": "2026-06-05"
     },
     "Bar\u00e7a eSports": {
-      "elo": 1647.0590421842528,
+      "elo": 1647.055041752685,
       "games": 161,
       "league": "LES",
       "lastPlayed": "2026-06-05"
@@ -302,10 +302,10 @@
       "lastPlayed": "2025-02-14"
     },
     "Berlin International Gaming": {
-      "elo": 1735.5737356297125,
-      "games": 183,
+      "elo": 1720.2213503749904,
+      "games": 182,
       "league": "PRM",
-      "lastPlayed": "2026-06-30"
+      "lastPlayed": "2026-05-28"
     },
     "Be\u015fikta\u015f Esports": {
       "elo": 1538.982411064447,
@@ -362,13 +362,13 @@
       "lastPlayed": "2026-05-29"
     },
     "Bomba Team": {
-      "elo": 1648.7104278708239,
+      "elo": 1648.650719595956,
       "games": 57,
       "league": "EM",
       "lastPlayed": "2026-06-11"
     },
     "BoostGate Esports": {
-      "elo": 1440.751594160104,
+      "elo": 1440.7509992621196,
       "games": 101,
       "league": "TCL",
       "lastPlayed": "2026-05-19"
@@ -386,13 +386,13 @@
       "lastPlayed": "2025-09-26"
     },
     "Bubliki": {
-      "elo": 1512.1607104582874,
+      "elo": 1512.149662120317,
       "games": 21,
       "league": "EM",
       "lastPlayed": "2026-06-08"
     },
     "Bulldog Esports": {
-      "elo": 1493.4099295796525,
+      "elo": 1493.4042423022386,
       "games": 69,
       "league": "NLC",
       "lastPlayed": "2026-05-29"
@@ -404,7 +404,7 @@
       "lastPlayed": "2025-08-14"
     },
     "Bushido Wildcats": {
-      "elo": 1514.0630618541816,
+      "elo": 1514.0620723944705,
       "games": 119,
       "league": "TCL",
       "lastPlayed": "2026-05-20"
@@ -416,8 +416,8 @@
       "lastPlayed": "2026-04-19"
     },
     "CCG Esports": {
-      "elo": 1542.3009272464826,
-      "games": 78,
+      "elo": 1527.385462370989,
+      "games": 77,
       "league": "NACL",
       "lastPlayed": "2026-06-05"
     },
@@ -428,7 +428,7 @@
       "lastPlayed": "2025-07-26"
     },
     "CITA Kaizen": {
-      "elo": 1772.2292580652934,
+      "elo": 1772.2007969897547,
       "games": 99,
       "league": "EM",
       "lastPlayed": "2026-06-09"
@@ -512,7 +512,7 @@
       "lastPlayed": "2025-06-20"
     },
     "Conviction": {
-      "elo": 1667.737311402979,
+      "elo": 1665.7234196736392,
       "games": 95,
       "league": "NACL",
       "lastPlayed": "2026-06-05"
@@ -524,7 +524,7 @@
       "lastPlayed": "2025-08-25"
     },
     "Croatian Flair": {
-      "elo": 1434.4969574058944,
+      "elo": 1434.4951233301733,
       "games": 21,
       "league": "EBL",
       "lastPlayed": "2026-04-28"
@@ -590,7 +590,7 @@
       "lastPlayed": "2025-09-09"
     },
     "DMG Esports": {
-      "elo": 1471.211106886056,
+      "elo": 1471.205588946698,
       "games": 73,
       "league": "NLC",
       "lastPlayed": "2026-05-27"
@@ -614,7 +614,7 @@
       "lastPlayed": "2026-05-29"
     },
     "DOCISK": {
-      "elo": 1378.2872797412426,
+      "elo": 1378.2782072172006,
       "games": 60,
       "league": "RL",
       "lastPlayed": "2026-05-21"
@@ -626,7 +626,7 @@
       "lastPlayed": "2025-11-01"
     },
     "Dark Passage": {
-      "elo": 1349.5626517808207,
+      "elo": 1349.5622567357857,
       "games": 28,
       "league": "TCL",
       "lastPlayed": "2026-05-12"
@@ -656,13 +656,13 @@
       "lastPlayed": "2026-06-20"
     },
     "Deep Cross Gaming": {
-      "elo": 1531.9167231460644,
-      "games": 213,
-      "league": "MSI",
-      "lastPlayed": "2026-06-29"
+      "elo": 1597.5460600898382,
+      "games": 207,
+      "league": "LCP",
+      "lastPlayed": "2026-06-07"
     },
     "Deer Gaming": {
-      "elo": 1486.2059698146777,
+      "elo": 1486.192879175192,
       "games": 26,
       "league": "NLC",
       "lastPlayed": "2026-06-03"
@@ -752,7 +752,7 @@
       "lastPlayed": "2026-06-21"
     },
     "Dragons Esports": {
-      "elo": 1544.390180078997,
+      "elo": 1544.355569178791,
       "games": 97,
       "league": "AL",
       "lastPlayed": "2026-05-13"
@@ -794,16 +794,16 @@
       "lastPlayed": "2025-06-01"
     },
     "Dynasty": {
-      "elo": 1469.1845578137534,
+      "elo": 1469.167795302557,
       "games": 35,
       "league": "ROL",
       "lastPlayed": "2026-05-21"
     },
     "E WIE EINFACH E-SPORTS": {
-      "elo": 1689.9868283623132,
-      "games": 138,
-      "league": "PRM",
-      "lastPlayed": "2026-06-30"
+      "elo": 1705.0841745113644,
+      "games": 137,
+      "league": "EM",
+      "lastPlayed": "2026-06-12"
     },
     "EDG Youth Team": {
       "elo": 1459.0788344804491,
@@ -824,7 +824,7 @@
       "lastPlayed": "2026-05-14"
     },
     "EKSI EPTA": {
-      "elo": 1459.1037721306275,
+      "elo": 1458.4912730690444,
       "games": 4,
       "league": "HLL",
       "lastPlayed": "2026-05-19"
@@ -848,16 +848,16 @@
       "lastPlayed": "2026-05-11"
     },
     "Eintracht Frankfurt": {
-      "elo": 1439.3849930525294,
-      "games": 87,
+      "elo": 1447.4064508505614,
+      "games": 86,
       "league": "PRM",
-      "lastPlayed": "2026-06-30"
+      "lastPlayed": "2026-05-11"
     },
     "Eintracht Spandau": {
-      "elo": 1735.6047400717366,
-      "games": 123,
-      "league": "PRM",
-      "lastPlayed": "2026-06-30"
+      "elo": 1762.0804226324778,
+      "games": 122,
+      "league": "EM",
+      "lastPlayed": "2026-06-14"
     },
     "Elegance": {
       "elo": 1480.423456689964,
@@ -908,7 +908,7 @@
       "lastPlayed": "2026-05-26"
     },
     "Esprit Sh\u014dnen": {
-      "elo": 1545.0310467315237,
+      "elo": 1545.0287322399342,
       "games": 94,
       "league": "LFL",
       "lastPlayed": "2026-05-21"
@@ -950,7 +950,7 @@
       "lastPlayed": "2026-06-14"
     },
     "FN Esports": {
-      "elo": 1590.720738223381,
+      "elo": 1590.6388784261221,
       "games": 96,
       "league": "EM",
       "lastPlayed": "2026-06-08"
@@ -974,7 +974,7 @@
       "lastPlayed": "2025-06-12"
     },
     "Falke Esports": {
-      "elo": 1444.7651686624476,
+      "elo": 1444.7638802502445,
       "games": 63,
       "league": "LES",
       "lastPlayed": "2026-05-21"
@@ -1022,7 +1022,7 @@
       "lastPlayed": "2026-06-06"
     },
     "Fnatic": {
-      "elo": 1501.605865939975,
+      "elo": 1501.6050839248471,
       "games": 130,
       "league": "LEC",
       "lastPlayed": "2026-05-04"
@@ -1046,7 +1046,7 @@
       "lastPlayed": "2025-06-05"
     },
     "Forsaken": {
-      "elo": 1621.248866174743,
+      "elo": 1621.2246876351535,
       "games": 141,
       "league": "EM",
       "lastPlayed": "2026-06-12"
@@ -1082,13 +1082,13 @@
       "lastPlayed": "2026-06-03"
     },
     "French Flair": {
-      "elo": 1738.4687294507469,
+      "elo": 1738.463370944895,
       "games": 40,
       "league": "EM",
       "lastPlayed": "2026-04-07"
     },
     "Frites Esports Club": {
-      "elo": 1775.1816462391523,
+      "elo": 1775.1454985397224,
       "games": 51,
       "league": "EM",
       "lastPlayed": "2026-06-09"
@@ -1112,7 +1112,7 @@
       "lastPlayed": "2025-08-30"
     },
     "G2 Esports": {
-      "elo": 1848.0802826186214,
+      "elo": 1848.0800247335299,
       "games": 194,
       "league": "LEC",
       "lastPlayed": "2026-06-07"
@@ -1124,10 +1124,10 @@
       "lastPlayed": "2025-06-16"
     },
     "G2 NORD": {
-      "elo": 1766.5031139837681,
-      "games": 87,
-      "league": "PRM",
-      "lastPlayed": "2026-06-30"
+      "elo": 1795.604853913835,
+      "games": 86,
+      "league": "EM",
+      "lastPlayed": "2026-06-13"
     },
     "G3V E-sports": {
       "elo": 1552.189927142352,
@@ -1148,25 +1148,25 @@
       "lastPlayed": "2026-02-19"
     },
     "GIANTX iTero": {
-      "elo": 1640.3452077130505,
+      "elo": 1640.3430323591567,
       "games": 108,
       "league": "LES",
       "lastPlayed": "2026-05-21"
     },
     "GLORE": {
-      "elo": 1249.5631839898854,
+      "elo": 1249.556764890419,
       "games": 64,
       "league": "RL",
       "lastPlayed": "2026-05-20"
     },
     "GMBLERS Esports": {
-      "elo": 1519.2170914909707,
+      "elo": 1519.0819202659184,
       "games": 119,
       "league": "EM",
       "lastPlayed": "2026-06-08"
     },
     "GOAL": {
-      "elo": 1608.2888968556456,
+      "elo": 1605.7532023712927,
       "games": 78,
       "league": "EM",
       "lastPlayed": "2026-06-09"
@@ -1178,7 +1178,7 @@
       "lastPlayed": "2026-05-22"
     },
     "Galions": {
-      "elo": 1941.1714882666222,
+      "elo": 1940.9936704157049,
       "games": 180,
       "league": "EM",
       "lastPlayed": "2026-06-15"
@@ -1196,10 +1196,10 @@
       "lastPlayed": "2025-08-29"
     },
     "Gamespace Mediterranean College Esports": {
-      "elo": 1470.6927720180227,
-      "games": 113,
+      "elo": 1448.067074227772,
+      "games": 111,
       "league": "HLL",
-      "lastPlayed": "2026-06-30"
+      "lastPlayed": "2026-05-19"
     },
     "Gaming Barcelona": {
       "elo": 1381.3104200821342,
@@ -1250,7 +1250,7 @@
       "lastPlayed": "2025-02-04"
     },
     "GiantX": {
-      "elo": 1580.8948539635176,
+      "elo": 1580.8939826341593,
       "games": 115,
       "league": "LEC",
       "lastPlayed": "2026-06-01"
@@ -1262,7 +1262,7 @@
       "lastPlayed": "2026-01-29"
     },
     "GnG Amazigh": {
-      "elo": 1412.5881900959725,
+      "elo": 1412.5762355272634,
       "games": 155,
       "league": "AL",
       "lastPlayed": "2026-06-05"
@@ -1340,7 +1340,7 @@
       "lastPlayed": "2025-08-18"
     },
     "HMBLE": {
-      "elo": 1689.2939575001046,
+      "elo": 1689.271528381279,
       "games": 46,
       "league": "EM",
       "lastPlayed": "2026-06-11"
@@ -1394,7 +1394,7 @@
       "lastPlayed": "2026-05-28"
     },
     "Howl Esports": {
-      "elo": 1408.2561384537341,
+      "elo": 1405.2272182594074,
       "games": 21,
       "league": "HLL",
       "lastPlayed": "2026-02-18"
@@ -1436,7 +1436,7 @@
       "lastPlayed": "2026-05-19"
     },
     "Ici Japon Corp. Esport": {
-      "elo": 1500.8633916119625,
+      "elo": 1500.8622378646198,
       "games": 93,
       "league": "LFL",
       "lastPlayed": "2026-05-13"
@@ -1508,7 +1508,7 @@
       "lastPlayed": "2026-06-06"
     },
     "JSK Esports": {
-      "elo": 1447.6121097508783,
+      "elo": 1447.6014872818375,
       "games": 40,
       "league": "AL",
       "lastPlayed": "2026-06-04"
@@ -1526,7 +1526,7 @@
       "lastPlayed": "2025-12-08"
     },
     "Joblife": {
-      "elo": 1464.3372750052195,
+      "elo": 1464.3360022150794,
       "games": 76,
       "league": "LFL",
       "lastPlayed": "2026-05-01"
@@ -1598,13 +1598,13 @@
       "lastPlayed": "2025-05-18"
     },
     "Karmine Corp": {
-      "elo": 1698.2099717806307,
-      "games": 199,
-      "league": "MSI",
-      "lastPlayed": "2026-06-30"
+      "elo": 1772.0746415549047,
+      "games": 190,
+      "league": "LEC",
+      "lastPlayed": "2026-06-07"
     },
     "Karmine Corp Blue": {
-      "elo": 1742.6350347637144,
+      "elo": 1742.6066545439662,
       "games": 186,
       "league": "EM",
       "lastPlayed": "2026-06-13"
@@ -1616,10 +1616,10 @@
       "lastPlayed": "2026-06-07"
     },
     "Kaufland Hangry Knights": {
-      "elo": 1513.0157338765669,
-      "games": 106,
+      "elo": 1486.4249764566703,
+      "games": 105,
       "league": "PRM",
-      "lastPlayed": "2026-06-30"
+      "lastPlayed": "2026-05-11"
     },
     "Kawaii Kiwis": {
       "elo": 1538.9281228273298,
@@ -1712,7 +1712,7 @@
       "lastPlayed": "2026-05-23"
     },
     "LODIS": {
-      "elo": 1379.5732590068774,
+      "elo": 1379.5656539178192,
       "games": 55,
       "league": "RL",
       "lastPlayed": "2026-05-20"
@@ -1724,7 +1724,7 @@
       "lastPlayed": "2026-06-11"
     },
     "LUA Gaming": {
-      "elo": 1545.6097036346287,
+      "elo": 1545.6079365455378,
       "games": 74,
       "league": "LES",
       "lastPlayed": "2026-05-20"
@@ -1760,7 +1760,7 @@
       "lastPlayed": "2025-08-19"
     },
     "Lenovo Legion Honv\u00e9d": {
-      "elo": 1477.7512297174846,
+      "elo": 1477.7455137315974,
       "games": 53,
       "league": "EBL",
       "lastPlayed": "2026-05-21"
@@ -1814,19 +1814,19 @@
       "lastPlayed": "2025-10-12"
     },
     "Lund Esports Organization": {
-      "elo": 1529.3279423565873,
+      "elo": 1529.3213691343258,
       "games": 32,
       "league": "NLC",
       "lastPlayed": "2026-05-27"
     },
     "Lundqvist Lightside": {
-      "elo": 1416.113745751338,
+      "elo": 1416.1090040855934,
       "games": 50,
       "league": "NLC",
       "lastPlayed": "2026-05-27"
     },
     "Lupus Esports": {
-      "elo": 1436.8251118686198,
+      "elo": 1436.8183133925288,
       "games": 66,
       "league": "EBL",
       "lastPlayed": "2026-04-28"
@@ -1880,7 +1880,7 @@
       "lastPlayed": "2025-03-19"
     },
     "Magaza Esports": {
-      "elo": 1516.7470825947992,
+      "elo": 1516.7249335147046,
       "games": 41,
       "league": "EM",
       "lastPlayed": "2026-06-08"
@@ -1946,7 +1946,7 @@
       "lastPlayed": "2025-06-05"
     },
     "Misa Esports": {
-      "elo": 1828.3345079883286,
+      "elo": 1828.268108699882,
       "games": 158,
       "league": "EM",
       "lastPlayed": "2026-06-13"
@@ -1958,19 +1958,19 @@
       "lastPlayed": "2025-06-26"
     },
     "Movistar KOI": {
-      "elo": 1673.5625360557926,
+      "elo": 1673.5620914912156,
       "games": 179,
       "league": "LEC",
       "lastPlayed": "2026-06-06"
     },
     "Movistar KOI F\u00e9nix": {
-      "elo": 1699.0481329130737,
+      "elo": 1699.0451821857052,
       "games": 91,
       "league": "LES",
       "lastPlayed": "2026-06-05"
     },
     "Myth Esports": {
-      "elo": 1391.0328112519187,
+      "elo": 1391.017052082988,
       "games": 86,
       "league": "ROL",
       "lastPlayed": "2026-05-14"
@@ -2024,7 +2024,7 @@
       "lastPlayed": "2026-05-28"
     },
     "Natus Vincere": {
-      "elo": 1582.4597005983617,
+      "elo": 1582.4578088135077,
       "games": 64,
       "league": "LEC",
       "lastPlayed": "2026-05-30"
@@ -2054,7 +2054,7 @@
       "lastPlayed": "2026-06-03"
     },
     "NextGeneration Esports": {
-      "elo": 1269.5715361714736,
+      "elo": 1269.5680720668283,
       "games": 44,
       "league": "AL",
       "lastPlayed": "2026-06-03"
@@ -2078,7 +2078,7 @@
       "lastPlayed": "2025-03-07"
     },
     "Nightbirds": {
-      "elo": 1694.1466027971949,
+      "elo": 1694.0193836750477,
       "games": 139,
       "league": "EM",
       "lastPlayed": "2026-06-08"
@@ -2174,13 +2174,13 @@
       "lastPlayed": "2025-07-17"
     },
     "Once Upon A Team": {
-      "elo": 1481.8813504588372,
+      "elo": 1481.8639266036812,
       "games": 91,
       "league": "ROL",
       "lastPlayed": "2026-05-28"
     },
     "One More Esports": {
-      "elo": 1327.038964072436,
+      "elo": 1327.0236606113176,
       "games": 121,
       "league": "AL",
       "lastPlayed": "2026-05-06"
@@ -2204,7 +2204,7 @@
       "lastPlayed": "2025-07-26"
     },
     "Otter Side": {
-      "elo": 1687.477972206157,
+      "elo": 1687.4679878806191,
       "games": 55,
       "league": "EM",
       "lastPlayed": "2026-06-08"
@@ -2222,7 +2222,7 @@
       "lastPlayed": "2025-11-06"
     },
     "Ozarox Esports": {
-      "elo": 1518.9794014184424,
+      "elo": 1518.9780163886526,
       "games": 20,
       "league": "TCL",
       "lastPlayed": "2026-05-26"
@@ -2234,7 +2234,7 @@
       "lastPlayed": "2026-05-24"
     },
     "PCIFIC Esports": {
-      "elo": 1570.2861037602643,
+      "elo": 1570.278899116897,
       "games": 50,
       "league": "EM",
       "lastPlayed": "2026-06-11"
@@ -2294,7 +2294,7 @@
       "lastPlayed": "2025-06-17"
     },
     "Paranormal Invaders": {
-      "elo": 1462.9090164113675,
+      "elo": 1462.2968349177659,
       "games": 4,
       "league": "HLL",
       "lastPlayed": "2026-05-19"
@@ -2306,7 +2306,7 @@
       "lastPlayed": "2025-02-26"
     },
     "Partizan Sangal": {
-      "elo": 1782.5601522016943,
+      "elo": 1782.1897611336824,
       "games": 121,
       "league": "EM",
       "lastPlayed": "2026-06-11"
@@ -2354,7 +2354,7 @@
       "lastPlayed": "2025-06-23"
     },
     "Pyramid IV Esports": {
-      "elo": 1422.3720638991283,
+      "elo": 1422.3675417648828,
       "games": 10,
       "league": "AL",
       "lastPlayed": "2026-06-05"
@@ -2420,10 +2420,10 @@
       "lastPlayed": "2026-04-28"
     },
     "ROSSMANN Centaurs": {
-      "elo": 1402.1398294089456,
-      "games": 127,
+      "elo": 1372.6942273599511,
+      "games": 126,
       "league": "PRM",
-      "lastPlayed": "2026-06-30"
+      "lastPlayed": "2026-05-12"
     },
     "Radical Pop Gaming": {
       "elo": 1301.1791890945656,
@@ -2486,7 +2486,7 @@
       "lastPlayed": "2025-05-10"
     },
     "Ruddy Corporation": {
-      "elo": 1490.23377032873,
+      "elo": 1490.2046544567497,
       "games": 73,
       "league": "EM",
       "lastPlayed": "2026-06-08"
@@ -2522,7 +2522,7 @@
       "lastPlayed": "2025-02-25"
     },
     "SK Gaming": {
-      "elo": 1411.5243214894606,
+      "elo": 1411.5234465520348,
       "games": 75,
       "league": "LEC",
       "lastPlayed": "2026-05-02"
@@ -2540,7 +2540,7 @@
       "lastPlayed": "2026-06-14"
     },
     "SNOOZE Esports": {
-      "elo": 1460.0279959320135,
+      "elo": 1460.0252186218854,
       "games": 4,
       "league": "ROL",
       "lastPlayed": "2026-06-11"
@@ -2552,7 +2552,7 @@
       "lastPlayed": "2026-02-19"
     },
     "SPIKE Syndicate": {
-      "elo": 1414.8702044801942,
+      "elo": 1414.8643450990396,
       "games": 89,
       "league": "EBL",
       "lastPlayed": "2026-05-13"
@@ -2564,7 +2564,7 @@
       "lastPlayed": "2026-03-01"
     },
     "SU Esports": {
-      "elo": 1538.6240053668555,
+      "elo": 1538.6233048747329,
       "games": 45,
       "league": "TCL",
       "lastPlayed": "2026-05-22"
@@ -2600,7 +2600,7 @@
       "lastPlayed": "2025-10-01"
     },
     "Senshi eSports": {
-      "elo": 1520.4774804438116,
+      "elo": 1520.4485461896043,
       "games": 95,
       "league": "ROL",
       "lastPlayed": "2026-05-21"
@@ -2624,7 +2624,7 @@
       "lastPlayed": "2026-06-01"
     },
     "Shifters": {
-      "elo": 1482.9828529400315,
+      "elo": 1482.9818929942674,
       "games": 40,
       "league": "EWC",
       "lastPlayed": "2026-05-14"
@@ -2654,13 +2654,13 @@
       "lastPlayed": "2026-06-05"
     },
     "Skillcamp": {
-      "elo": 1434.395891157737,
+      "elo": 1434.3950595265935,
       "games": 75,
       "league": "LFL",
       "lastPlayed": "2026-05-01"
     },
     "Solary": {
-      "elo": 1894.315764119595,
+      "elo": 1894.2321116702244,
       "games": 141,
       "league": "EM",
       "lastPlayed": "2026-06-15"
@@ -2672,10 +2672,10 @@
       "lastPlayed": "2025-06-15"
     },
     "Spartans EU": {
-      "elo": 1466.292717153884,
-      "games": 16,
+      "elo": 1470.541936871089,
+      "games": 14,
       "league": "HLL",
-      "lastPlayed": "2026-07-01"
+      "lastPlayed": "2026-05-07"
     },
     "Spirit Quartz Gaming": {
       "elo": 1460.3760670273628,
@@ -2738,10 +2738,10 @@
       "lastPlayed": "2026-05-28"
     },
     "T1": {
-      "elo": 1899.2294194057706,
-      "games": 276,
-      "league": "MSI",
-      "lastPlayed": "2026-07-01"
+      "elo": 1816.4056113332383,
+      "games": 267,
+      "league": "LCK",
+      "lastPlayed": "2026-06-14"
     },
     "T1 Esports Academy": {
       "elo": 1699.1001350232548,
@@ -2762,13 +2762,13 @@
       "lastPlayed": "2026-04-30"
     },
     "TLN Pirates": {
-      "elo": 1634.363458378016,
+      "elo": 1634.360294275423,
       "games": 41,
       "league": "LFL",
       "lastPlayed": "2026-05-28"
     },
     "TQ DURPA KASHLQ": {
-      "elo": 1428.6041647461245,
+      "elo": 1428.5986012562628,
       "games": 11,
       "league": "EBL",
       "lastPlayed": "2026-05-20"
@@ -2810,13 +2810,13 @@
       "lastPlayed": "2025-06-21"
     },
     "Team Heretics": {
-      "elo": 1306.2825193971137,
+      "elo": 1306.2824559972341,
       "games": 94,
       "league": "LEC",
       "lastPlayed": "2026-05-03"
     },
     "Team Heretics Academy": {
-      "elo": 1848.4433119847224,
+      "elo": 1848.4137868281473,
       "games": 173,
       "league": "EM",
       "lastPlayed": "2026-06-13"
@@ -2828,16 +2828,16 @@
       "lastPlayed": "2025-08-30"
     },
     "Team Insidious": {
-      "elo": 1580.3339850779003,
+      "elo": 1576.6933472029793,
       "games": 101,
       "league": "HLL",
       "lastPlayed": "2026-05-14"
     },
     "Team Liquid": {
-      "elo": 1668.3736510721844,
-      "games": 144,
-      "league": "MSI",
-      "lastPlayed": "2026-07-01"
+      "elo": 1611.7030261977293,
+      "games": 132,
+      "league": "LCS",
+      "lastPlayed": "2026-06-14"
     },
     "Team Meliora": {
       "elo": 1418.9163805964477,
@@ -2852,13 +2852,13 @@
       "lastPlayed": "2025-05-02"
     },
     "Team Phantasma": {
-      "elo": 1626.9572813476082,
+      "elo": 1624.306861066743,
       "games": 143,
       "league": "HLL",
       "lastPlayed": "2026-05-13"
     },
     "Team Phoenix": {
-      "elo": 1405.592765887768,
+      "elo": 1405.5923274285408,
       "games": 23,
       "league": "TCL",
       "lastPlayed": "2026-05-15"
@@ -2894,7 +2894,7 @@
       "lastPlayed": "2026-06-09"
     },
     "Team Spawn Peek": {
-      "elo": 1450.6520162974468,
+      "elo": 1450.6509730691678,
       "games": 7,
       "league": "EBL",
       "lastPlayed": "2026-05-20"
@@ -2918,7 +2918,7 @@
       "lastPlayed": "2025-06-08"
     },
     "Team Vitality": {
-      "elo": 1543.4605145742457,
+      "elo": 1543.4591741693084,
       "games": 108,
       "league": "LEC",
       "lastPlayed": "2026-05-31"
@@ -2936,10 +2936,10 @@
       "lastPlayed": "2025-07-17"
     },
     "TeamOrangeGaming": {
-      "elo": 1629.1948927509563,
-      "games": 117,
+      "elo": 1622.2699206287048,
+      "games": 116,
       "league": "PRM",
-      "lastPlayed": "2026-06-30"
+      "lastPlayed": "2026-05-20"
     },
     "TeamOrangeGaming Academy": {
       "elo": 1516.5325903772302,
@@ -2960,7 +2960,7 @@
       "lastPlayed": "2026-02-07"
     },
     "The Bandits": {
-      "elo": 1563.0098381311877,
+      "elo": 1562.9000898914446,
       "games": 56,
       "league": "ROL",
       "lastPlayed": "2026-06-02"
@@ -2978,19 +2978,13 @@
       "lastPlayed": "2026-05-12"
     },
     "The ParadOx": {
-      "elo": 1455.4167230491837,
-      "games": 52,
+      "elo": 1364.7112135311772,
+      "games": 85,
       "league": "HLL",
-      "lastPlayed": "2025-09-13"
-    },
-    "The ParadOx Invaders": {
-      "elo": 1385.075179878659,
-      "games": 35,
-      "league": "HLL",
-      "lastPlayed": "2026-07-01"
+      "lastPlayed": "2026-05-19"
     },
     "The Secret Club": {
-      "elo": 1504.858329434672,
+      "elo": 1504.8514926389323,
       "games": 68,
       "league": "EBL",
       "lastPlayed": "2026-05-27"
@@ -3038,13 +3032,13 @@
       "lastPlayed": "2026-04-14"
     },
     "UB Alma Mater": {
-      "elo": 1377.6771473803867,
+      "elo": 1377.6762732911855,
       "games": 19,
       "league": "LES",
       "lastPlayed": "2026-05-20"
     },
     "UCAM Esports": {
-      "elo": 1764.0771068269437,
+      "elo": 1764.0600570838335,
       "games": 117,
       "league": "EM",
       "lastPlayed": "2026-06-14"
@@ -3080,10 +3074,10 @@
       "lastPlayed": "2025-02-21"
     },
     "Unicorns of Love Sexy Edition": {
-      "elo": 1645.0538692143032,
-      "games": 162,
+      "elo": 1636.9083215088676,
+      "games": 161,
       "league": "PRM",
-      "lastPlayed": "2026-06-30"
+      "lastPlayed": "2026-05-21"
     },
     "Universae Instituto FP": {
       "elo": 1501.3479921710002,
@@ -3114,12 +3108,6 @@
       "games": 3,
       "league": "PRMP",
       "lastPlayed": "2025-04-04"
-    },
-    "Valerion": {
-      "elo": 1528.0641655802253,
-      "games": 2,
-      "league": "HLL",
-      "lastPlayed": "2026-06-30"
     },
     "Vancouver Impact": {
       "elo": 1371.4643267215838,
@@ -3176,16 +3164,16 @@
       "lastPlayed": "2025-05-10"
     },
     "Verdant": {
-      "elo": 1713.1460229047022,
+      "elo": 1712.933761165795,
       "games": 111,
       "league": "EM",
       "lastPlayed": "2026-06-09"
     },
     "VfB eSports": {
-      "elo": 1391.040736533178,
-      "games": 22,
+      "elo": 1397.9183716797688,
+      "games": 21,
       "league": "PRM",
-      "lastPlayed": "2026-06-30"
+      "lastPlayed": "2026-05-12"
     },
     "Vietnam (National Team)": {
       "elo": 1496.6971883004946,
@@ -3206,7 +3194,7 @@
       "lastPlayed": "2026-01-29"
     },
     "Vitality.Bee": {
-      "elo": 1574.869911076879,
+      "elo": 1574.867746899672,
       "games": 113,
       "league": "LFL",
       "lastPlayed": "2026-05-21"
@@ -3248,13 +3236,13 @@
       "lastPlayed": "2025-08-03"
     },
     "WLGaming Esports": {
-      "elo": 1702.6776951988652,
-      "games": 104,
-      "league": "HLL",
-      "lastPlayed": "2026-06-30"
+      "elo": 1719.8531701676898,
+      "games": 102,
+      "league": "EM",
+      "lastPlayed": "2026-06-12"
     },
     "Washed Gaming": {
-      "elo": 1453.9168212025177,
+      "elo": 1453.9162267223721,
       "games": 5,
       "league": "EBL",
       "lastPlayed": "2026-05-13"
@@ -3296,10 +3284,10 @@
       "lastPlayed": "2025-02-26"
     },
     "Winthrop University": {
-      "elo": 1566.2362908395394,
-      "games": 87,
+      "elo": 1583.1656474443728,
+      "games": 86,
       "league": "NACL",
-      "lastPlayed": "2026-06-05"
+      "lastPlayed": "2026-06-04"
     },
     "Witchcraft": {
       "elo": 1564.9314513161692,
@@ -3362,7 +3350,7 @@
       "lastPlayed": "2025-12-18"
     },
     "ZYB Esport": {
-      "elo": 1477.0380329215732,
+      "elo": 1477.036397943725,
       "games": 26,
       "league": "LFL",
       "lastPlayed": "2026-05-13"
@@ -3374,7 +3362,7 @@
       "lastPlayed": "2026-05-08"
     },
     "ZennIT": {
-      "elo": 1456.3249442793965,
+      "elo": 1456.3100709883602,
       "games": 118,
       "league": "ROL",
       "lastPlayed": "2026-06-11"
@@ -3416,7 +3404,7 @@
       "lastPlayed": "2026-05-22"
     },
     "Zerolag Esports": {
-      "elo": 1326.5364071975407,
+      "elo": 1323.0537559944696,
       "games": 47,
       "league": "HLL",
       "lastPlayed": "2026-05-19"
@@ -3434,7 +3422,7 @@
       "lastPlayed": "2025-09-23"
     },
     "devils.one inStreamly": {
-      "elo": 1358.9583806947028,
+      "elo": 1358.9506099625883,
       "games": 38,
       "league": "RL",
       "lastPlayed": "2026-05-21"
@@ -3482,7 +3470,7 @@
       "lastPlayed": "2025-06-04"
     },
     "mCon esports": {
-      "elo": 1526.6126048887115,
+      "elo": 1526.450273457399,
       "games": 130,
       "league": "EM",
       "lastPlayed": "2026-06-08"

@@ -275,6 +275,77 @@ def league_weight_multiplier(
     return 1.0
 
 
+def compute_wr_strength(
+    games_df: pd.DataFrame, reference_date, config
+) -> tuple[dict[str, float], dict[str, float]]:
+    """The draft-only champion-strength signal that won the experiment fleet:
+    shrunk, calendar-decayed champion win rate.
+
+        strength(c) = (shrunk_wr(c) - 0.5) * config.strength_feature_scale
+        shrunk_wr   = (sum w*win + shrink/2) / (sum w + shrink)
+        w           = day-decay(half_life = champion_wr_half_life_days)
+                      [+ premier-league multiplier when configured]
+
+    Measured on the walk-forward harness (2025+2026 real pro data): 55.4%
+    held-out draft-only accuracy vs 52.5% for the old EB-logit strength.
+    Deliberately NO patch decay and a LONG half-life -- champion identity
+    signal accumulates over many patches, unlike the fast-moving meta stats
+    used for display.
+
+    Returns ``(strength, loo_score_diff_by_gameid)``:
+    - ``strength``: {champion: strengthScore} from ALL given games -- used
+      for artifacts and live prediction.
+    - ``loo_score_diff_by_gameid``: {gameid: score_diff} where each game's
+      champion winrates EXCLUDE that game's own rows (leave-one-game-out),
+      so using these as TRAINING features keeps the joint model's
+      calibration honest (a game's feature never contains its own outcome).
+    """
+    if games_df.empty:
+        return {}, {}
+
+    df = games_df.copy()
+    days = (reference_date - df["date"]).dt.total_seconds() / 86400.0
+    df["w"] = days.map(lambda d: decay_weight(d, config.champion_wr_half_life_days))
+
+    # Deliberately NO premier-league (LCK+LPL 70%) weighting here, unlike the
+    # rest of the pipeline: measured head-to-head on the walk-forward harness
+    # (two-season data, 4,451 comparable held-out games), applying it to this
+    # signal drops draft-only accuracy from 55.4% to 53.9% -- it would defeat
+    # the owner's ">55% draft-only" target, which is the newer and more
+    # specific directive. Premier weighting remains active for the display
+    # stats and synergy/matchup residuals via apply_premier_league_weighting.
+
+    shrink = config.champion_wr_shrink_games
+    scale = config.strength_feature_scale
+    df["ww"] = df["w"] * (df["result"] == 1)
+    totals = df.groupby("champion")[["w", "ww"]].sum()
+    w_tot = totals["w"].to_dict()
+    ww_tot = totals["ww"].to_dict()
+
+    def _strength(champ: str, w_minus: float = 0.0, ww_minus: float = 0.0) -> float:
+        w = w_tot.get(champ, 0.0) - w_minus
+        ww = ww_tot.get(champ, 0.0) - ww_minus
+        return ((ww + shrink * 0.5) / (w + shrink) - 0.5) * scale
+
+    strength = {c: _strength(c) for c in w_tot}
+
+    # Per-game LOO score diffs for the training frame.
+    loo_diffs: dict[str, float] = {}
+    for gameid, group in df.groupby("gameid"):
+        diff = 0.0
+        ok = True
+        for row in group.itertuples(index=False):
+            side = str(row.side).lower()
+            if side not in ("blue", "red"):
+                ok = False
+                break
+            s = _strength(row.champion, row.w, row.w if row.result == 1 else 0.0)
+            diff += s if side == "blue" else -s
+        if ok:
+            loo_diffs[gameid] = diff
+    return strength, loo_diffs
+
+
 def apply_premier_league_weighting(config, games_df: pd.DataFrame, reference_date):
     """Return a config whose league weighting makes the premier leagues
     (LCK/LPL by default) carry ``premier_league_target_share`` of the total

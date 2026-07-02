@@ -316,7 +316,19 @@ def run_pipeline_on_data(
         reference_date=reference_date,
     )
 
-    champion_strength = champion_features_df["strengthScore"].to_dict()
+    # Champion strength = shrunk decayed win rate (the draft signal that won
+    # the experiment fleet: 55.4% vs 52.5% held-out draft-only accuracy).
+    # Overrides the EB-logit strengthScore in the artifact; the EB stats
+    # (proWinRate/blendedWinRate/sampleConfidence) remain as display fields.
+    wr_strength, loo_score_diffs = features.compute_wr_strength(
+        games_df, reference_date, config
+    )
+    champion_features_df["strengthScore"] = [
+        wr_strength.get(c, 0.0) for c in champion_features_df.index
+    ]
+    champion_strength = {
+        c: wr_strength.get(c, 0.0) for c in champion_features_df.index
+    }
     # Meta-presence feature (pickRate + banRate): same values shipped per
     # champion in champion_ratings.json, so the frontend can reconstruct
     # presence_diff exactly (see apps/web/lib/predict.ts).
@@ -326,11 +338,16 @@ def run_pipeline_on_data(
         else {}
     )
 
+    # Pairwise de-confounding expects LOGIT-scale strengths; near a 50% base
+    # rate logit(p) ~= 4*(p - 0.5), so convert from the scaled feature units.
+    strength_for_pairwise = {
+        c: v * 4.0 / config.strength_feature_scale for c, v in champion_strength.items()
+    }
     synergy_table = pairwise.compute_synergy_table(
-        games_df, champion_strength, config, reference_date=reference_date
+        games_df, strength_for_pairwise, config, reference_date=reference_date
     )
     matchup_table = pairwise.compute_matchup_table(
-        games_df, champion_strength, config, reference_date=reference_date
+        games_df, strength_for_pairwise, config, reference_date=reference_date
     )
     synergy_residuals = pairwise.synergy_lookup(synergy_table)
     matchup_residuals = pairwise.matchup_lookup(matchup_table)
@@ -349,7 +366,7 @@ def run_pipeline_on_data(
 
     model_result = train_model.train_model(
         games_df, champion_strength, synergy_residuals, matchup_residuals,
-        champion_presence, team_elo_diffs,
+        champion_presence, team_elo_diffs, loo_score_diffs,
     )
 
     champion_ratings_payload = _build_champion_ratings_payload(

@@ -373,6 +373,45 @@ def test_target_training_games_validation():
 # ---------------------------------------------------------------------------
 
 
+def test_compute_wr_strength_basic_and_loo():
+    from compstrength_pipeline.features import compute_wr_strength
+
+    ref = pd.Timestamp("2026-06-15", tz="UTC")
+    rows = []
+    # Ahri: 2 wins, 1 loss (blue side); Zed: mirror (red side) 1 win, 2 losses.
+    for i, ahri_win in enumerate([1, 1, 0]):
+        for side, champ, res in (("Blue", "Ahri", ahri_win), ("Red", "Zed", 1 - ahri_win)):
+            rows.append(
+                {"gameid": f"g{i}", "date": ref, "patch": "16.12", "league": "LCK",
+                 "side": side, "champion": champ, "result": res, "position": "mid"}
+            )
+    games = pd.DataFrame(rows)
+    cfg = PipelineConfig()
+
+    strength, loo = compute_wr_strength(games, ref, cfg)
+    # Winner above 0 (>50% shrunk WR), loser below, symmetric.
+    assert strength["Ahri"] > 0 > strength["Zed"]
+    assert strength["Ahri"] == pytest.approx(-strength["Zed"])
+    # Shrinkage: 2/3 raw winrate pulled well toward 0.5 by 25 pseudo-games.
+    raw_edge = (2 / 3 - 0.5) * cfg.strength_feature_scale
+    assert 0 < strength["Ahri"] < raw_edge
+
+    # LOO: every training game's diff must EXCLUDE its own result. g2 is
+    # Ahri's loss, so leaving it out RAISES Ahri's winrate -> the LOO diff
+    # for g2 (blue=Ahri) is HIGHER than for g0 (a win, whose exclusion
+    # lowers it).
+    assert set(loo) == {"g0", "g1", "g2"}
+    assert loo["g2"] > loo["g0"]
+
+
+def test_compute_wr_strength_empty():
+    from compstrength_pipeline.features import compute_wr_strength
+
+    empty = pd.DataFrame(columns=["gameid", "date", "side", "champion", "result", "position"])
+    strength, loo = compute_wr_strength(empty, pd.Timestamp("2026-01-01", tz="UTC"), PipelineConfig())
+    assert strength == {} and loo == {}
+
+
 def test_apply_premier_league_weighting_hits_target_share():
     from compstrength_pipeline.features import (
         apply_premier_league_weighting,

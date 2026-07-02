@@ -259,30 +259,54 @@ export function DraftBuilder({
             // lot (teams carry most of the signal), so show the numbers that
             // match how THIS prediction was made: with-teams metrics when the
             // team term applied, the draft-only companion metrics otherwise.
+            // Prefer the current-season slice when present: it matches what a
+            // prediction made today actually faces (current-season game, all
+            // history available for training).
             <p className="text-xs text-slate-500">
               {result.teamContext || !backtest.draftOnlyMetrics ? (
                 <>
-                  Held-out accuracy {(backtest.metrics.accuracy * 100).toFixed(1)}%
-                  vs. {(backtest.metrics.baselineAccuracy * 100).toFixed(1)}%
-                  pick-majority baseline; log-loss{" "}
-                  {backtest.metrics.logLoss.toFixed(3)} vs.{" "}
-                  {backtest.metrics.coinFlipLogLoss.toFixed(3)} coin-flip
-                  (walk-forward backtest on{" "}
-                  {backtest.testGames.toLocaleString()} real pro games, teams
-                  known).
+                  Held-out accuracy{" "}
+                  {(
+                    (backtest.currentSeasonMetrics?.accuracy ??
+                      backtest.metrics.accuracy) * 100
+                  ).toFixed(1)}
+                  % vs.{" "}
+                  {(
+                    (backtest.currentSeasonMetrics?.baselineAccuracy ??
+                      backtest.metrics.baselineAccuracy) * 100
+                  ).toFixed(1)}
+                  % pick-majority baseline; log-loss{" "}
+                  {(
+                    backtest.currentSeasonMetrics?.logLoss ??
+                    backtest.metrics.logLoss
+                  ).toFixed(3)}{" "}
+                  vs. {backtest.metrics.coinFlipLogLoss.toFixed(3)} coin-flip
+                  (current-season walk-forward, teams known).
                 </>
               ) : (
                 <>
                   Held-out DRAFT-ONLY accuracy{" "}
-                  {(backtest.draftOnlyMetrics.accuracy * 100).toFixed(1)}% vs.{" "}
-                  {(backtest.metrics.baselineAccuracy * 100).toFixed(1)}%
-                  pick-majority baseline; log-loss{" "}
-                  {backtest.draftOnlyMetrics.logLoss.toFixed(3)} vs.{" "}
-                  {backtest.metrics.coinFlipLogLoss.toFixed(3)} coin-flip. Draft
-                  alone is a weak predictor — select both teams for the model
-                  that reaches{" "}
-                  {(backtest.metrics.accuracy * 100).toFixed(1)}% held-out
-                  accuracy.
+                  {(
+                    (backtest.currentSeasonMetrics?.draftOnlyAccuracy ??
+                      backtest.draftOnlyMetrics.accuracy) * 100
+                  ).toFixed(1)}
+                  % vs.{" "}
+                  {(
+                    (backtest.currentSeasonMetrics?.baselineAccuracy ??
+                      backtest.metrics.baselineAccuracy) * 100
+                  ).toFixed(1)}
+                  % pick-majority baseline; log-loss{" "}
+                  {(
+                    backtest.currentSeasonMetrics?.draftOnlyLogLoss ??
+                    backtest.draftOnlyMetrics.logLoss
+                  ).toFixed(3)}{" "}
+                  vs. {backtest.metrics.coinFlipLogLoss.toFixed(3)} coin-flip.
+                  Select both teams for the model that reaches{" "}
+                  {(
+                    (backtest.currentSeasonMetrics?.accuracy ??
+                      backtest.metrics.accuracy) * 100
+                  ).toFixed(1)}
+                  % held-out accuracy.
                 </>
               )}{" "}
               See{" "}

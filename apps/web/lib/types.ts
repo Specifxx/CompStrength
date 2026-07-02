@@ -126,6 +126,18 @@ export interface BacktestReportFile {
     logLoss: number;
     brierScore: number;
   };
+  // Same held-out predictions, restricted to the newest season's patches
+  // (e.g. 16.x): the number that matches predicting current games with all
+  // history available. Null/absent on single-season reports.
+  currentSeasonMetrics?: {
+    testGames: number;
+    patchMajor: number;
+    accuracy: number;
+    logLoss: number;
+    baselineAccuracy: number;
+    draftOnlyAccuracy: number;
+    draftOnlyLogLoss: number;
+  } | null;
   teamFeatureUsed?: boolean;
   calibration: BacktestCalibrationBucket[];
   // Composition of the data the model is built on, and held-out accuracy

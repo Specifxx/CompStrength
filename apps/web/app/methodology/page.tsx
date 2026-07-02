@@ -148,6 +148,35 @@ export default function MethodologyPage() {
                 </dd>
               </div>
             </dl>
+            {report.currentSeasonMetrics && (
+              <div className="mt-4 rounded-md border border-sky-900/60 bg-sky-950/20 p-3">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-sky-400">
+                  Current season ({report.currentSeasonMetrics.patchMajor}.x
+                  patches, {report.currentSeasonMetrics.testGames.toLocaleString()}{" "}
+                  held-out games)
+                </p>
+                <p className="text-sm text-slate-300">
+                  With teams:{" "}
+                  <span className="font-semibold text-emerald-400">
+                    {pct(report.currentSeasonMetrics.accuracy)}
+                  </span>{" "}
+                  (log-loss {report.currentSeasonMetrics.logLoss.toFixed(3)}) &middot;
+                  Draft only:{" "}
+                  <span className="font-semibold text-sky-300">
+                    {pct(report.currentSeasonMetrics.draftOnlyAccuracy)}
+                  </span>{" "}
+                  (log-loss {report.currentSeasonMetrics.draftOnlyLogLoss.toFixed(3)})
+                  &middot; baseline {pct(report.currentSeasonMetrics.baselineAccuracy)}
+                </p>
+                <p className="mt-1 text-xs text-slate-500">
+                  This slice matches what predictions face today: current-season
+                  games, with all prior history available for training. The
+                  headline metrics above average over the full multi-season
+                  walk-forward (including early folds where the model had
+                  little history), so they run lower.
+                </p>
+              </div>
+            )}
             {report.teamFeatureUsed && report.draftOnlyMetrics && (
               <div className="mt-4 rounded-md border border-slate-800 bg-slate-950/40 p-3">
                 <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
