@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-02T05:09:48.009571+00:00",
+  "generatedAt": "2026-07-02T07:46:23.856799+00:00",
   "patch": "16.12",
   "patchesUsed": [
     "16.12",
@@ -935,6 +935,18 @@
       "pickRate": 0.008013522819758341,
       "banRate": 0.004006761409879171,
       "sampleConfidence": "high"
+    },
+    "Locke": {
+      "primaryRole": "MID",
+      "proGames": 0,
+      "proWinRate": 0.0,
+      "soloGames": 0,
+      "soloWinRate": 0.5,
+      "blendedWinRate": 0.5,
+      "strengthScore": 0.0,
+      "pickRate": 0.0,
+      "banRate": 0.0,
+      "sampleConfidence": "low"
     },
     "Lucian": {
       "primaryRole": "BOTTOM",

@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "trainedAt": "2026-07-02T05:09:48.009595+00:00",
+  "trainedAt": "2026-07-02T07:46:23.856818+00:00",
   "trainingGames": 15973,
   "coefficients": {
-    "scoreDiffWeight": 0.054994573591302366,
-    "synergyWeight": 0.04545113240736095,
-    "matchupWeight": 0.02192324475424506,
+    "scoreDiffWeight": 0.05499457359130204,
+    "synergyWeight": 0.04545113240736249,
+    "matchupWeight": 0.021923244754241525,
     "presenceWeight": 0.0,
-    "teamEloWeight": 0.0900515921493522,
-    "blueSideBias": 0.134866507853928,
+    "teamEloWeight": 0.09005159214935304,
+    "blueSideBias": 0.13486650785393012,
     "intercept": 0.0
   },
   "metrics": {
