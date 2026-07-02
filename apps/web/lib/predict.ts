@@ -7,6 +7,7 @@ import {
   type NotablePair,
   type PredictResponse,
   type Role,
+  type RosterSeat,
   type SynergyFile,
   type TeamContext,
   type TeamsFile,
@@ -90,23 +91,79 @@ export interface TeamOptions {
   teams?: TeamsFile | null;
 }
 
-/** Resolve the team-strength (Elo gap) term. Both-or-nothing: the term only
- *  applies when BOTH org names are given and found in teams.json — a single
- *  known team vs an unspecified opponent would silently be treated as
- *  "vs a perfectly average team", which is misleading rather than neutral. */
-function resolveTeamContext(options: TeamOptions | undefined): TeamContext | null {
+/** Draft role -> Oracle's Elixir position code used in roster seats. */
+const POSITION_BY_ROLE: Record<Role, string> = {
+  TOP: "top",
+  JUNGLE: "jng",
+  MID: "mid",
+  BOTTOM: "bot",
+  SUPPORT: "sup",
+};
+
+/** Mirror of the pipeline's players.proficiency(): the player's shrunk
+ *  winrate edge on ``champion`` over their own overall winrate. 0 for
+ *  players/champions with no history. */
+function proficiency(seat: RosterSeat, champion: string, shrink: number): number {
+  const base = seat.games > 0 ? seat.wins / seat.games : 0.5;
+  const [w, g] = seat.champions[champion] ?? [0, 0];
+  return (w + shrink * base) / (g + shrink) - base;
+}
+
+/** Sum of each side's roster proficiency on the champions drafted in their
+ *  role. A seat missing from the roster (or a position mismatch) contributes
+ *  0 — same "no information = neutral" rule as everywhere else. */
+function sideProficiency(roster: RosterSeat[], draft: DraftTeam, shrink: number): number {
+  let total = 0;
+  for (const role of ROLES) {
+    const champion = draft[role];
+    if (!champion) continue;
+    const seat = roster.find((s) => s.position === POSITION_BY_ROLE[role]);
+    if (seat) total += proficiency(seat, champion, shrink);
+  }
+  return total;
+}
+
+/** Resolve the team-strength (Elo gap) term, plus the player-level add-on
+ *  (mean player Elo gap + champion proficiency) when both teams ship a
+ *  roster. Both-or-nothing at every level: the team term only applies when
+ *  BOTH org names are given and found in teams.json — a single known team vs
+ *  an unspecified opponent would silently be treated as "vs a perfectly
+ *  average team", which is misleading rather than neutral. Likewise the
+ *  player terms only apply when BOTH rosters are known. */
+function resolveTeamContext(
+  options: TeamOptions | undefined,
+  blue: DraftTeam,
+  red: DraftTeam,
+): TeamContext | null {
   if (!options?.teams || !options.blueTeam || !options.redTeam) return null;
   const blueRating = options.teams.teams[options.blueTeam];
   const redRating = options.teams.teams[options.redTeam];
   if (!blueRating || !redRating) return null;
   const scale = options.teams.params.eloScale || 400;
-  return {
+  const context: TeamContext = {
     blueTeam: options.blueTeam,
     redTeam: options.redTeam,
     blueElo: blueRating.elo,
     redElo: redRating.elo,
     eloDiff: (blueRating.elo - redRating.elo) / scale,
   };
+
+  const blueRoster = blueRating.roster;
+  const redRoster = redRating.roster;
+  if (blueRoster?.length === 5 && redRoster?.length === 5) {
+    const mean = (seats: RosterSeat[]) =>
+      seats.reduce((s, seat) => s + seat.elo, 0) / seats.length;
+    const shrink = options.teams.params.profShrink ?? 8;
+    context.blueRoster = blueRoster.map((s) => s.player);
+    context.redRoster = redRoster.map((s) => s.player);
+    context.bluePlayerElo = mean(blueRoster);
+    context.redPlayerElo = mean(redRoster);
+    context.playerEloDiff = (context.bluePlayerElo - context.redPlayerElo) / scale;
+    context.profDiff =
+      sideProficiency(blueRoster, blue, shrink) -
+      sideProficiency(redRoster, red, shrink);
+  }
+  return context;
 }
 
 export function predictMatchup(
@@ -172,8 +229,12 @@ export function predictMatchup(
 
   // Team-strength term (0 unless both teams are provided and known —
   // mirrors the pipeline, where an unknown gameid contributes a 0 gap).
-  const teamContext = resolveTeamContext(teamOptions);
+  // The player-level terms ride on the same selection: rosters are inferred
+  // from the chosen teams' most recent lineup, so no extra inputs needed.
+  const teamContext = resolveTeamContext(teamOptions, blue, red);
   const teamEloDiff = teamContext?.eloDiff ?? 0;
+  const playerEloDiff = teamContext?.playerEloDiff ?? 0;
+  const profDiff = teamContext?.profDiff ?? 0;
 
   const {
     scoreDiffWeight,
@@ -183,6 +244,8 @@ export function predictMatchup(
     matchupWeight = 0,
     presenceWeight = 0,
     teamEloWeight = 0,
+    playerEloWeight = 0,
+    profWeight = 0,
   } = model.coefficients;
   const logit =
     intercept +
@@ -191,6 +254,8 @@ export function predictMatchup(
     matchupWeight * matchupDiff +
     presenceWeight * presenceDiff +
     teamEloWeight * teamEloDiff +
+    playerEloWeight * playerEloDiff +
+    profWeight * profDiff +
     blueSideBias;
   const blueWinProbability = sigmoid(logit);
 

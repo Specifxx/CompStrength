@@ -43,12 +43,20 @@ def test_pipeline_end_to_end_writes_expected_files(output_dir: Path):
         teams_data = json.load(f)
     for key in ("generatedAt", "patch", "params", "teams"):
         assert key in teams_data
-    for key in ("eloK", "eloScale", "initialElo"):
+    for key in ("eloK", "eloScale", "initialElo", "profShrink"):
         assert key in teams_data["params"]
     assert isinstance(teams_data["teams"], dict) and len(teams_data["teams"]) > 0
     sample_team = next(iter(teams_data["teams"].values()))
     for key in ("elo", "games", "league", "lastPlayed"):
         assert key in sample_team
+    # Player features on by default: every team that played carries its
+    # current roster (5 seats) with per-player Elo/record/champion history.
+    rostered = [t for t in teams_data["teams"].values() if "roster" in t]
+    assert rostered, "expected at least one team with a roster"
+    sample_seat = rostered[0]["roster"][0]
+    for key in ("player", "position", "elo", "wins", "games", "champions"):
+        assert key in sample_seat
+    assert len(rostered[0]["roster"]) == 5
     # Elo is zero-sum around the initial rating, so the mean stays ~1500.
     elos = [t["elo"] for t in teams_data["teams"].values()]
     assert abs(sum(elos) / len(elos) - 1500.0) < 1.0
@@ -82,7 +90,8 @@ def test_pipeline_end_to_end_writes_expected_files(output_dir: Path):
         assert key in model_data
     for key in (
         "scoreDiffWeight", "synergyWeight", "matchupWeight", "presenceWeight",
-        "teamEloWeight", "blueSideBias", "intercept",
+        "teamEloWeight", "playerEloWeight", "profWeight",
+        "blueSideBias", "intercept",
     ):
         assert key in model_data["coefficients"]
     for key in ("logLoss", "accuracy", "baselineAccuracy"):

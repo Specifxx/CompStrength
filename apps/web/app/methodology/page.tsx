@@ -88,8 +88,11 @@ export default function MethodologyPage() {
         <p className="mt-1 max-w-2xl text-sm text-slate-400">
           CompStrength blends recent patch-weighted pro play with solo queue
           performance, plus champion-pair synergy and lane matchup history,
-          into a logistic model of blue-side win probability. The numbers
-          below come from holding out games the model never trained on.
+          into a logistic model of blue-side win probability &mdash; and,
+          when you optionally select the two teams, adds team Elo, per-player
+          Elo, and player-champion comfort from the inferred starting fives.
+          The numbers below come from holding out games the model never
+          trained on.
         </p>
       </header>
 
@@ -207,10 +210,16 @@ export default function MethodologyPage() {
                   </tbody>
                 </table>
                 <p className="mt-2 text-xs text-slate-500">
-                  Team strength (Elo over game history) carries most of the
-                  predictable signal in pro play; the draft refines it. Select
-                  both teams on the draft builder to get the top row&apos;s
-                  model.
+                  Team strength carries most of the predictable signal in pro
+                  play; the draft refines it. &ldquo;Teams + draft&rdquo; uses
+                  three history signals that all ride on the team selection:
+                  team Elo over the game history, per-player Elo of the five
+                  inferred starters (tracks roster moves the team rating
+                  smooths over), and each player&apos;s record on the champion
+                  they&apos;re drafting (comfort picks). Select both teams on
+                  the draft builder to get the top row&apos;s model &mdash;
+                  rosters are inferred automatically from each team&apos;s
+                  most recent game.
                 </p>
               </div>
             )}

@@ -50,6 +50,12 @@ export interface ModelFile {
     // Team-strength (Elo gap / eloScale) feature weight. Absent on older
     // snapshots — treat as `?? 0`.
     teamEloWeight?: number;
+    // Player-level feature weights (mean player-Elo gap / eloScale, and
+    // player-champion proficiency sum). Both ride on the optional team
+    // selection — 0-features when teams are blank. Absent on older
+    // snapshots — treat as `?? 0`.
+    playerEloWeight?: number;
+    profWeight?: number;
   };
   metrics: {
     logLoss: number;
@@ -139,6 +145,9 @@ export interface BacktestReportFile {
     draftOnlyLogLoss: number;
   } | null;
   teamFeatureUsed?: boolean;
+  // Player Elo + champion proficiency (players.py) — ride on the same
+  // optional team selection. Absent on older reports.
+  playerFeaturesUsed?: boolean;
   calibration: BacktestCalibrationBucket[];
   // Composition of the data the model is built on, and held-out accuracy
   // broken down by patch/league. Optional so older reports still type-check.
@@ -178,12 +187,28 @@ export interface PredictRequest {
   redTeam?: string | null;
 }
 
+/** One seat of a team's current roster: the player, their position (Oracle's
+ *  Elixir codes: top/jng/mid/bot/sup), their Elo/overall record, and their
+ *  per-champion record ({champion: [wins, games]}) — everything needed to
+ *  reproduce the pipeline's player features client-side (see predict.ts). */
+export interface RosterSeat {
+  player: string;
+  position: string;
+  elo: number;
+  wins: number;
+  games: number;
+  champions: Record<string, [number, number]>;
+}
+
 /** One professional team's Elo rating snapshot (data/teams.json). */
 export interface TeamRating {
   elo: number;
   games: number;
   league: string;
   lastPlayed: string;
+  // The five seats from the team's most recent game. Absent on older
+  // snapshots or when player features are disabled.
+  roster?: RosterSeat[];
 }
 
 export interface TeamsFile {
@@ -193,6 +218,9 @@ export interface TeamsFile {
     eloK: number;
     eloScale: number;
     initialElo: number;
+    // Pseudo-games shrinking a player-champion winrate toward the player's
+    // own overall winrate (proficiency). Absent on older snapshots.
+    profShrink?: number;
   };
   teams: Record<string, TeamRating>;
 }
@@ -205,6 +233,18 @@ export interface TeamContext {
   redElo: number;
   /** (blueElo - redElo) / eloScale — the model feature value. */
   eloDiff: number;
+  // Player-level add-on (present when BOTH teams ship a roster): the
+  // inferred starting fives, their mean Elos, and the two feature values
+  // actually fed to the model. Absent when either roster is missing (the
+  // player terms are then 0 — "unknown players").
+  blueRoster?: string[];
+  redRoster?: string[];
+  bluePlayerElo?: number;
+  redPlayerElo?: number;
+  /** (mean blue player Elo - mean red) / eloScale — the model feature. */
+  playerEloDiff?: number;
+  /** Blue proficiency sum - red proficiency sum on the drafted champions. */
+  profDiff?: number;
 }
 
 export interface ChampionContribution {

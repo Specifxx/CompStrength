@@ -32,7 +32,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from compstrength_pipeline import backtest, etl, features, pairwise, teams, train_model
+from compstrength_pipeline import backtest, etl, features, pairwise, players, teams, train_model
 from compstrength_pipeline.config import DEFAULT_CONFIG, PipelineConfig
 from compstrength_pipeline.sources import leaguepedia as leaguepedia_source
 from compstrength_pipeline.sources import soloqueue as soloqueue_module
@@ -378,9 +378,27 @@ def run_pipeline_on_data(
             elo_result, feature_scale=config.elo_feature_scale
         )
 
+    # Player-level features (players.py): same chronological pre-game
+    # construction, riding on the same optional team selection. The artifact
+    # ships each team's current roster (its most recent lineup) with per
+    # -player Elo / winrate / champion records so the frontend reproduces
+    # both features exactly when teams are picked -- and stays draft-only
+    # when they aren't.
+    player_stats = None
+    if config.use_team_feature and config.use_player_features:
+        player_stats = players.compute_player_stats(
+            games_df,
+            elo_feature_scale=config.elo_feature_scale,
+            k=config.player_elo_k,
+            season_carryover=config.player_season_carryover,
+            prof_shrink=config.prof_shrink_games,
+        )
+
     model_result = train_model.train_model(
         games_df, champion_strength, synergy_residuals, matchup_residuals,
         champion_presence, team_elo_diffs, loo_score_diffs,
+        player_stats.player_elo_diff if player_stats else None,
+        player_stats.prof_diff if player_stats else None,
     )
 
     champion_ratings_payload = _build_champion_ratings_payload(
@@ -390,7 +408,7 @@ def run_pipeline_on_data(
     synergy_payload = _build_synergy_payload(
         synergy_table, matchup_table, resolved_patch, patches_used, config
     )
-    teams_payload = _build_teams_payload(elo_result, resolved_patch, config)
+    teams_payload = _build_teams_payload(elo_result, resolved_patch, config, player_stats)
 
     return champion_ratings_payload, model_payload, synergy_payload, teams_payload
 
@@ -525,20 +543,44 @@ def _build_synergy_payload(
 
 
 def _build_teams_payload(
-    elo_result, patch: str, config: PipelineConfig
+    elo_result, patch: str, config: PipelineConfig, player_stats=None
 ) -> dict:
     """``data/teams.json``: per-team Elo "as of today" for the frontend's
     optional team inputs. Empty ``teams`` when the feature is disabled or no
-    team names were present in the data."""
+    team names were present in the data.
+
+    When player features are on, each team also carries its CURRENT roster
+    (the five seats from its most recent game) with each player's Elo,
+    overall record, and per-champion record -- everything the frontend needs
+    to compute the playerEloDiff/profDiff features exactly like the pipeline
+    (see players.py / apps/web/lib/predict.ts)."""
+    champs_by_player: dict[str, dict] = {}
+    if player_stats is not None:
+        for (player, champ), (w, g) in player_stats.champ.items():
+            champs_by_player.setdefault(player, {})[champ] = [int(w), int(g)]
+
     teams_payload = {}
     if elo_result is not None:
         for team, elo in sorted(elo_result.ratings.items()):
-            teams_payload[team] = {
+            entry = {
                 "elo": float(elo),
                 "games": int(elo_result.games_played.get(team, 0)),
                 "league": elo_result.last_league.get(team, ""),
                 "lastPlayed": elo_result.last_played.get(team, ""),
             }
+            if player_stats is not None and team in player_stats.rosters:
+                entry["roster"] = [
+                    {
+                        "player": player,
+                        "position": position,
+                        "elo": float(player_stats.elo.get(player, players.INITIAL_ELO)),
+                        "wins": int(player_stats.wr.get(player, [0, 0])[0]),
+                        "games": int(player_stats.wr.get(player, [0, 0])[1]),
+                        "champions": champs_by_player.get(player, {}),
+                    }
+                    for player, position in player_stats.rosters[team]
+                ]
+            teams_payload[team] = entry
     return {
         "generatedAt": datetime.now(timezone.utc).isoformat(),
         "patch": patch,
@@ -548,6 +590,10 @@ def _build_teams_payload(
             # frontend must divide the Elo gap by -- not Elo's own 400 curve.
             "eloScale": config.elo_feature_scale,
             "initialElo": teams.INITIAL_ELO,
+            # Pseudo-games shrinking a player-champion winrate toward the
+            # player's own overall winrate (players.proficiency); the
+            # frontend must use the same value to reproduce profDiff.
+            "profShrink": config.prof_shrink_games,
         },
         "teams": teams_payload,
     }
@@ -582,7 +628,11 @@ def write_outputs(
     if teams_payload is not None:
         teams_path = out_dir / "teams.json"
         with teams_path.open("w", encoding="utf-8") as f:
-            json.dump(teams_payload, f, indent=2, sort_keys=False)
+            # Compact separators, no indent: with per-player rosters this file
+            # is by far the largest artifact, and pretty-printing its deeply
+            # nested champion records roughly doubles the bytes shipped to
+            # every visitor.
+            json.dump(teams_payload, f, separators=(",", ":"), sort_keys=False)
             f.write("\n")
 
     return ratings_path, model_path, synergy_path

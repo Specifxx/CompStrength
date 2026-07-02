@@ -225,25 +225,49 @@ export function DraftBuilder({
           </div>
 
           {result.teamContext ? (
-            <p className="text-sm text-slate-400">
-              Team strength applied:{" "}
-              <span className="text-sky-300">{result.teamContext.blueTeam}</span>{" "}
-              <span className="font-mono text-slate-300">
-                {Math.round(result.teamContext.blueElo)}
-              </span>{" "}
-              vs{" "}
-              <span className="text-rose-300">{result.teamContext.redTeam}</span>{" "}
-              <span className="font-mono text-slate-300">
-                {Math.round(result.teamContext.redElo)}
-              </span>{" "}
-              Elo — team strength is the strongest single predictor; the draft
-              adjusts it.
-            </p>
+            <div className="flex flex-col gap-1 text-sm text-slate-400">
+              <p>
+                Team strength applied:{" "}
+                <span className="text-sky-300">{result.teamContext.blueTeam}</span>{" "}
+                <span className="font-mono text-slate-300">
+                  {Math.round(result.teamContext.blueElo)}
+                </span>{" "}
+                vs{" "}
+                <span className="text-rose-300">{result.teamContext.redTeam}</span>{" "}
+                <span className="font-mono text-slate-300">
+                  {Math.round(result.teamContext.redElo)}
+                </span>{" "}
+                Elo — team strength is the strongest single predictor; the draft
+                adjusts it.
+              </p>
+              {result.teamContext.blueRoster && result.teamContext.redRoster && (
+                <p className="text-xs text-slate-500">
+                  Player strength applied (inferred starting fives, avg player
+                  Elo{" "}
+                  <span className="font-mono text-slate-400">
+                    {Math.round(result.teamContext.bluePlayerElo ?? 0)}
+                  </span>{" "}
+                  vs{" "}
+                  <span className="font-mono text-slate-400">
+                    {Math.round(result.teamContext.redPlayerElo ?? 0)}
+                  </span>
+                  , plus each player&apos;s record on the drafted champion):{" "}
+                  <span className="text-sky-300/80">
+                    {result.teamContext.blueRoster.join(", ")}
+                  </span>{" "}
+                  vs{" "}
+                  <span className="text-rose-300/80">
+                    {result.teamContext.redRoster.join(", ")}
+                  </span>
+                  .
+                </p>
+              )}
+            </div>
           ) : (
             <p className="text-sm text-slate-500">
               {(blueOrg ? 1 : 0) + (redOrg ? 1 : 0) === 1
                 ? "Team strength needs BOTH teams selected — only one is set, so this is a draft-only prediction."
-                : "Draft-only prediction (no teams selected). Pick both teams above to include team strength — the strongest single predictor."}
+                : "Draft-only prediction (no teams selected). Pick both teams above to include team & player strength — the strongest predictors (rosters are inferred automatically)."}
             </p>
           )}
 

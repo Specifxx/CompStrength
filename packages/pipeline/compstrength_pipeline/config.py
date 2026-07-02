@@ -196,6 +196,32 @@ class PipelineConfig:
     wr_prior_solo_weight: float = 0.0
     wr_prior_min_solo_games: int = 2000
     wr_prior_clip: float = 0.06
+    # Player-level features (players.py), an OPTIONAL ADD-ON to the team
+    # feature: per-player Elo (mean of the 5 starters, tracks WHO is actually
+    # playing across roster moves) and player-champion proficiency (shrunk
+    # pre-game winrate edge on the champion each player is on -- the comfort
+    # -pick signal). Both are gated behind the same optional team selection
+    # as team Elo: no teams selected -> features are 0 and the prediction is
+    # identical to draft-only. MEASURED (8-fold walk-forward, 5,935 held-out
+    # 2026 games): team Elo only 63.6%/0.633 -> +player Elo 64.7%/0.628 ->
+    # +proficiency 65.0%/0.628. Requires use_team_feature (rosters are
+    # resolved through the selected teams).
+    use_player_features: bool = True
+    # Per-player Elo K. Smaller than the team K=32 was the a-priori guess
+    # (5 players share one game outcome), but the sweep said otherwise:
+    # 16 -> 64.45%, 24 -> 64.99%, 32 -> 65.17%, 40 -> 65.11%, 48 -> 64.92%
+    # held-out at carryover 0.8; 32 is the peak.
+    player_elo_k: float = 32.0
+    # Season-boundary carryover for player Elo. Players keep more of their
+    # rating across seasons than teams (0.8 vs the teams' 0.7): a roster is
+    # rebuilt, a person is not. 0.8 beat 0.7 (64.84%) and edged 0.9 (65.07%)
+    # in the sweep at K=24.
+    player_season_carryover: float = 0.8
+    # Pseudo-games shrinking a player-champion winrate toward the player's
+    # OWN overall winrate (so proficiency isolates champion-specific skill
+    # from general skill, which player Elo already carries). 4/8/16 all
+    # within noise (64.94-65.02% at K=24); 8 ships.
+    prof_shrink_games: float = 8.0
     # Elo K-factor (rating movement per game) for the team feature. 32 beat
     # 16/24/48 on the walk-forward backtest at the shipped feature scale.
     elo_k: float = 32.0
@@ -236,6 +262,12 @@ class PipelineConfig:
             raise ValueError("major_league_weight_multiplier must be positive")
         if self.elo_k <= 0:
             raise ValueError("elo_k must be positive")
+        if self.player_elo_k <= 0:
+            raise ValueError("player_elo_k must be positive")
+        if not (0.0 <= self.player_season_carryover <= 1.0):
+            raise ValueError("player_season_carryover must be in [0, 1]")
+        if self.prof_shrink_games <= 0:
+            raise ValueError("prof_shrink_games must be positive")
         if not (0.0 <= self.wr_prior_solo_weight <= 2.0):
             raise ValueError("wr_prior_solo_weight must be in [0, 2]")
         if self.wr_prior_min_solo_games < 0:
