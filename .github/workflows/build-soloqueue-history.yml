@@ -1,0 +1,157 @@
+name: Build Solo-Queue History Fixture
+
+# One-shot (workflow_dispatch): build data/soloqueue_history.json -- a
+# timestamped archive of per-champion solo-queue winrates covering the whole
+# backtest window (2025-01 .. today), distilled from the git history of
+# vigovlugt/LeagueOfItemsFrontend's data/dataset.json (a public repo whose
+# GitHub Action commits lolalytics-derived emerald+ global champion stats
+# ~twice a day; MIT-licensed code, data credited to lolalytics).
+#
+# Each snapshot's COMMIT TIMESTAMP certifies exactly when that data became
+# available, which is what makes the walk-forward backtest's as-of join
+# provably leakage-free: a fold may only read snapshots committed before its
+# boundary. The fixture is committed to this repo so backtests never depend
+# on the third-party repo again.
+
+on:
+  workflow_dispatch:
+    inputs:
+      snapshots_per_week:
+        description: "Snapshot sampling density (default 1 per week)"
+        required: false
+        default: "1"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Build fixture from dataset git history
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'EOF'
+          import json, os, subprocess, sys, time, urllib.request
+
+          REPO = "vigovlugt/LeagueOfItemsFrontend"
+          PATH = "data/dataset.json"
+          PER_WEEK = int(os.environ.get("SNAPSHOTS_PER_WEEK", "1") or "1")
+
+          def gh_api(url):
+              out = subprocess.run(
+                  ["gh", "api", url], capture_output=True, text=True, check=True
+              )
+              return json.loads(out.stdout)
+
+          # 1. Enumerate dataset commits since 2025-01-01 (paginated).
+          commits = []
+          page = 1
+          while True:
+              batch = gh_api(
+                  f"repos/{REPO}/commits?path={PATH}&per_page=100&page={page}"
+                  "&since=2025-01-01T00:00:00Z"
+              )
+              if not batch:
+                  break
+              commits.extend(batch)
+              page += 1
+              if page > 30:
+                  break
+          commits.sort(key=lambda c: c["commit"]["committer"]["date"])
+          print(f"dataset commits since 2025-01-01: {len(commits)}")
+
+          # 2. Sample ~PER_WEEK per ISO week (earliest in each bucket), always
+          #    including the newest commit.
+          import datetime as dt
+          buckets = {}
+          for c in commits:
+              ts = c["commit"]["committer"]["date"]
+              d = dt.datetime.fromisoformat(ts.replace("Z", "+00:00"))
+              key = (d.isocalendar().year, d.isocalendar().week,
+                     (d.weekday() * PER_WEEK) // 7)
+              buckets.setdefault(key, c)
+          sampled = sorted(buckets.values(), key=lambda c: c["commit"]["committer"]["date"])
+          if commits and sampled[-1]["sha"] != commits[-1]["sha"]:
+              sampled.append(commits[-1])
+          print(f"sampled snapshots: {len(sampled)}")
+
+          # 3. Fetch + distill each snapshot.
+          snapshots = []
+          for i, c in enumerate(sampled):
+              sha = c["sha"]
+              ts = c["commit"]["committer"]["date"]
+              url = f"https://raw.githubusercontent.com/{REPO}/{sha}/{PATH}"
+              for attempt in range(3):
+                  try:
+                      with urllib.request.urlopen(url, timeout=60) as r:
+                          data = json.loads(r.read().decode("utf-8"))
+                      break
+                  except Exception as e:
+                      if attempt == 2:
+                          print(f"SKIP {sha[:8]} ({ts}): {e}")
+                          data = None
+                      else:
+                          time.sleep(3)
+              if data is None:
+                  continue
+              champs = {}
+              for ch in data.get("champions", []):
+                  name = ch.get("name")
+                  if not name:
+                      continue
+                  champs[name] = [
+                      int(ch.get("wins") or 0),
+                      int(ch.get("matches") or 0),
+                      int(ch.get("previousWins") or 0),
+                      int(ch.get("previousMatches") or 0),
+                  ]
+              version = str(data.get("version", ""))
+              # Sanity per snapshot: roster size and winrate band.
+              total_w = sum(v[0] + v[2] for v in champs.values())
+              total_m = sum(v[1] + v[3] for v in champs.values())
+              if len(champs) < 150 or not total_m:
+                  print(f"SKIP {sha[:8]} ({ts}): roster={len(champs)} total_m={total_m}")
+                  continue
+              mean_wr = total_w / total_m
+              if not (0.47 <= mean_wr <= 0.53):
+                  print(f"SKIP {sha[:8]} ({ts}): weighted mean WR {mean_wr:.4f} out of band")
+                  continue
+              snapshots.append(
+                  {"ts": ts, "sha": sha, "version": version, "champions": champs}
+              )
+              if i % 10 == 0:
+                  print(f"  [{i+1}/{len(sampled)}] {ts} v{version} roster={len(champs)}")
+              time.sleep(0.4)
+
+          if len(snapshots) < 40:
+              print(f"FATAL: only {len(snapshots)} valid snapshots"); sys.exit(1)
+
+          fixture = {
+              "source": f"github.com/{REPO} {PATH} git history (lolalytics-derived, emerald+, global)",
+              "builtAt": dt.datetime.now(dt.timezone.utc).isoformat(),
+              "fields": "champions[name] = [wins, matches, previousWins, previousMatches] (patch-to-date at commit ts; previous* = full prior patch)",
+              "snapshots": snapshots,
+          }
+          with open("data/soloqueue_history.json", "w") as f:
+              json.dump(fixture, f, separators=(",", ":"))
+              f.write("\n")
+          size = os.path.getsize("data/soloqueue_history.json")
+          print(f"WROTE data/soloqueue_history.json: {len(snapshots)} snapshots, {size/1e6:.1f} MB")
+          print(f"range: {snapshots[0]['ts']} (v{snapshots[0]['version']}) .. {snapshots[-1]['ts']} (v{snapshots[-1]['version']})")
+          EOF
+
+      - name: Commit fixture
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/soloqueue_history.json
+          git commit -m "Add solo-queue winrate history fixture (timestamped, 2025-01..now) [skip ci]"
+          git push
