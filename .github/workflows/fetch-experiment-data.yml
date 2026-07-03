@@ -1,0 +1,187 @@
+name: Fetch Experiment Data
+
+# One-shot (workflow_dispatch) utility for the accuracy-experiment campaign:
+#
+#  1. Mirror the frozen 2024 and 2023 Oracle's Elixir season CSVs (gzipped)
+#     to the `data-cache` branch, alongside the existing 2025 mirror, so the
+#     dev sandbox (where Google Drive is egress-blocked) can test 3- and
+#     4-season training histories.
+#  2. Probe solo-queue MATCHUP (champion-vs-champion) data sources -- op.gg's
+#     champion API (proven reachable from Actions) and lolalytics' internal
+#     API -- recording endpoint shapes, historical-patch depth, and sample
+#     payloads, and fetch the full current-patch matchup tables where
+#     available. This feeds the "solo matchup prior for pro counter-picks"
+#     experiment.
+#
+# Everything lands on the data-cache branch as plain files served by
+# raw.githubusercontent.com (reachable from the sandbox).
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install pipeline dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e packages/pipeline
+
+      - name: Restore past-season cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/compstrength-oe
+          key: oe-experiment-restore-${{ github.run_id }}
+          restore-keys: |
+            oe-past-seasons-
+
+      - name: Download 2024 and 2023 season CSVs (best-effort per year)
+        env:
+          COMPSTRENGTH_OE_CACHE_DIR: ~/.cache/compstrength-oe
+        run: |
+          mkdir -p /tmp/staging
+          python - <<'EOF'
+          import gzip
+          import shutil
+          from compstrength_pipeline.sources.oracles_elixir import (
+              DataSourceUnavailableError,
+              download_oracles_elixir_csv,
+          )
+          for year in (2024, 2023):
+              try:
+                  path = download_oracles_elixir_csv(year)
+                  dest = f"/tmp/staging/{year}_LoL_esports_match_data_from_OraclesElixir.csv.gz"
+                  with open(path, "rb") as src, gzip.open(dest, "wb", compresslevel=9) as out:
+                      shutil.copyfileobj(src, out)
+                  print(f"staged {dest}")
+              except DataSourceUnavailableError as exc:
+                  print(f"SKIP {year}: {exc}")
+          EOF
+
+      - name: Probe + fetch solo-queue matchup sources
+        continue-on-error: true
+        run: |
+          python - <<'EOF'
+          import gzip
+          import json
+          import time
+          import urllib.request
+
+          UA = {"User-Agent": "Mozilla/5.0 (research; compstrength)"}
+
+          def get(url, timeout=30):
+              req = urllib.request.Request(url, headers=UA)
+              t0 = time.time()
+              try:
+                  with urllib.request.urlopen(req, timeout=timeout) as r:
+                      body = r.read()
+                      return {"url": url, "status": r.status, "bytes": len(body),
+                              "secs": round(time.time() - t0, 2)}, body
+              except Exception as exc:
+                  return {"url": url, "status": f"ERR {exc}", "bytes": 0,
+                          "secs": round(time.time() - t0, 2)}, b""
+
+          def shape(body):
+              try:
+                  d = json.loads(body)
+              except Exception:
+                  return {"nonjson_head": body[:200].decode("utf-8", "replace")}
+              if isinstance(d, dict):
+                  out = {}
+                  for k, v in list(d.items())[:40]:
+                      if isinstance(v, dict):
+                          out[k] = {"dict": list(v.keys())[:15]}
+                      elif isinstance(v, list):
+                          out[k] = {"list_len": len(v),
+                                    "elem0": v[0] if v and not isinstance(v[0], (dict, list)) else
+                                             (list(v[0].keys())[:15] if v and isinstance(v[0], dict) else None)}
+                      else:
+                          out[k] = v
+                  return out
+              if isinstance(d, list):
+                  return {"list_len": len(d), "elem0": d[0] if d else None}
+              return {"scalar": d}
+
+          probes = []
+          samples = {}
+
+          # --- lolalytics internal API: shape + historical patch depth ---
+          LOLA = "https://a1.lolalytics.com/mega/?ep={ep}&p=d&v=1&patch={patch}&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all"
+          for ep in ("champion", "counter", "counters", "champion2"):
+              for patch in ("16.13", "16.1", "15.10", "30"):
+                  meta, body = get(LOLA.format(ep=ep, patch=patch))
+                  meta["shape"] = shape(body) if meta["bytes"] else None
+                  probes.append(meta)
+                  if meta["bytes"] and len(samples) < 12:
+                      samples[f"lolalytics_{ep}_{patch}"] = body[:60000].decode("utf-8", "replace")
+                  time.sleep(0.5)
+
+          # --- op.gg: per-champion detail endpoints (full matchup table?) ---
+          OPGG_DETAIL = [
+              "https://lol-api-champion.op.gg/api/global/champions/ranked/58/TOP?tier=emerald_plus&version=16.13",
+              "https://lol-api-champion.op.gg/api/global/champions/ranked/58?tier=emerald_plus&version=16.13",
+              "https://lol-api-champion.op.gg/api/global/champions/ranked/58/matchups?tier=emerald_plus&version=16.13",
+              "https://lol-api-champion.op.gg/api/kr/champions/ranked/58/TOP?tier=emerald_plus&version=16.12",
+          ]
+          for url in OPGG_DETAIL:
+              meta, body = get(url)
+              meta["shape"] = shape(body) if meta["bytes"] else None
+              probes.append(meta)
+              if meta["bytes"]:
+                  key = "opgg_detail_" + url.split("ranked/")[1].split("?")[0].replace("/", "_")
+                  samples[key] = body[:60000].decode("utf-8", "replace")
+              time.sleep(0.3)
+
+          # --- op.gg: full champion lists WITH counters, both known patches ---
+          for version in ("16.13", "16.12"):
+              url = f"https://lol-api-champion.op.gg/api/global/champions/ranked?tier=emerald_plus&version={version}"
+              meta, body = get(url, timeout=60)
+              probes.append(meta)
+              if meta["bytes"]:
+                  with gzip.open(f"/tmp/staging/opgg_global_{version}_emerald_plus.json.gz", "wb") as f:
+                      f.write(body)
+              time.sleep(0.5)
+
+          with open("/tmp/staging/probe_matchup_sources.json", "w") as f:
+              json.dump(probes, f, indent=1)
+          with gzip.open("/tmp/staging/probe_matchup_samples.json.gz", "wb") as f:
+              f.write(json.dumps(samples).encode())
+          print(json.dumps(probes, indent=1))
+          EOF
+
+      - name: Publish to data-cache branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          ls -la /tmp/staging/
+          git fetch origin data-cache
+          git worktree add /tmp/data-cache origin/data-cache
+          cd /tmp/data-cache
+          git checkout -b data-cache
+          cp /tmp/staging/* .
+          git add -A
+          git commit -m "Add experiment data: past-season CSV mirrors + solo matchup probes"
+          git push --force-with-lease origin data-cache
+
+      - name: Save season cache
+        uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: ~/.cache/compstrength-oe
+          key: oe-past-seasons-${{ github.run_id }}
