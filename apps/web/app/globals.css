@@ -8,19 +8,13 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* Market-terminal look: one consistent monospace everywhere. The
-     --font-terminal variable is provided by next/font (see app/fonts.ts);
-     the stack falls back to the platform monospace if it hasn't loaded. */
   --font-sans:
-    var(--font-terminal), ui-monospace, SFMono-Regular, Menlo, Consolas,
-    "Liberation Mono", monospace;
-  --font-mono: var(--font-sans);
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial,
+    sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-  /* Tabular figures keep columns of odds / Elo / percentages aligned. */
-  font-variant-numeric: tabular-nums;
 }
