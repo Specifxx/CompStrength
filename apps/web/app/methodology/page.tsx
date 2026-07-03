@@ -230,6 +230,61 @@ export default function MethodologyPage() {
 
           <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-5">
             <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-sky-400">
+              Why draft-only sits near 55% (what we tested)
+            </h2>
+            <div className="flex flex-col gap-2 text-sm text-slate-400">
+              <p>
+                It&apos;s tempting to think a hard counter-pick (Renekton into
+                Shen, Ashe into Teemo) should let a draft-only model predict
+                much better than ~55%. We tested that directly, with a
+                leak-free walk-forward harness (each model trained only on
+                games strictly before the games it&apos;s scored on), and none
+                of these beat the shipped model on both accuracy and
+                calibration:
+              </p>
+              <ul className="ml-4 list-disc space-y-1 text-xs text-slate-500">
+                <li>
+                  <span className="text-slate-300">Solo-queue counter-picks.</span>{" "}
+                  A dense champion-vs-champion lane-matchup prior from ~9,900
+                  solo-queue pairs (emerald+, far more than pro data ever
+                  sees). Result: no change (54.7% &rarr; 54.7%). Pro lane
+                  outcomes are dominated by team coordination, not the solo
+                  matchup.
+                </li>
+                <li>
+                  <span className="text-slate-300">Off-meta / off-role picks.</span>{" "}
+                  Flagging picks played out of their usual role (the
+                  &ldquo;Ashe top&rdquo; signal). Nudged accuracy up ~0.3pp but
+                  hurt calibration &mdash; directionally real, too noisy to
+                  trust as a probability.
+                </li>
+                <li>
+                  <span className="text-slate-300">More history.</span> Training
+                  on 3&ndash;4 seasons instead of 2. No gain: recency decay
+                  already fades old seasons to near-zero weight.
+                </li>
+                <li>
+                  <span className="text-slate-300">League effects &amp; pick
+                  order.</span> Per-league blue-side bias, region-local metas,
+                  and pro pick-order (who counter-picked whom). All within
+                  noise or accuracy-up/calibration-down.
+                </li>
+              </ul>
+              <p>
+                The honest conclusion: at the pro level, which champions get
+                drafted is a genuinely weak predictor once you can&apos;t see
+                who&apos;s piloting them. That&apos;s exactly why the
+                &ldquo;teams + players&rdquo; model jumps ~10 points to ~66%
+                &mdash; the predictable signal lives in team and player
+                identity, not the champion select screen. Disaster drafts are
+                real but rare (a handful per season), so even predicting every
+                one perfectly moves aggregate accuracy under a point.
+              </p>
+            </div>
+          </section>
+
+          <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-5">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-sky-400">
               Comparing against bookmaker odds
             </h2>
             <div className="flex flex-col gap-2 text-sm text-slate-400">
