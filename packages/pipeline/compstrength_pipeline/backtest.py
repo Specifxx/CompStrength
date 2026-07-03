@@ -561,7 +561,13 @@ def run_backtest(
     prof_diffs: dict[str, float] = {}
     if config.use_team_feature:
         team_elo_diffs = teams.elo_diff_by_gameid(
-            teams.compute_team_elo(games_df, k=config.elo_k, season_carryover=config.elo_season_carryover),
+            teams.compute_team_elo(
+                games_df,
+                k=config.elo_k,
+                season_carryover=config.elo_season_carryover,
+                international_leagues=config.international_leagues,
+                international_k_multiplier=config.international_elo_k_multiplier,
+            ),
             feature_scale=config.elo_feature_scale,
         )
         # Player-level features (players.py) ride on the same optional team

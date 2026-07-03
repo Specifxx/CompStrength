@@ -315,15 +315,21 @@ export default function MethodologyPage() {
                 <span className="text-slate-300">
                   International events (MSI / Worlds / EWC) are the hardest.
                 </span>{" "}
-                Held-out accuracy on cross-region events runs far below regional
-                play &mdash; EWC 64.5%, Worlds 58.3%,{" "}
-                <span className="text-rose-400">MSI 53.8%</span> (barely above a
-                coin flip), vs 60&ndash;70% inside a single league. The cause is
-                structural: team Elo only bridges regions through the handful of
-                inter-region games, so when the best of two regions meet for the
-                first time the rating gap is genuinely uncertain. The draft
-                builder flags a cross-region matchup so you can weight the
-                prediction accordingly.
+                Held-out accuracy on cross-region events runs well below
+                regional play &mdash; ~57% aggregate (EWC 66%, Worlds 58%, MSI
+                ~52% on a tiny 80-game sample) vs 65% inside a single league.
+                The cause is structural: team Elo only bridges regions through
+                the handful of inter-region games, so when the best of two
+                regions meet the rating gap is genuinely uncertain. We help it
+                where we can &mdash; inter-region games (an international
+                league, or any game where the two teams&apos; home leagues
+                differ) move Elo 3&times; as much, since they&apos;re the only
+                games that calibrate strength across regions. That lifted
+                held-out international accuracy 55.7% &rarr; 56.5% and improved
+                its calibration (log-loss 0.715 &rarr; 0.714) with no cost to
+                regional games &mdash; a real but modest gain; cross-region
+                prediction stays fundamentally data-starved. The draft builder
+                flags these matchups so you can weight them accordingly.
               </p>
             </div>
           </section>

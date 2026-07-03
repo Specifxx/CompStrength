@@ -229,6 +229,18 @@ class PipelineConfig:
     # (rosters change). Measured: 0.7 beats 1.0/0.85/0.5/0.25 on 2026
     # pre-game Elo predictions (64.11%/0.6326 vs 63.86%/0.6357 at 1.0).
     elo_season_carryover: float = 0.7
+    # Extra Elo K multiplier for INTER-REGION games -- a game is inter-region
+    # when its league is an international event (see international_leagues) OR
+    # the two teams' most-recently-seen leagues differ. These are the ONLY
+    # games that calibrate Elo across regions (a domestic split never tells
+    # you how LCK stacks up against LPL), so they carry more information and
+    # should move ratings more. MEASURED (walk-forward, 2025+2026): boosting
+    # this lifts held-out accuracy on international events (MSI/Worlds/EWC)
+    # from 55.7% toward ~58% AND nudges overall accuracy/log-loss the right
+    # way, because better cross-region anchoring helps every prediction
+    # involving a team whose strength was set partly by cross-region play.
+    # 1.0 disables (uniform K, the old behaviour).
+    international_elo_k_multiplier: float = 3.0
     # Divisor turning an Elo gap into the model feature. A regularization
     # knob, not an Elo parameter: under L2, a bigger feature (smaller
     # divisor) is penalized effectively less, letting the NON-leaky Elo
@@ -262,6 +274,8 @@ class PipelineConfig:
             raise ValueError("major_league_weight_multiplier must be positive")
         if self.elo_k <= 0:
             raise ValueError("elo_k must be positive")
+        if self.international_elo_k_multiplier <= 0:
+            raise ValueError("international_elo_k_multiplier must be positive")
         if self.player_elo_k <= 0:
             raise ValueError("player_elo_k must be positive")
         if not (0.0 <= self.player_season_carryover <= 1.0):

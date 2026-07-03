@@ -379,8 +379,9 @@ export function DraftBuilder({
                   (MSI / Worlds / EWC). Team Elo is calibrated mostly WITHIN
                   each league and only weakly across regions, so this
                   prediction is less reliable: held-out accuracy on
-                  international events is ~55% vs ~65% for same-region games.
-                  Treat the edge with extra caution.
+                  international events is ~57% vs ~65% for same-region games,
+                  even after up-weighting inter-region games. Treat the edge
+                  with extra caution.
                 </p>
               )}
             </div>

@@ -105,6 +105,8 @@ def compute_team_elo(
     games_df: pd.DataFrame,
     k: float = DEFAULT_ELO_K,
     season_carryover: float = DEFAULT_SEASON_CARRYOVER,
+    international_leagues: frozenset[str] | None = None,
+    international_k_multiplier: float = 1.0,
 ) -> TeamEloResult:
     """Run one chronological Elo pass over ``games_df``.
 
@@ -115,17 +117,33 @@ def compute_team_elo(
         season_carryover: Fraction of each rating's deviation from
             ``INITIAL_ELO`` kept across a season (calendar-year) boundary
             (see ``DEFAULT_SEASON_CARRYOVER``). ``1.0`` disables.
+        international_leagues: League codes (matched case-insensitively)
+            treated as international events (MSI/Worlds/EWC). Games in these
+            leagues, and any game where the two teams' most-recently-seen
+            leagues differ, are INTER-REGION and get ``k`` scaled by
+            ``international_k_multiplier``.
+        international_k_multiplier: Extra K multiplier for inter-region games.
+            ``1.0`` disables (uniform K). Inter-region games are the only ones
+            that calibrate Elo across regions, so they carry more information;
+            measured to lift held-out international-event accuracy without
+            hurting overall (see config.international_elo_k_multiplier).
 
     Returns:
         A :class:`TeamEloResult`; see its docstring. ``per_game`` records the
         PRE-game rating of each side, so consuming it as a model feature is
         leak-free.
     """
+    intl = frozenset(x.upper() for x in (international_leagues or frozenset()))
+    boost = international_k_multiplier
+
     game_rows = _per_game_rows(games_df)
     ratings: dict[str, float] = {}
     games_played: dict[str, int] = {}
     last_league: dict[str, str] = {}
     last_played: dict[str, str] = {}
+    # Each team's most-recently-seen league, used to detect a cross-region
+    # matchup (the two sides come from different leagues).
+    team_league: dict[str, str] = {}
 
     records = []
     prev_year: int | None = None
@@ -160,8 +178,19 @@ def compute_team_elo(
             }
         )
 
+        # Inter-region games move ratings more (they anchor cross-region Elo).
+        blue_lg, red_lg = team_league.get(blue), team_league.get(red)
+        inter_region = (
+            boost != 1.0
+            and (
+                (row.league or "").upper() in intl
+                or (blue_lg is not None and red_lg is not None and blue_lg != red_lg)
+            )
+        )
+        game_k = k * boost if inter_region else k
+
         exp_blue = expected_score(blue_elo, red_elo)
-        delta = k * (row.blue_win - exp_blue)
+        delta = game_k * (row.blue_win - exp_blue)
         ratings[blue] = blue_elo + delta
         ratings[red] = red_elo - delta
 
@@ -169,6 +198,7 @@ def compute_team_elo(
             games_played[team] = games_played.get(team, 0) + 1
             if row.league:
                 last_league[team] = row.league
+                team_league[team] = row.league
             if pd.notna(row.date):
                 last_played[team] = str(pd.Timestamp(row.date).date())
 

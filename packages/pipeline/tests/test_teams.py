@@ -88,6 +88,42 @@ def test_games_processed_in_date_order_not_input_order():
     assert result.per_game.loc["g_late"]["blue_elo_pre"] > INITIAL_ELO
 
 
+def test_international_k_boost_moves_ratings_more_on_cross_region_games():
+    """An inter-region game (international league OR the two teams' most-recent
+    leagues differ) moves ratings by k*multiplier; a same-region game uses
+    plain k. Verifies both the league-name path and the differing-league path."""
+    import math
+
+    from compstrength_pipeline.teams import ELO_SCALE
+
+    # 1) International-league game between two fresh teams: pure k*mult delta.
+    intl = pd.DataFrame(_game("m1", "2026-05-01", "T1", "GEN", blue_win=1, league="MSI"))
+    base = compute_team_elo(intl, k=32.0, international_leagues=frozenset({"MSI"}),
+                            international_k_multiplier=1.0)
+    boosted = compute_team_elo(intl, k=32.0, international_leagues=frozenset({"MSI"}),
+                               international_k_multiplier=3.0)
+    exp = 32.0 * (1 - 0.5)  # both at INITIAL_ELO -> expected 0.5
+    assert base.ratings["T1"] == pytest.approx(INITIAL_ELO + exp)
+    assert boosted.ratings["T1"] == pytest.approx(INITIAL_ELO + 3.0 * exp)
+
+    # 2) Cross-region detected via differing prior leagues (not a named intl
+    # league): each team first plays at home, then they meet in a neutral
+    # "PlayIn" league -> that meeting is inter-region and gets the boost.
+    games = pd.DataFrame(
+        _game("a1", "2026-01-01", "LCKteam", "LCKfoe", blue_win=1, league="LCK")
+        + _game("b1", "2026-01-01", "LPLteam", "LPLfoe", blue_win=1, league="LPL")
+        + _game("x1", "2026-02-01", "LCKteam", "LPLteam", blue_win=1, league="PlayIn")
+    )
+    nb = compute_team_elo(games, k=32.0, international_leagues=frozenset({"MSI"}),
+                          international_k_multiplier=1.0)
+    bb = compute_team_elo(games, k=32.0, international_leagues=frozenset({"MSI"}),
+                          international_k_multiplier=3.0)
+    # The cross-region game x1 should move LCKteam more under the boost.
+    assert bb.ratings["LCKteam"] > nb.ratings["LCKteam"]
+    # A same-region game (a1) is unaffected by the multiplier.
+    assert bb.ratings["LCKfoe"] == pytest.approx(nb.ratings["LCKfoe"])
+
+
 def test_strength_propagates_across_leagues():
     """The whole point of Elo over win rates: beating a strong team is worth
     more. A team that beats a proven winner ends up rated above a team that
