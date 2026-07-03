@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ChampionPicker } from "./ChampionPicker";
 import { TeamPicker } from "./TeamPicker";
+import { PlayerPicker } from "./PlayerPicker";
 import { ResultBreakdown } from "./ResultBreakdown";
 import { NotablePairs } from "./NotablePairs";
 import { WinBar } from "./WinBar";
@@ -19,7 +20,9 @@ import {
   type ChampionRatingsFile,
   type DraftTeam,
   type ModelFile,
+  type PlayersFile,
   type PredictResponse,
+  type Role,
   type SynergyFile,
   type TeamsFile,
 } from "@/lib/types";
@@ -32,6 +35,68 @@ const EMPTY_TEAM: DraftTeam = {
   SUPPORT: null,
 };
 
+/** Draft role -> Oracle's Elixir roster position code. */
+const POSITION_BY_ROLE: Record<Role, string> = {
+  TOP: "top",
+  JUNGLE: "jng",
+  MID: "mid",
+  BOTTOM: "bot",
+  SUPPORT: "sup",
+};
+
+const EMPTY_PLAYERS: (string | null)[] = [null, null, null, null, null];
+
+/** The five roster player names in ROLES order for a selected team (nulls
+ *  when the team/roster is unknown), used to pre-fill the editable seats. */
+function rosterFor(org: string | null, teams?: TeamsFile | null): (string | null)[] {
+  const roster = org ? teams?.teams[org]?.roster : null;
+  if (!roster) return [...EMPTY_PLAYERS];
+  return ROLES.map(
+    (role) => roster.find((s) => s.position === POSITION_BY_ROLE[role])?.player ?? null,
+  );
+}
+
+/** Editable roster block shown under a side's team picker once a team is
+ *  selected: five player seats pre-filled from the roster, each swap-able.
+ *  Module-level (not nested in DraftBuilder) so it keeps a stable identity
+ *  across renders — otherwise every keystroke would remount the inputs and
+ *  drop focus. */
+function RosterEditor({
+  side,
+  seats,
+  players,
+  onSeat,
+}: {
+  side: "blue" | "red";
+  seats: (string | null)[];
+  players: PlayersFile;
+  onSeat: (i: number, name: string | null) => void;
+}) {
+  return (
+    <div className="rounded-md border border-slate-800 bg-slate-950/40 p-2">
+      <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+        Players (auto-filled from roster — edit to swap a sub)
+      </p>
+      <div className="grid grid-cols-1 gap-1.5">
+        {ROLES.map((role, i) => (
+          <div key={role} className="flex items-center gap-2">
+            <span className="w-8 shrink-0 text-[10px] font-medium uppercase text-slate-500">
+              {role.slice(0, 3)}
+            </span>
+            <PlayerPicker
+              role={role}
+              side={side}
+              value={seats[i]}
+              players={players}
+              onChange={(name) => onSeat(i, name)}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function DraftBuilder({
   champions,
   ratings,
@@ -40,6 +105,7 @@ export function DraftBuilder({
   synergy,
   backtest,
   teams,
+  players,
 }: {
   champions: ChampionListItem[];
   ratings: ChampionRatingsFile;
@@ -48,6 +114,7 @@ export function DraftBuilder({
   synergy: SynergyFile;
   backtest?: BacktestReportFile | null;
   teams?: TeamsFile | null;
+  players?: PlayersFile | null;
 }) {
   const [blue, setBlue] = useState<DraftTeam>({ ...EMPTY_TEAM });
   const [red, setRed] = useState<DraftTeam>({ ...EMPTY_TEAM });
@@ -55,6 +122,27 @@ export function DraftBuilder({
   const [error, setError] = useState<string | null>(null);
   const [blueOrg, setBlueOrg] = useState<string | null>(null);
   const [redOrg, setRedOrg] = useState<string | null>(null);
+  // Editable per-seat player names in ROLES order; pre-filled from the
+  // selected team's roster, overridable to swap in a substitute.
+  const [bluePlayers, setBluePlayers] = useState<(string | null)[]>([...EMPTY_PLAYERS]);
+  const [redPlayers, setRedPlayers] = useState<(string | null)[]>([...EMPTY_PLAYERS]);
+
+  // Selecting/clearing a team pre-fills (or clears) its five editable seats.
+  function pickBlueOrg(org: string | null) {
+    setBlueOrg(org);
+    setBluePlayers(rosterFor(org, teams));
+  }
+  function pickRedOrg(org: string | null) {
+    setRedOrg(org);
+    setRedPlayers(rosterFor(org, teams));
+  }
+  function setBlueSeat(i: number, name: string | null) {
+    setBluePlayers((prev) => prev.map((p, j) => (j === i ? name : p)));
+  }
+  function setRedSeat(i: number, name: string | null) {
+    setRedPlayers((prev) => prev.map((p, j) => (j === i ? name : p)));
+  }
+  const showPlayers = !!players && Object.keys(players.players).length > 0;
 
   const blueTaken = useMemo(
     () => new Set(Object.values(blue).filter((v): v is string => !!v)),
@@ -80,6 +168,9 @@ export function DraftBuilder({
         blueTeam: blueOrg,
         redTeam: redOrg,
         teams,
+        players,
+        bluePlayers,
+        redPlayers,
       });
       setResult(prediction);
     } catch (err) {
@@ -97,6 +188,8 @@ export function DraftBuilder({
     setRed({ ...EMPTY_TEAM });
     setBlueOrg(null);
     setRedOrg(null);
+    setBluePlayers([...EMPTY_PLAYERS]);
+    setRedPlayers([...EMPTY_PLAYERS]);
     setResult(null);
     setError(null);
   }
@@ -123,6 +216,13 @@ export function DraftBuilder({
           draft-strength estimate, not a guaranteed outcome — team comp is one
           input among many that decide a pro match.
         </p>
+        <p className="mt-2 text-xs text-slate-500">
+          Keyboard: type a champion and press{" "}
+          <kbd className="rounded bg-slate-800 px-1 font-mono text-slate-300">Tab</kbd>,{" "}
+          <kbd className="rounded bg-slate-800 px-1 font-mono text-slate-300">,</kbd> or{" "}
+          <kbd className="rounded bg-slate-800 px-1 font-mono text-slate-300">Enter</kbd>{" "}
+          to lock it in and jump to the next pick.
+        </p>
       </header>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -132,13 +232,22 @@ export function DraftBuilder({
           </h2>
           <div className="flex flex-col gap-3">
             {teams && Object.keys(teams.teams).length > 0 && (
-              <TeamPicker side="blue" value={blueOrg} teams={teams} onChange={setBlueOrg} />
+              <TeamPicker side="blue" value={blueOrg} teams={teams} onChange={pickBlueOrg} />
             )}
-            {ROLES.map((role) => (
+            {showPlayers && blueOrg && (
+              <RosterEditor
+                side="blue"
+                seats={bluePlayers}
+                players={players!}
+                onSeat={setBlueSeat}
+              />
+            )}
+            {ROLES.map((role, i) => (
               <ChampionPicker
                 key={role}
                 role={role}
                 side="blue"
+                seq={i}
                 value={blue[role]}
                 champions={champions}
                 takenElsewhere={allTaken}
@@ -154,13 +263,22 @@ export function DraftBuilder({
           </h2>
           <div className="flex flex-col gap-3">
             {teams && Object.keys(teams.teams).length > 0 && (
-              <TeamPicker side="red" value={redOrg} teams={teams} onChange={setRedOrg} />
+              <TeamPicker side="red" value={redOrg} teams={teams} onChange={pickRedOrg} />
             )}
-            {ROLES.map((role) => (
+            {showPlayers && redOrg && (
+              <RosterEditor
+                side="red"
+                seats={redPlayers}
+                players={players!}
+                onSeat={setRedSeat}
+              />
+            )}
+            {ROLES.map((role, i) => (
               <ChampionPicker
                 key={role}
                 role={role}
                 side="red"
+                seq={5 + i}
                 value={red[role]}
                 champions={champions}
                 takenElsewhere={allTaken}
@@ -174,6 +292,7 @@ export function DraftBuilder({
       <div className="flex items-center gap-3">
         <button
           type="button"
+          data-draft-predict
           disabled={!canPredict}
           onClick={handlePredict}
           className="rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 transition disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400"

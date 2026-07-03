@@ -21,7 +21,7 @@ def output_dir(tmp_path: Path) -> Path:
 
 
 def test_pipeline_end_to_end_writes_expected_files(output_dir: Path):
-    champion_ratings, model, synergy, teams_payload = build.run_pipeline(
+    champion_ratings, model, synergy, teams_payload, players_payload = build.run_pipeline(
         oracles_elixir_path=str(ORACLES_ELIXIR_FIXTURE),
         oracles_elixir_url=None,
         soloqueue_fixture=str(SOLOQUEUE_FIXTURE),
@@ -29,7 +29,7 @@ def test_pipeline_end_to_end_writes_expected_files(output_dir: Path):
     )
 
     ratings_path, model_path, synergy_path = build.write_outputs(
-        champion_ratings, model, synergy, str(output_dir), teams_payload
+        champion_ratings, model, synergy, str(output_dir), teams_payload, players_payload
     )
 
     assert ratings_path.exists()
@@ -50,13 +50,32 @@ def test_pipeline_end_to_end_writes_expected_files(output_dir: Path):
     for key in ("elo", "games", "league", "lastPlayed"):
         assert key in sample_team
     # Player features on by default: every team that played carries its
-    # current roster (5 seats) with per-player Elo/record/champion history.
+    # current roster as five (player, position) seats (stats live in the
+    # separate players.json index).
     rostered = [t for t in teams_data["teams"].values() if "roster" in t]
     assert rostered, "expected at least one team with a roster"
     sample_seat = rostered[0]["roster"][0]
-    for key in ("player", "position", "elo", "wins", "games", "champions"):
-        assert key in sample_seat
+    assert set(sample_seat.keys()) == {"player", "position"}
     assert len(rostered[0]["roster"]) == 5
+
+    # players.json: global player index with per-player stats. Every roster
+    # player must be resolvable in it.
+    players_path = output_dir / "players.json"
+    assert players_path.exists()
+    with players_path.open() as f:
+        players_data = json.load(f)
+    for key in ("generatedAt", "patch", "params", "players"):
+        assert key in players_data
+    assert "profShrink" in players_data["params"]
+    assert isinstance(players_data["players"], dict) and players_data["players"]
+    sample_player = next(iter(players_data["players"].values()))
+    for key in ("elo", "wins", "games", "champions"):
+        assert key in sample_player
+    roster_names = {
+        seat["player"] for t in rostered for seat in t["roster"]
+    }
+    missing = roster_names - set(players_data["players"])
+    assert not missing, f"roster players missing from index: {missing}"
     # Elo is zero-sum around the initial rating, so the mean stays ~1500.
     elos = [t["elo"] for t in teams_data["teams"].values()]
     assert abs(sum(elos) / len(elos) - 1500.0) < 1.0

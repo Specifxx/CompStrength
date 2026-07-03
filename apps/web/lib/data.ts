@@ -4,6 +4,7 @@ import type {
   BacktestReportFile,
   ChampionRatingsFile,
   ModelFile,
+  PlayersFile,
   SynergyFile,
   TeamsFile,
 } from "./types";
@@ -73,5 +74,17 @@ export function loadTeams(): TeamsFile {
   if (process.env.NODE_ENV === "production" && teamsCache) return teamsCache;
   const data = readJson<TeamsFile>("teams.json");
   teamsCache = data;
+  return data;
+}
+
+let playersCache: PlayersFile | null = null;
+
+// players.json (global per-player Elo/record index for the optional, editable
+// player inputs) may not exist on older snapshots — callers should catch
+// DataNotReadyError and degrade to team-inferred rosters / draft-only.
+export function loadPlayers(): PlayersFile {
+  if (process.env.NODE_ENV === "production" && playersCache) return playersCache;
+  const data = readJson<PlayersFile>("players.json");
+  playersCache = data;
   return data;
 }

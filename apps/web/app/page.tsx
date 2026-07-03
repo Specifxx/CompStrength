@@ -4,6 +4,7 @@ import {
   loadBacktestReport,
   loadChampionRatings,
   loadModel,
+  loadPlayers,
   loadSynergy,
   loadTeams,
 } from "@/lib/data";
@@ -12,6 +13,7 @@ import type {
   ChampionListItem,
   ChampionRatingsFile,
   ModelFile,
+  PlayersFile,
   SynergyFile,
   TeamsFile,
 } from "@/lib/types";
@@ -24,6 +26,7 @@ function loadHomeData(): {
   synergy: SynergyFile;
   backtest: BacktestReportFile | null;
   teams: TeamsFile | null;
+  players: PlayersFile | null;
 } | null {
   try {
     const ratings = loadChampionRatings();
@@ -68,7 +71,17 @@ function loadHomeData(): {
       if (!(err instanceof DataNotReadyError)) throw err;
       teams = null;
     }
-    return { champions, ratings, patch: ratings.patch, model, synergy, backtest, teams };
+    // players.json powers the optional, editable player inputs; absent on
+    // older snapshots -> player fields don't render, team-inferred rosters
+    // (via teams.json) still drive the player features.
+    let players: PlayersFile | null;
+    try {
+      players = loadPlayers();
+    } catch (err) {
+      if (!(err instanceof DataNotReadyError)) throw err;
+      players = null;
+    }
+    return { champions, ratings, patch: ratings.patch, model, synergy, backtest, teams, players };
   } catch (err) {
     if (err instanceof DataNotReadyError) return null;
     throw err;
@@ -104,6 +117,7 @@ export default function HomePage() {
       synergy={data.synergy}
       backtest={data.backtest}
       teams={data.teams}
+      players={data.players}
     />
   );
 }

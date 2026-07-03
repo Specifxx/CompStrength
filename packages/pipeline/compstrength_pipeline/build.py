@@ -263,7 +263,7 @@ def run_pipeline_on_data(
     soloqueue_source,
     patch: str | None,
     config: PipelineConfig = DEFAULT_CONFIG,
-) -> tuple[dict, dict, dict, dict]:
+) -> tuple[dict, dict, dict, dict, dict]:
     """Run ETL -> features -> pairwise -> train_model on already-fetched data.
 
     This is the pure/reusable core: it takes raw (not yet ETL-cleaned)
@@ -409,8 +409,15 @@ def run_pipeline_on_data(
         synergy_table, matchup_table, resolved_patch, patches_used, config
     )
     teams_payload = _build_teams_payload(elo_result, resolved_patch, config, player_stats)
+    players_payload = _build_players_payload(player_stats, resolved_patch, config)
 
-    return champion_ratings_payload, model_payload, synergy_payload, teams_payload
+    return (
+        champion_ratings_payload,
+        model_payload,
+        synergy_payload,
+        teams_payload,
+        players_payload,
+    )
 
 
 def soloqueue_source_for(source: str, soloqueue_fixture: str):
@@ -438,7 +445,7 @@ def run_pipeline(
     config: PipelineConfig = DEFAULT_CONFIG,
     source: str = "fixture",
     year: int | None = None,
-) -> tuple[dict, dict, dict, dict]:
+) -> tuple[dict, dict, dict, dict, dict]:
     """Fetch from ``source`` and run the full pipeline. See
     :func:`run_pipeline_on_data` for the reusable, already-fetched-data core
     (used by ``main()`` so the backtest doesn't re-fetch).
@@ -549,16 +556,13 @@ def _build_teams_payload(
     optional team inputs. Empty ``teams`` when the feature is disabled or no
     team names were present in the data.
 
-    When player features are on, each team also carries its CURRENT roster
-    (the five seats from its most recent game) with each player's Elo,
-    overall record, and per-champion record -- everything the frontend needs
-    to compute the playerEloDiff/profDiff features exactly like the pipeline
-    (see players.py / apps/web/lib/predict.ts)."""
-    champs_by_player: dict[str, dict] = {}
-    if player_stats is not None:
-        for (player, champ), (w, g) in player_stats.champ.items():
-            champs_by_player.setdefault(player, {})[champ] = [int(w), int(g)]
-
+    When player features are on, each team also carries its CURRENT roster --
+    the five (player, position) seats from its most recent game. The players'
+    per-player stats (Elo, record, per-champion record) live in the separate
+    ``players.json`` index (see ``_build_players_payload``) so the frontend
+    can look up ANY player -- including a substitute the user edits in, not
+    just the current starters -- to compute playerEloDiff/profDiff exactly
+    like the pipeline (players.py / apps/web/lib/predict.ts)."""
     teams_payload = {}
     if elo_result is not None:
         for team, elo in sorted(elo_result.ratings.items()):
@@ -570,14 +574,7 @@ def _build_teams_payload(
             }
             if player_stats is not None and team in player_stats.rosters:
                 entry["roster"] = [
-                    {
-                        "player": player,
-                        "position": position,
-                        "elo": float(player_stats.elo.get(player, players.INITIAL_ELO)),
-                        "wins": int(player_stats.wr.get(player, [0, 0])[0]),
-                        "games": int(player_stats.wr.get(player, [0, 0])[1]),
-                        "champions": champs_by_player.get(player, {}),
-                    }
+                    {"player": player, "position": position}
                     for player, position in player_stats.rosters[team]
                 ]
             teams_payload[team] = entry
@@ -599,12 +596,68 @@ def _build_teams_payload(
     }
 
 
+# A player needs at least this many games in the window to appear in the
+# players index on their own (roster starters are always included regardless).
+# Filters one-off appearances that would only clutter the picker; anyone with
+# a non-trivial pro sample -- including subs and academy call-ups -- is kept.
+MIN_PLAYER_INDEX_GAMES = 10
+# Per-champion records below this many games are dropped from a player's
+# proficiency table: with prof_shrink=8 a 1-game sample barely moves the
+# shrunk edge, and keeping them all roughly doubles the artifact size.
+MIN_PLAYER_CHAMP_GAMES = 2
+
+
+def _build_players_payload(player_stats, patch: str, config: PipelineConfig) -> dict:
+    """``data/players.json``: a global index of every pro player's "as of
+    today" Elo, overall record, and per-champion record. This is what powers
+    the OPTIONAL, editable player inputs: teams.json ships each team's current
+    roster as names, and this index provides the stats for those names AND for
+    any substitute the user swaps in. Empty when player features are off."""
+    players_payload: dict = {}
+    if player_stats is None:
+        return {
+            "generatedAt": datetime.now(timezone.utc).isoformat(),
+            "patch": patch,
+            "params": {"profShrink": config.prof_shrink_games},
+            "players": players_payload,
+        }
+
+    champs_by_player: dict[str, dict] = {}
+    for (player, champ), (w, g) in player_stats.champ.items():
+        if g >= MIN_PLAYER_CHAMP_GAMES:
+            champs_by_player.setdefault(player, {})[champ] = [int(w), int(g)]
+
+    # Always include current roster starters, even below the games threshold.
+    roster_players = {
+        player for seats in player_stats.rosters.values() for player, _ in seats
+    }
+    for player, (wins, games) in player_stats.wr.items():
+        if not player:
+            continue
+        if games < MIN_PLAYER_INDEX_GAMES and player not in roster_players:
+            continue
+        players_payload[player] = {
+            "elo": float(player_stats.elo.get(player, players.INITIAL_ELO)),
+            "wins": int(wins),
+            "games": int(games),
+            "champions": champs_by_player.get(player, {}),
+        }
+
+    return {
+        "generatedAt": datetime.now(timezone.utc).isoformat(),
+        "patch": patch,
+        "params": {"profShrink": config.prof_shrink_games},
+        "players": players_payload,
+    }
+
+
 def write_outputs(
     champion_ratings: dict,
     model: dict,
     synergy: dict,
     output_dir: str,
     teams_payload: dict | None = None,
+    players_payload: dict | None = None,
 ) -> tuple[Path, Path, Path]:
     out_dir = Path(output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -628,11 +681,16 @@ def write_outputs(
     if teams_payload is not None:
         teams_path = out_dir / "teams.json"
         with teams_path.open("w", encoding="utf-8") as f:
-            # Compact separators, no indent: with per-player rosters this file
-            # is by far the largest artifact, and pretty-printing its deeply
-            # nested champion records roughly doubles the bytes shipped to
-            # every visitor.
             json.dump(teams_payload, f, separators=(",", ":"), sort_keys=False)
+            f.write("\n")
+
+    if players_payload is not None:
+        players_path = out_dir / "players.json"
+        with players_path.open("w", encoding="utf-8") as f:
+            # Compact separators, no indent: the players index is the largest
+            # artifact (every player's per-champion records), and
+            # pretty-printing it roughly doubles the bytes shipped.
+            json.dump(players_payload, f, separators=(",", ":"), sort_keys=False)
             f.write("\n")
 
     return ratings_path, model_path, synergy_path
@@ -735,16 +793,20 @@ def main(argv: list[str] | None = None) -> None:
     )
     soloqueue_source = soloqueue_source_for(args.source, args.soloqueue_fixture)
 
-    champion_ratings, model, synergy, teams_payload = run_pipeline_on_data(
+    champion_ratings, model, synergy, teams_payload, players_payload = run_pipeline_on_data(
         raw_games_df, raw_bans_df, soloqueue_source, args.patch, config
     )
 
     ratings_path, model_path, synergy_path = write_outputs(
-        champion_ratings, model, synergy, args.output_dir, teams_payload
+        champion_ratings, model, synergy, args.output_dir, teams_payload, players_payload
     )
     print(
         f"Wrote {Path(args.output_dir) / 'teams.json'} "
         f"({len(teams_payload['teams'])} teams, eloK={teams_payload['params']['eloK']})"
+    )
+    print(
+        f"Wrote {Path(args.output_dir) / 'players.json'} "
+        f"({len(players_payload['players'])} players)"
     )
 
     n_champions = len(champion_ratings["champions"])

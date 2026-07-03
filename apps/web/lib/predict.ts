@@ -5,13 +5,18 @@ import {
   type DraftTeam,
   type ModelFile,
   type NotablePair,
+  type PlayerStat,
+  type PlayersFile,
   type PredictResponse,
   type Role,
-  type RosterSeat,
   type SynergyFile,
   type TeamContext,
   type TeamsFile,
 } from "./types";
+
+/** Sequential-Elo starting rating (must match teams.INITIAL_ELO in the
+ *  pipeline): an unknown player is treated as a perfectly average one. */
+const INITIAL_ELO = 1500;
 
 function sigmoid(x: number): number {
   return 1 / (1 + Math.exp(-x));
@@ -89,6 +94,13 @@ export interface TeamOptions {
   blueTeam?: string | null;
   redTeam?: string | null;
   teams?: TeamsFile | null;
+  /** Global per-player stats index (data/players.json). */
+  players?: PlayersFile | null;
+  /** Per-side player-name overrides in ROLES order (TOP..SUPPORT). When a
+   *  side's array is absent, that team's inferred roster is used; when a slot
+   *  is null/empty the player is unknown (treated as perfectly average). */
+  bluePlayers?: (string | null)[] | null;
+  redPlayers?: (string | null)[] | null;
 }
 
 /** Draft role -> Oracle's Elixir position code used in roster seats. */
@@ -102,34 +114,38 @@ const POSITION_BY_ROLE: Record<Role, string> = {
 
 /** Mirror of the pipeline's players.proficiency(): the player's shrunk
  *  winrate edge on ``champion`` over their own overall winrate. 0 for
- *  players/champions with no history. */
-function proficiency(seat: RosterSeat, champion: string, shrink: number): number {
-  const base = seat.games > 0 ? seat.wins / seat.games : 0.5;
-  const [w, g] = seat.champions[champion] ?? [0, 0];
+ *  unknown players/champions. */
+function proficiency(stat: PlayerStat | undefined, champion: string, shrink: number): number {
+  if (!stat) return 0;
+  const base = stat.games > 0 ? stat.wins / stat.games : 0.5;
+  const [w, g] = stat.champions[champion] ?? [0, 0];
   return (w + shrink * base) / (g + shrink) - base;
 }
 
-/** Sum of each side's roster proficiency on the champions drafted in their
- *  role. A seat missing from the roster (or a position mismatch) contributes
- *  0 — same "no information = neutral" rule as everywhere else. */
-function sideProficiency(roster: RosterSeat[], draft: DraftTeam, shrink: number): number {
-  let total = 0;
-  for (const role of ROLES) {
-    const champion = draft[role];
-    if (!champion) continue;
-    const seat = roster.find((s) => s.position === POSITION_BY_ROLE[role]);
-    if (seat) total += proficiency(seat, champion, shrink);
-  }
-  return total;
+/** The five player names for one side, in ROLES order. Overrides win; else
+ *  the team's inferred roster (mapped by position) fills each role. Returns
+ *  null if fewer than 5 names can be resolved (player features then stay
+ *  off for that prediction). */
+function playersByRole(
+  teamRoster: { player: string; position: string }[] | undefined,
+  overrides: (string | null)[] | null | undefined,
+): (string | null)[] | null {
+  const names = ROLES.map((role, i) => {
+    const override = overrides?.[i];
+    if (override && override.trim()) return override.trim();
+    const seat = teamRoster?.find((s) => s.position === POSITION_BY_ROLE[role]);
+    return seat?.player ?? null;
+  });
+  return names.every((n) => n) ? names : null;
 }
 
 /** Resolve the team-strength (Elo gap) term, plus the player-level add-on
- *  (mean player Elo gap + champion proficiency) when both teams ship a
- *  roster. Both-or-nothing at every level: the team term only applies when
- *  BOTH org names are given and found in teams.json — a single known team vs
- *  an unspecified opponent would silently be treated as "vs a perfectly
- *  average team", which is misleading rather than neutral. Likewise the
- *  player terms only apply when BOTH rosters are known. */
+ *  (mean player Elo gap + champion proficiency) when both sides have a full
+ *  five. Both-or-nothing at every level: the team term only applies when BOTH
+ *  org names are given and found in teams.json — a single known team vs an
+ *  unspecified opponent would silently be treated as "vs a perfectly average
+ *  team", which is misleading rather than neutral. Likewise the player terms
+ *  only apply when BOTH sides resolve five players. */
 function resolveTeamContext(
   options: TeamOptions | undefined,
   blue: DraftTeam,
@@ -148,20 +164,29 @@ function resolveTeamContext(
     eloDiff: (blueRating.elo - redRating.elo) / scale,
   };
 
-  const blueRoster = blueRating.roster;
-  const redRoster = redRating.roster;
-  if (blueRoster?.length === 5 && redRoster?.length === 5) {
-    const mean = (seats: RosterSeat[]) =>
-      seats.reduce((s, seat) => s + seat.elo, 0) / seats.length;
-    const shrink = options.teams.params.profShrink ?? 8;
-    context.blueRoster = blueRoster.map((s) => s.player);
-    context.redRoster = redRoster.map((s) => s.player);
-    context.bluePlayerElo = mean(blueRoster);
-    context.redPlayerElo = mean(redRoster);
+  const index = options.players?.players;
+  const blueNames = playersByRole(blueRating.roster, options.bluePlayers);
+  const redNames = playersByRole(redRating.roster, options.redPlayers);
+  if (index && blueNames && redNames) {
+    const shrink =
+      options.teams.params.profShrink ?? options.players?.params.profShrink ?? 8;
+    const eloOf = (name: string) => index[name]?.elo ?? INITIAL_ELO;
+    const mean = (names: (string | null)[]) =>
+      names.reduce((s, n) => s + eloOf(n as string), 0) / names.length;
+    const sideProf = (names: (string | null)[], draft: DraftTeam) =>
+      ROLES.reduce((sum, role, i) => {
+        const champion = draft[role];
+        const name = names[i];
+        if (!champion || !name) return sum;
+        return sum + proficiency(index[name], champion, shrink);
+      }, 0);
+
+    context.blueRoster = blueNames as string[];
+    context.redRoster = redNames as string[];
+    context.bluePlayerElo = mean(blueNames);
+    context.redPlayerElo = mean(redNames);
     context.playerEloDiff = (context.bluePlayerElo - context.redPlayerElo) / scale;
-    context.profDiff =
-      sideProficiency(blueRoster, blue, shrink) -
-      sideProficiency(redRoster, red, shrink);
+    context.profDiff = sideProf(blueNames, blue) - sideProf(redNames, red);
   }
   return context;
 }

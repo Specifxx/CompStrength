@@ -214,12 +214,32 @@ export default function MethodologyPage() {
                   play; the draft refines it. &ldquo;Teams + draft&rdquo; uses
                   three history signals that all ride on the team selection:
                   team Elo over the game history, per-player Elo of the five
-                  inferred starters (tracks roster moves the team rating
-                  smooths over), and each player&apos;s record on the champion
-                  they&apos;re drafting (comfort picks). Select both teams on
-                  the draft builder to get the top row&apos;s model &mdash;
-                  rosters are inferred automatically from each team&apos;s
-                  most recent game.
+                  starters (tracks roster moves the team rating smooths over),
+                  and each player&apos;s record on the champion they&apos;re
+                  drafting (comfort picks). Select both teams on the draft
+                  builder to get the top row&apos;s model &mdash; the starting
+                  five is pre-filled from each team&apos;s most recent game and
+                  you can edit any seat to swap in a substitute.
+                </p>
+                <p className="mt-2 text-xs text-slate-500">
+                  <span className="text-slate-300">
+                    Aren&apos;t multi-season team ratings stale, since rosters
+                    change?
+                  </span>{" "}
+                  We tested exactly that. Rebuilding team strength from the
+                  current season ONLY (resetting every rating at the year
+                  boundary) scores <span className="text-rose-400">62.9%</span>{" "}
+                  &mdash; 2.3 points WORSE than keeping prior-season history.
+                  The reason is subtle: teams churn, but{" "}
+                  <span className="text-slate-300">players don&apos;t</span>.
+                  When both team and player ratings are reset, accuracy craters;
+                  keep the players&apos; individual histories and it recovers
+                  almost entirely. Last season stays informative because the
+                  same people are still playing &mdash; which is the whole point
+                  of the per-player Elo feature. A mild discount on old team
+                  ratings is optimal (the shipped carryover keeps 70% of a
+                  team&apos;s prior-season deviation), but throwing last season
+                  away is strictly worse.
                 </p>
               </div>
             )}

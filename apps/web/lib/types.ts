@@ -185,19 +185,18 @@ export interface PredictRequest {
   // gap is 0 ("assume equal teams") and the prediction is draft-only.
   blueTeam?: string | null;
   redTeam?: string | null;
+  // Optional per-side player-name overrides (5 entries, ROLES order). Absent
+  // -> the team's inferred roster is used for the player features.
+  bluePlayers?: (string | null)[] | null;
+  redPlayers?: (string | null)[] | null;
 }
 
-/** One seat of a team's current roster: the player, their position (Oracle's
- *  Elixir codes: top/jng/mid/bot/sup), their Elo/overall record, and their
- *  per-champion record ({champion: [wins, games]}) — everything needed to
- *  reproduce the pipeline's player features client-side (see predict.ts). */
+/** One seat of a team's current roster: the player and their position
+ *  (Oracle's Elixir codes: top/jng/mid/bot/sup). Per-player stats live in
+ *  the separate players index (see {@link PlayersFile}). */
 export interface RosterSeat {
   player: string;
   position: string;
-  elo: number;
-  wins: number;
-  games: number;
-  champions: Record<string, [number, number]>;
 }
 
 /** One professional team's Elo rating snapshot (data/teams.json). */
@@ -206,8 +205,8 @@ export interface TeamRating {
   games: number;
   league: string;
   lastPlayed: string;
-  // The five seats from the team's most recent game. Absent on older
-  // snapshots or when player features are disabled.
+  // The five (player, position) seats from the team's most recent game.
+  // Absent on older snapshots or when player features are disabled.
   roster?: RosterSeat[];
 }
 
@@ -223,6 +222,28 @@ export interface TeamsFile {
     profShrink?: number;
   };
   teams: Record<string, TeamRating>;
+}
+
+/** One player's "as of today" stats (data/players.json): sequential pre-game
+ *  Elo, overall record, and per-champion record ({champion: [wins, games]}) —
+ *  everything needed to reproduce the pipeline's player features client-side
+ *  for any player, including a substitute the user edits in. */
+export interface PlayerStat {
+  elo: number;
+  wins: number;
+  games: number;
+  champions: Record<string, [number, number]>;
+}
+
+export interface PlayersFile {
+  generatedAt: string;
+  patch: string;
+  params: {
+    // Pseudo-games shrinking a player-champion winrate toward the player's
+    // own overall winrate (proficiency). Absent on older snapshots.
+    profShrink?: number;
+  };
+  players: Record<string, PlayerStat>;
 }
 
 /** Team-strength inputs actually applied to a prediction. */

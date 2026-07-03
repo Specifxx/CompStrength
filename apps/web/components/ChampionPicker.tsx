@@ -31,6 +31,19 @@ function HighlightedName({ name, query }: { name: string; query: string }) {
   );
 }
 
+/** Focus the draft input at position ``seq`` (0-9 across blue then red), or
+ *  the Predict button when advancing past the last one — the backbone of the
+ *  keyboard-only flow (Tab / comma / Enter fills the current pick and jumps
+ *  to the next). */
+function focusSeq(seq: number) {
+  const el = document.querySelector<HTMLElement>(`[data-draft-seq="${seq}"]`);
+  if (el) {
+    el.focus();
+  } else {
+    document.querySelector<HTMLElement>("[data-draft-predict]")?.focus();
+  }
+}
+
 export function ChampionPicker({
   role,
   side,
@@ -38,6 +51,7 @@ export function ChampionPicker({
   champions,
   takenElsewhere,
   onChange,
+  seq,
 }: {
   role: Role;
   side: "blue" | "red";
@@ -45,6 +59,8 @@ export function ChampionPicker({
   champions: ChampionListItem[];
   takenElsewhere: Set<string>;
   onChange: (champion: string | null) => void;
+  /** Position in the 0-9 keyboard-navigation order (blue TOP..SUP, then red). */
+  seq?: number;
 }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -75,7 +91,30 @@ export function ChampionPicker({
     setHighlightIndex(0);
   }
 
+  /** Accept the best current match (highlighted suggestion, or the top one if
+   *  the user just typed) and jump to the next pick. If nothing matches, keep
+   *  whatever's already selected and still advance — so a full keyboard run
+   *  never gets stuck. */
+  function commitAndAdvance() {
+    const chosen = suggestions[highlightIndex] ?? suggestions[0];
+    if (open && chosen) selectChampion(chosen.name);
+    if (seq !== undefined) focusSeq(seq + 1);
+  }
+
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    // Comma is a dedicated "accept + next" key (never typed into the field).
+    if (e.key === ",") {
+      e.preventDefault();
+      commitAndAdvance();
+      return;
+    }
+    // Plain Tab (not Shift+Tab) fills the current pick and moves to the next
+    // champion input specifically, skipping the clear button / team fields.
+    if (e.key === "Tab" && !e.shiftKey && seq !== undefined) {
+      e.preventDefault();
+      commitAndAdvance();
+      return;
+    }
     if (!open) {
       if (e.key === "ArrowDown" || e.key === "ArrowUp") {
         setOpen(true);
@@ -95,15 +134,13 @@ export function ChampionPicker({
       setHighlightIndex((i) => (i - 1 + suggestions.length) % suggestions.length);
     } else if (e.key === "Enter") {
       e.preventDefault();
-      const chosen = suggestions[highlightIndex];
-      if (chosen) selectChampion(chosen.name);
+      commitAndAdvance();
     } else if (e.key === "Escape") {
       e.preventDefault();
       setOpen(false);
       setQuery("");
       inputRef.current?.blur();
     }
-    // Tab: no special handling needed — default browser behavior moves focus on.
   }
 
   return (
@@ -120,6 +157,7 @@ export function ChampionPicker({
         <input
           ref={inputRef}
           type="text"
+          data-draft-seq={seq}
           value={open ? query : value ?? ""}
           placeholder="Search champion..."
           onFocus={() => {
