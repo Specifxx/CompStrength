@@ -254,6 +254,14 @@ export interface TeamContext {
   redElo: number;
   /** (blueElo - redElo) / eloScale — the model feature value. */
   eloDiff: number;
+  // Leagues of the two teams (from teams.json). When they differ, this is a
+  // cross-region matchup (e.g. an international event like MSI): team Elo is
+  // calibrated mostly WITHIN each league and only weakly across regions, so
+  // the prediction is measurably less reliable (~55% held-out on
+  // international events vs ~65% same-region). The UI surfaces a caveat.
+  blueLeague?: string;
+  redLeague?: string;
+  crossRegion?: boolean;
   // Player-level add-on (present when BOTH teams ship a roster): the
   // inferred starting fives, their mean Elos, and the two feature values
   // actually fed to the model. Absent when either roster is missing (the

@@ -372,6 +372,17 @@ export function DraftBuilder({
                   .
                 </p>
               )}
+              {result.teamContext.crossRegion && (
+                <p className="rounded-md border border-amber-800/60 bg-amber-950/30 px-3 py-2 text-xs text-amber-300/90">
+                  Cross-region matchup ({result.teamContext.blueLeague} vs{" "}
+                  {result.teamContext.redLeague}) — like an international event
+                  (MSI / Worlds / EWC). Team Elo is calibrated mostly WITHIN
+                  each league and only weakly across regions, so this
+                  prediction is less reliable: held-out accuracy on
+                  international events is ~55% vs ~65% for same-region games.
+                  Treat the edge with extra caution.
+                </p>
+              )}
             </div>
           ) : (
             <p className="text-sm text-slate-500">

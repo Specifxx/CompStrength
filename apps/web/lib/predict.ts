@@ -156,12 +156,20 @@ function resolveTeamContext(
   const redRating = options.teams.teams[options.redTeam];
   if (!blueRating || !redRating) return null;
   const scale = options.teams.params.eloScale || 400;
+  const blueLeague = blueRating.league || "";
+  const redLeague = redRating.league || "";
   const context: TeamContext = {
     blueTeam: options.blueTeam,
     redTeam: options.redTeam,
     blueElo: blueRating.elo,
     redElo: redRating.elo,
     eloDiff: (blueRating.elo - redRating.elo) / scale,
+    blueLeague,
+    redLeague,
+    // Cross-region only when both leagues are known and differ (an
+    // international-style matchup). Elo bridges regions only through the few
+    // inter-region games, so these predictions carry more uncertainty.
+    crossRegion: !!blueLeague && !!redLeague && blueLeague !== redLeague,
   };
 
   const index = options.players?.players;

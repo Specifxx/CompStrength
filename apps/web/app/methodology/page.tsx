@@ -300,6 +300,31 @@ export default function MethodologyPage() {
                 real but rare (a handful per season), so even predicting every
                 one perfectly moves aggregate accuracy under a point.
               </p>
+              <p>
+                <span className="text-slate-300">
+                  Should it train on the current season only?
+                </span>{" "}
+                We measured that too. Training on this season alone (walk-forward
+                within it) scores <span className="text-rose-400">63.7%</span>{" "}
+                with teams, ~2 points BELOW the shipped model that also uses last
+                season as history &mdash; the early-season games starve without
+                it. More recent-weighted data doesn&apos;t beat the current
+                recency decay; less data just loses signal.
+              </p>
+              <p>
+                <span className="text-slate-300">
+                  International events (MSI / Worlds / EWC) are the hardest.
+                </span>{" "}
+                Held-out accuracy on cross-region events runs far below regional
+                play &mdash; EWC 64.5%, Worlds 58.3%,{" "}
+                <span className="text-rose-400">MSI 53.8%</span> (barely above a
+                coin flip), vs 60&ndash;70% inside a single league. The cause is
+                structural: team Elo only bridges regions through the handful of
+                inter-region games, so when the best of two regions meet for the
+                first time the rating gap is genuinely uncertain. The draft
+                builder flags a cross-region matchup so you can weight the
+                prediction accordingly.
+              </p>
             </div>
           </section>
 
