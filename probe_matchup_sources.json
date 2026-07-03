@@ -1,0 +1,238 @@
+[
+ {
+  "url": "https://a1.lolalytics.com/mega/?ep=champion&p=d&v=1&patch=16.13&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all",
+  "status": 200,
+  "bytes": 43,
+  "secs": 0.41,
+  "shape": {
+   "nonjson_head": "Array\n(\n    [valid] => \n)\ninvalid end point"
+  }
+ },
+ {
+  "url": "https://a1.lolalytics.com/mega/?ep=champion&p=d&v=1&patch=16.1&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all",
+  "status": 200,
+  "bytes": 43,
+  "secs": 0.33,
+  "shape": {
+   "nonjson_head": "Array\n(\n    [valid] => \n)\ninvalid end point"
+  }
+ },
+ {
+  "url": "https://a1.lolalytics.com/mega/?ep=champion&p=d&v=1&patch=15.10&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all",
+  "status": 200,
+  "bytes": 43,
+  "secs": 0.31,
+  "shape": {
+   "nonjson_head": "Array\n(\n    [valid] => \n)\ninvalid end point"
+  }
+ },
+ {
+  "url": "https://a1.lolalytics.com/mega/?ep=champion&p=d&v=1&patch=30&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all",
+  "status": 200,
+  "bytes": 43,
+  "secs": 0.32,
+  "shape": {
+   "nonjson_head": "Array\n(\n    [valid] => \n)\ninvalid end point"
+  }
+ },
+ {
+  "url": "https://a1.lolalytics.com/mega/?ep=counter&p=d&v=1&patch=16.13&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all",
+  "status": 200,
+  "bytes": 14,
+  "secs": 0.13,
+  "shape": {
+   "status": 404
+  }
+ },
+ {
+  "url": "https://a1.lolalytics.com/mega/?ep=counter&p=d&v=1&patch=16.1&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all",
+  "status": 200,
+  "bytes": 14,
+  "secs": 0.32,
+  "shape": {
+   "status": 404
+  }
+ },
+ {
+  "url": "https://a1.lolalytics.com/mega/?ep=counter&p=d&v=1&patch=15.10&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all",
+  "status": 200,
+  "bytes": 14,
+  "secs": 0.33,
+  "shape": {
+   "status": 404
+  }
+ },
+ {
+  "url": "https://a1.lolalytics.com/mega/?ep=counter&p=d&v=1&patch=30&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all",
+  "status": 200,
+  "bytes": 14,
+  "secs": 0.14,
+  "shape": {
+   "status": 404
+  }
+ },
+ {
+  "url": "https://a1.lolalytics.com/mega/?ep=counters&p=d&v=1&patch=16.13&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all",
+  "status": 200,
+  "bytes": 43,
+  "secs": 0.13,
+  "shape": {
+   "nonjson_head": "Array\n(\n    [valid] => \n)\ninvalid end point"
+  }
+ },
+ {
+  "url": "https://a1.lolalytics.com/mega/?ep=counters&p=d&v=1&patch=16.1&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all",
+  "status": 200,
+  "bytes": 43,
+  "secs": 0.13,
+  "shape": {
+   "nonjson_head": "Array\n(\n    [valid] => \n)\ninvalid end point"
+  }
+ },
+ {
+  "url": "https://a1.lolalytics.com/mega/?ep=counters&p=d&v=1&patch=15.10&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all",
+  "status": 200,
+  "bytes": 43,
+  "secs": 0.13,
+  "shape": {
+   "nonjson_head": "Array\n(\n    [valid] => \n)\ninvalid end point"
+  }
+ },
+ {
+  "url": "https://a1.lolalytics.com/mega/?ep=counters&p=d&v=1&patch=30&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all",
+  "status": 200,
+  "bytes": 43,
+  "secs": 0.31,
+  "shape": {
+   "nonjson_head": "Array\n(\n    [valid] => \n)\ninvalid end point"
+  }
+ },
+ {
+  "url": "https://a1.lolalytics.com/mega/?ep=champion2&p=d&v=1&patch=16.13&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all",
+  "status": 200,
+  "bytes": 43,
+  "secs": 0.33,
+  "shape": {
+   "nonjson_head": "Array\n(\n    [valid] => \n)\ninvalid end point"
+  }
+ },
+ {
+  "url": "https://a1.lolalytics.com/mega/?ep=champion2&p=d&v=1&patch=16.1&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all",
+  "status": 200,
+  "bytes": 43,
+  "secs": 0.12,
+  "shape": {
+   "nonjson_head": "Array\n(\n    [valid] => \n)\ninvalid end point"
+  }
+ },
+ {
+  "url": "https://a1.lolalytics.com/mega/?ep=champion2&p=d&v=1&patch=15.10&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all",
+  "status": 200,
+  "bytes": 43,
+  "secs": 0.13,
+  "shape": {
+   "nonjson_head": "Array\n(\n    [valid] => \n)\ninvalid end point"
+  }
+ },
+ {
+  "url": "https://a1.lolalytics.com/mega/?ep=champion2&p=d&v=1&patch=30&cid=103&lane=middle&tier=emerald_plus&queue=ranked&region=all",
+  "status": 200,
+  "bytes": 43,
+  "secs": 0.13,
+  "shape": {
+   "nonjson_head": "Array\n(\n    [valid] => \n)\ninvalid end point"
+  }
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/global/champions/ranked/58/TOP?tier=emerald_plus&version=16.13",
+  "status": 200,
+  "bytes": 21166,
+  "secs": 0.28,
+  "shape": {
+   "data": {
+    "dict": [
+     "summary",
+     "summoner_spells",
+     "core_items",
+     "mythic_items",
+     "boots",
+     "starter_items",
+     "last_items",
+     "rune_pages",
+     "runes",
+     "skill_masteries",
+     "skills",
+     "skill_evolves",
+     "trends",
+     "game_lengths",
+     "counters"
+    ]
+   },
+   "meta": {
+    "dict": [
+     "version",
+     "cached_at"
+    ]
+   }
+  }
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/global/champions/ranked/58?tier=emerald_plus&version=16.13",
+  "status": "ERR HTTP Error 404: Not Found",
+  "bytes": 0,
+  "secs": 0.24,
+  "shape": null
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/global/champions/ranked/58/matchups?tier=emerald_plus&version=16.13",
+  "status": "ERR HTTP Error 422: Unknown",
+  "bytes": 0,
+  "secs": 0.26,
+  "shape": null
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/kr/champions/ranked/58/TOP?tier=emerald_plus&version=16.12",
+  "status": 200,
+  "bytes": 19976,
+  "secs": 0.86,
+  "shape": {
+   "data": {
+    "dict": [
+     "summary",
+     "summoner_spells",
+     "core_items",
+     "mythic_items",
+     "boots",
+     "starter_items",
+     "last_items",
+     "rune_pages",
+     "runes",
+     "skill_masteries",
+     "skills",
+     "skill_evolves",
+     "trends",
+     "game_lengths",
+     "counters"
+    ]
+   },
+   "meta": {
+    "dict": [
+     "version",
+     "cached_at"
+    ]
+   }
+  }
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/global/champions/ranked?tier=emerald_plus&version=16.13",
+  "status": 200,
+  "bytes": 189674,
+  "secs": 0.48
+ },
+ {
+  "url": "https://lol-api-champion.op.gg/api/global/champions/ranked?tier=emerald_plus&version=16.12",
+  "status": 200,
+  "bytes": 189148,
+  "secs": 1.17
+ }
+]
