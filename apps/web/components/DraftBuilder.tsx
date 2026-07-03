@@ -204,25 +204,16 @@ export function DraftBuilder({
         <section className="flex flex-col gap-6 rounded-lg border border-slate-800 bg-slate-900/40 p-5">
           <WinBar blueWinProbability={result.blueWinProbability} />
 
-          {/* Fair odds: the decimal odds at which a bet on each side would be
-              exactly break-even IF the model probability is right. Offered
-              odds ABOVE the fair number = positive expected value per the
-              model (before the bookmaker's margin and the model's own error
-              bars). */}
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-sm">
-            <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Fair odds
-            </span>
-            <span className="text-sky-300">
-              Blue {(1 / Math.max(result.blueWinProbability, 1e-6)).toFixed(2)}
-            </span>
-            <span className="text-rose-300">
-              Red {(1 / Math.max(result.redWinProbability, 1e-6)).toFixed(2)}
-            </span>
-            <span className="text-xs text-slate-500">
-              (decimal; offered odds above these = model sees value)
-            </span>
-          </div>
+          {/* The odds chips in the WinBar are the model's FAIR decimal odds
+              (1 / probability): the break-even bookmaker price for each side
+              if the model probability is right. Offered odds ABOVE the fair
+              number = positive expected value per the model (before the
+              bookmaker's margin and the model's own error bars). */}
+          <p className="text-xs text-slate-500">
+            Suggested odds shown are fair decimal odds (1 &divide;
+            probability), bookmaker style — if a book offers a side at longer
+            odds than the suggested number, the model sees value there.
+          </p>
 
           {result.teamContext ? (
             <div className="flex flex-col gap-1 text-sm text-slate-400">
