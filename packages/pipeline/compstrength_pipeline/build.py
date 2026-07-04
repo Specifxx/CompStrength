@@ -302,9 +302,31 @@ def run_pipeline_on_data(
         )
 
     resolved_patch = patch or _most_recent_patch(games_df)
-    solo_winrates = soloqueue_source.get_champion_winrates(resolved_patch)
-
     reference_date = games_df["date"].max()
+
+    # Real solo-queue win rates from the committed, timestamped history
+    # (data/soloqueue_history.json), as of the data's reference date (the same
+    # leak-free as-of path the backtest uses). On the real pipeline the
+    # ``soloqueue_source`` is a NullSoloQueueSource (returns nothing), so
+    # without this every champion's displayed solo win rate would be a flat
+    # 50% placeholder. We surface the REAL numbers for the display fields
+    # (soloWinRate / soloGames / blendedWinRate); the model's champion
+    # strength still comes from ``compute_wr_strength`` below, independent of
+    # this. The offline fixture path keeps its StaticSoloQueueSource data.
+    solo_history = soloqueue_module.load_solo_history(
+        REPO_ROOT / "data" / "soloqueue_history.json"
+    )
+    solo_prior = (
+        soloqueue_module.solo_winrates_asof(solo_history, reference_date)
+        if solo_history
+        else None
+    )
+    solo_winrates = soloqueue_source.get_champion_winrates(resolved_patch)
+    if not solo_winrates and solo_prior:
+        solo_winrates = solo_prior
+    if solo_prior:
+        print(f"solo-queue data: {len(solo_prior)} champions (as of {reference_date.date()})")
+
     # Owner directive: premier leagues (LCK+LPL) carry a fixed share (~70%)
     # of the decayed training weight. Solves for the multiplier on this exact
     # window and threads it through the existing league-weight machinery.
@@ -321,19 +343,8 @@ def run_pipeline_on_data(
     # the experiment fleet: 55.4% vs 52.5% held-out draft-only accuracy).
     # Overrides the EB-logit strengthScore in the artifact; the EB stats
     # (proWinRate/blendedWinRate/sampleConfidence) remain as display fields.
-    # Solo-queue-informed prior: use the latest snapshot of the committed
-    # history fixture as of the data's reference date (same as-of code path
-    # the backtest uses, so the measured gain is exactly what ships).
-    solo_history = soloqueue_module.load_solo_history(
-        REPO_ROOT / "data" / "soloqueue_history.json"
-    )
-    solo_prior = (
-        soloqueue_module.solo_winrates_asof(solo_history, reference_date)
-        if solo_history
-        else None
-    )
-    if solo_prior is not None:
-        print(f"solo-queue prior: {len(solo_prior)} champions (as of {reference_date.date()})")
+    # The solo prior into the strength signal is a measured no-op (shipped
+    # weight 0.0), so passing solo_prior here does not change the model.
     wr_strength, loo_score_diffs = features.compute_wr_strength(
         games_df, reference_date, config, solo_prior
     )
