@@ -189,10 +189,9 @@ export function DraftBuilder({
   // that most raises that side's win probability given the current partial
   // draft + optional teams. Recomputed only when a pick / team / player
   // changes (not per keystroke).
-  const championNames = useMemo(() => champions.map((c) => c.name), [champions]);
   const suggestions = useMemo(
     () =>
-      suggestPicks(blue, red, ratings, model, synergy, championNames, {
+      suggestPicks(blue, red, ratings, model, synergy, champions, {
         blueTeam: blueOrg,
         redTeam: redOrg,
         teams,
@@ -200,7 +199,7 @@ export function DraftBuilder({
         bluePlayers,
         redPlayers,
       }),
-    [blue, red, ratings, model, synergy, championNames, blueOrg, redOrg, teams, players, bluePlayers, redPlayers],
+    [blue, red, ratings, model, synergy, champions, blueOrg, redOrg, teams, players, bluePlayers, redPlayers],
   );
 
   const blueComplete = ROLES.every((r) => blue[r]);

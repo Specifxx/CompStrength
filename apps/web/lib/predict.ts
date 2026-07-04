@@ -388,16 +388,18 @@ export interface PickSuggestion {
 
 /** For every EMPTY role on each side, the available champion that maximises
  *  that side's win probability given the current (partial) draft and the
- *  optional team selection. Accounts for the opponent's current picks
- *  (counter-picking), synergy with the side's own picks, and champion
- *  strength. Champions already used anywhere are excluded. */
+ *  optional team selection. ROLE-AWARE: each slot only considers champions
+ *  whose primary role matches it (otherwise the model's role-agnostic score
+ *  would just recommend the single strongest champion for every slot).
+ *  Accounts for the opponent's current picks (counter-picking) and synergy
+ *  with the side's own picks. Champions already used anywhere are excluded. */
 export function suggestPicks(
   blue: DraftTeam,
   red: DraftTeam,
   ratings: ChampionRatingsFile,
   model: ModelFile,
   synergy: SynergyFile,
-  championNames: string[],
+  champions: { name: string; primaryRole: Role }[],
   teamOptions?: TeamOptions,
 ): { blue: Partial<Record<Role, PickSuggestion>>; red: Partial<Record<Role, PickSuggestion>> } {
   const taken = new Set<string>();
@@ -405,7 +407,16 @@ export function suggestPicks(
     if (blue[r]) taken.add(blue[r] as string);
     if (red[r]) taken.add(red[r] as string);
   }
-  const known = championNames.filter((c) => ratings.champions[c]);
+  // Group candidate champions by their primary role, so a TOP slot only ever
+  // suggests top laners, a JUNGLE slot junglers, etc.
+  const byRole: Record<Role, string[]> = {
+    TOP: [], JUNGLE: [], MID: [], BOTTOM: [], SUPPORT: [],
+  };
+  for (const c of champions) {
+    if (ratings.champions[c.name] && byRole[c.primaryRole]) {
+      byRole[c.primaryRole].push(c.name);
+    }
+  }
 
   const forSide = (side: "blue" | "red"): Partial<Record<Role, PickSuggestion>> => {
     const base = side === "blue" ? blue : red;
@@ -413,7 +424,7 @@ export function suggestPicks(
     for (const role of ROLES) {
       if (base[role]) continue; // only suggest for empty slots
       let best: PickSuggestion | null = null;
-      for (const champ of known) {
+      for (const champ of byRole[role]) {
         if (taken.has(champ)) continue;
         const b = side === "blue" ? { ...blue, [role]: champ } : blue;
         const r = side === "red" ? { ...red, [role]: champ } : red;
