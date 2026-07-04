@@ -309,3 +309,124 @@ export function predictMatchup(
     teamContext,
   };
 }
+
+/** Blue-side win probability tolerant of an INCOMPLETE draft: unfilled roles
+ *  and unknown champions contribute 0 to every champion-derived term (the
+ *  model's logit is additive, so a missing pick is just a missing summand).
+ *  Team/player terms come from the optional team selection as usual. Used to
+ *  score candidate picks for the dynamic best-fit suggestions. */
+function winProbabilityPartial(
+  blue: DraftTeam,
+  red: DraftTeam,
+  ratings: ChampionRatingsFile,
+  model: ModelFile,
+  synergy: SynergyFile,
+  teamOptions: TeamOptions | undefined,
+): number {
+  const bFilled = ROLES.map((r) => blue[r]).filter((c): c is string => !!c);
+  const rFilled = ROLES.map((r) => red[r]).filter((c): c is string => !!c);
+  const strengthOf = (c: string) => ratings.champions[c]?.strengthScore ?? 0;
+  const scoreDiff =
+    bFilled.reduce((s, c) => s + strengthOf(c), 0) -
+    rFilled.reduce((s, c) => s + strengthOf(c), 0);
+
+  const sideSyn = (champs: string[]) => {
+    let t = 0;
+    for (let i = 0; i < champs.length; i++)
+      for (let j = i + 1; j < champs.length; j++)
+        t += synergy.synergy[synergyKey(champs[i], champs[j])]?.residual ?? 0;
+    return t;
+  };
+  const synergyDiff = sideSyn(bFilled) - sideSyn(rFilled);
+
+  let matchupDiff = 0;
+  for (const role of ROLES) {
+    const b = blue[role];
+    const r = red[role];
+    if (b && r) matchupDiff += synergy.matchup[matchupKey(b, r)]?.residual ?? 0;
+  }
+
+  const presenceOf = (c: string) => {
+    const x = ratings.champions[c];
+    return x ? (x.pickRate ?? 0) + (x.banRate ?? 0) : 0;
+  };
+  const presenceDiff =
+    bFilled.reduce((s, c) => s + presenceOf(c), 0) -
+    rFilled.reduce((s, c) => s + presenceOf(c), 0);
+
+  const ctx = resolveTeamContext(teamOptions, blue, red);
+  const {
+    scoreDiffWeight,
+    blueSideBias,
+    intercept,
+    synergyWeight = 0,
+    matchupWeight = 0,
+    presenceWeight = 0,
+    teamEloWeight = 0,
+    playerEloWeight = 0,
+    profWeight = 0,
+  } = model.coefficients;
+  const logit =
+    intercept +
+    scoreDiffWeight * scoreDiff +
+    synergyWeight * synergyDiff +
+    matchupWeight * matchupDiff +
+    presenceWeight * presenceDiff +
+    teamEloWeight * (ctx?.eloDiff ?? 0) +
+    playerEloWeight * (ctx?.playerEloDiff ?? 0) +
+    profWeight * (ctx?.profDiff ?? 0) +
+    blueSideBias;
+  return sigmoid(logit);
+}
+
+/** A recommended champion for one empty slot and the resulting win
+ *  probability FOR THAT SIDE if picked. */
+export interface PickSuggestion {
+  champion: string;
+  sideWinProbability: number;
+}
+
+/** For every EMPTY role on each side, the available champion that maximises
+ *  that side's win probability given the current (partial) draft and the
+ *  optional team selection. Accounts for the opponent's current picks
+ *  (counter-picking), synergy with the side's own picks, and champion
+ *  strength. Champions already used anywhere are excluded. */
+export function suggestPicks(
+  blue: DraftTeam,
+  red: DraftTeam,
+  ratings: ChampionRatingsFile,
+  model: ModelFile,
+  synergy: SynergyFile,
+  championNames: string[],
+  teamOptions?: TeamOptions,
+): { blue: Partial<Record<Role, PickSuggestion>>; red: Partial<Record<Role, PickSuggestion>> } {
+  const taken = new Set<string>();
+  for (const r of ROLES) {
+    if (blue[r]) taken.add(blue[r] as string);
+    if (red[r]) taken.add(red[r] as string);
+  }
+  const known = championNames.filter((c) => ratings.champions[c]);
+
+  const forSide = (side: "blue" | "red"): Partial<Record<Role, PickSuggestion>> => {
+    const base = side === "blue" ? blue : red;
+    const out: Partial<Record<Role, PickSuggestion>> = {};
+    for (const role of ROLES) {
+      if (base[role]) continue; // only suggest for empty slots
+      let best: PickSuggestion | null = null;
+      for (const champ of known) {
+        if (taken.has(champ)) continue;
+        const b = side === "blue" ? { ...blue, [role]: champ } : blue;
+        const r = side === "red" ? { ...red, [role]: champ } : red;
+        const blueWin = winProbabilityPartial(b, r, ratings, model, synergy, teamOptions);
+        const sideWin = side === "blue" ? blueWin : 1 - blueWin;
+        if (!best || sideWin > best.sideWinProbability) {
+          best = { champion: champ, sideWinProbability: sideWin };
+        }
+      }
+      if (best) out[role] = best;
+    }
+    return out;
+  };
+
+  return { blue: forSide("blue"), red: forSide("red") };
+}

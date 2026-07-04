@@ -12,6 +12,8 @@ import {
   IncompleteDraftError,
   UnknownChampionError,
   predictMatchup,
+  suggestPicks,
+  type PickSuggestion,
 } from "@/lib/predict";
 import {
   ROLES,
@@ -53,6 +55,35 @@ function rosterFor(org: string | null, teams?: TeamsFile | null): (string | null
   if (!roster) return [...EMPTY_PLAYERS];
   return ROLES.map(
     (role) => roster.find((s) => s.position === POSITION_BY_ROLE[role])?.player ?? null,
+  );
+}
+
+/** Clickable best-fit suggestion shown under an empty champion slot: the
+ *  available champion that most raises this side's win probability given the
+ *  current draft, and that resulting win %. Clicking it fills the slot. */
+function SuggestionLine({
+  suggestion,
+  side,
+  onPick,
+}: {
+  suggestion: PickSuggestion | undefined;
+  side: "blue" | "red";
+  onPick: (champion: string) => void;
+}) {
+  if (!suggestion) return null;
+  const accent = side === "blue" ? "text-sky-300" : "text-rose-300";
+  return (
+    <button
+      type="button"
+      onClick={() => onPick(suggestion.champion)}
+      title={`Fill with ${suggestion.champion}`}
+      className="mt-1 self-start text-[11px] text-slate-500 transition hover:text-slate-300"
+    >
+      ↳ best fit <span className={`font-medium ${accent}`}>{suggestion.champion}</span>{" "}
+      <span className="tabular-nums text-slate-400">
+        {(suggestion.sideWinProbability * 100).toFixed(1)}%
+      </span>
+    </button>
   );
 }
 
@@ -153,6 +184,24 @@ export function DraftBuilder({
     [red],
   );
   const allTaken = useMemo(() => new Set([...blueTaken, ...redTaken]), [blueTaken, redTaken]);
+
+  // Dynamic best-fit suggestion for each EMPTY slot: the available champion
+  // that most raises that side's win probability given the current partial
+  // draft + optional teams. Recomputed only when a pick / team / player
+  // changes (not per keystroke).
+  const championNames = useMemo(() => champions.map((c) => c.name), [champions]);
+  const suggestions = useMemo(
+    () =>
+      suggestPicks(blue, red, ratings, model, synergy, championNames, {
+        blueTeam: blueOrg,
+        redTeam: redOrg,
+        teams,
+        players,
+        bluePlayers,
+        redPlayers,
+      }),
+    [blue, red, ratings, model, synergy, championNames, blueOrg, redOrg, teams, players, bluePlayers, redPlayers],
+  );
 
   const blueComplete = ROLES.every((r) => blue[r]);
   const redComplete = ROLES.every((r) => red[r]);
@@ -269,16 +318,22 @@ export function DraftBuilder({
               />
             )}
             {ROLES.map((role, i) => (
-              <ChampionPicker
-                key={role}
-                role={role}
-                side="blue"
-                seq={i}
-                value={blue[role]}
-                champions={champions}
-                takenElsewhere={allTaken}
-                onChange={(champion) => setBlue((prev) => ({ ...prev, [role]: champion }))}
-              />
+              <div key={role} className="flex flex-col">
+                <ChampionPicker
+                  role={role}
+                  side="blue"
+                  seq={i}
+                  value={blue[role]}
+                  champions={champions}
+                  takenElsewhere={allTaken}
+                  onChange={(champion) => setBlue((prev) => ({ ...prev, [role]: champion }))}
+                />
+                <SuggestionLine
+                  suggestion={suggestions.blue[role]}
+                  side="blue"
+                  onPick={(champion) => setBlue((prev) => ({ ...prev, [role]: champion }))}
+                />
+              </div>
             ))}
           </div>
         </section>
@@ -300,16 +355,22 @@ export function DraftBuilder({
               />
             )}
             {ROLES.map((role, i) => (
-              <ChampionPicker
-                key={role}
-                role={role}
-                side="red"
-                seq={5 + i}
-                value={red[role]}
-                champions={champions}
-                takenElsewhere={allTaken}
-                onChange={(champion) => setRed((prev) => ({ ...prev, [role]: champion }))}
-              />
+              <div key={role} className="flex flex-col">
+                <ChampionPicker
+                  role={role}
+                  side="red"
+                  seq={5 + i}
+                  value={red[role]}
+                  champions={champions}
+                  takenElsewhere={allTaken}
+                  onChange={(champion) => setRed((prev) => ({ ...prev, [role]: champion }))}
+                />
+                <SuggestionLine
+                  suggestion={suggestions.red[role]}
+                  side="red"
+                  onPick={(champion) => setRed((prev) => ({ ...prev, [role]: champion }))}
+                />
+              </div>
             ))}
           </div>
         </section>
