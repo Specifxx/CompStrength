@@ -158,19 +158,26 @@ export function DraftBuilder({
   const redComplete = ROLES.every((r) => red[r]);
   const canPredict = blueComplete && redComplete;
 
-  function handlePredict() {
+  function runPredict(
+    b: DraftTeam,
+    r: DraftTeam,
+    bOrg: string | null,
+    rOrg: string | null,
+    bPlayers: (string | null)[],
+    rPlayers: (string | null)[],
+  ) {
     setError(null);
     try {
       // Computed entirely client-side — no network round-trip. lib/predict.ts
       // is pure/isomorphic TS, so it runs identically here and on the
       // /api/predict route (which stays available for programmatic use).
-      const prediction = predictMatchup(blue, red, ratings, model, synergy, {
-        blueTeam: blueOrg,
-        redTeam: redOrg,
+      const prediction = predictMatchup(b, r, ratings, model, synergy, {
+        blueTeam: bOrg,
+        redTeam: rOrg,
         teams,
         players,
-        bluePlayers,
-        redPlayers,
+        bluePlayers: bPlayers,
+        redPlayers: rPlayers,
       });
       setResult(prediction);
     } catch (err) {
@@ -180,6 +187,25 @@ export function DraftBuilder({
         setError("Prediction failed");
       }
       setResult(null);
+    }
+  }
+
+  function handlePredict() {
+    runPredict(blue, red, blueOrg, redOrg, bluePlayers, redPlayers);
+  }
+
+  /** Swap the entire blue and red setups — drafts, teams, and player seats.
+   *  Re-runs the prediction in place if one is already showing, so you can see
+   *  the mirror instantly (blue-side bias flips too). */
+  function swapSides() {
+    setBlue(red);
+    setRed(blue);
+    setBlueOrg(redOrg);
+    setRedOrg(blueOrg);
+    setBluePlayers(redPlayers);
+    setRedPlayers(bluePlayers);
+    if (result) {
+      runPredict(red, blue, redOrg, blueOrg, redPlayers, bluePlayers);
     }
   }
 
@@ -298,6 +324,14 @@ export function DraftBuilder({
           className="rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 transition disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400"
         >
           Predict Winner
+        </button>
+        <button
+          type="button"
+          onClick={swapSides}
+          title="Swap blue and red — drafts, teams, and players"
+          className="rounded-md border border-slate-700 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
+        >
+          ⇄ Swap sides
         </button>
         <button
           type="button"
