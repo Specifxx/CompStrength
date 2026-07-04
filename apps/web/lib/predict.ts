@@ -386,6 +386,16 @@ export interface PickSuggestion {
   sideWinProbability: number;
 }
 
+/** Two recommendations for one empty slot: the highest-win-rate champion
+ *  (model-faithful, strength-dominated) and — only when it's a DIFFERENT
+ *  champion — the one that best fits the comp via synergy with your picks and
+ *  counter vs the enemy laner. ``fit`` is omitted when it equals ``best``
+ *  (e.g. early in a draft with no context to differentiate on). */
+export interface SlotSuggestion {
+  best: PickSuggestion;
+  fit?: PickSuggestion;
+}
+
 /** For every EMPTY role on each side, the available champion that maximises
  *  that side's win probability given the current (partial) draft and the
  *  optional team selection. ROLE-AWARE: each slot only considers champions
@@ -401,7 +411,7 @@ export function suggestPicks(
   synergy: SynergyFile,
   champions: { name: string; primaryRole: Role }[],
   teamOptions?: TeamOptions,
-): { blue: Partial<Record<Role, PickSuggestion>>; red: Partial<Record<Role, PickSuggestion>> } {
+): { blue: Partial<Record<Role, SlotSuggestion>>; red: Partial<Record<Role, SlotSuggestion>> } {
   const taken = new Set<string>();
   for (const r of ROLES) {
     if (blue[r]) taken.add(blue[r] as string);
@@ -417,24 +427,50 @@ export function suggestPicks(
       byRole[c.primaryRole].push(c.name);
     }
   }
+  // Strength-only synergy view (no pair/matchup residuals) to isolate the
+  // comp-dependent part of a candidate's win probability.
+  const noSynergy: SynergyFile = { ...synergy, synergy: {}, matchup: {} };
 
-  const forSide = (side: "blue" | "red"): Partial<Record<Role, PickSuggestion>> => {
+  const forSide = (side: "blue" | "red"): Partial<Record<Role, SlotSuggestion>> => {
     const base = side === "blue" ? blue : red;
-    const out: Partial<Record<Role, PickSuggestion>> = {};
+    const out: Partial<Record<Role, SlotSuggestion>> = {};
     for (const role of ROLES) {
       if (base[role]) continue; // only suggest for empty slots
       let best: PickSuggestion | null = null;
+      // "fit": champion whose synergy-with-picks + counter-vs-enemy moves the
+      // win probability the MOST (i.e. the comp-dependent contribution),
+      // regardless of raw strength. Tie-broken by overall win probability.
+      let fit: { champion: string; sideWinProbability: number; compDelta: number } | null = null;
       for (const champ of byRole[role]) {
         if (taken.has(champ)) continue;
         const b = side === "blue" ? { ...blue, [role]: champ } : blue;
         const r = side === "red" ? { ...red, [role]: champ } : red;
         const blueWin = winProbabilityPartial(b, r, ratings, model, synergy, teamOptions);
         const sideWin = side === "blue" ? blueWin : 1 - blueWin;
+        const blueWinNoSyn = winProbabilityPartial(b, r, ratings, model, noSynergy, teamOptions);
+        const sideWinNoSyn = side === "blue" ? blueWinNoSyn : 1 - blueWinNoSyn;
+        const compDelta = sideWin - sideWinNoSyn; // synergy+counter contribution
+
         if (!best || sideWin > best.sideWinProbability) {
           best = { champion: champ, sideWinProbability: sideWin };
         }
+        if (
+          !fit ||
+          compDelta > fit.compDelta + 1e-9 ||
+          (Math.abs(compDelta - fit.compDelta) <= 1e-9 && sideWin > fit.sideWinProbability)
+        ) {
+          fit = { champion: champ, sideWinProbability: sideWin, compDelta };
+        }
       }
-      if (best) out[role] = best;
+      if (best) {
+        const slot: SlotSuggestion = { best };
+        // Only surface a distinct synergy pick when it differs from the
+        // win-rate pick AND actually gains something from the comp.
+        if (fit && fit.champion !== best.champion && fit.compDelta > 1e-4) {
+          slot.fit = { champion: fit.champion, sideWinProbability: fit.sideWinProbability };
+        }
+        out[role] = slot;
+      }
     }
     return out;
   };

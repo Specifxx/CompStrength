@@ -13,7 +13,7 @@ import {
   UnknownChampionError,
   predictMatchup,
   suggestPicks,
-  type PickSuggestion,
+  type SlotSuggestion,
 } from "@/lib/predict";
 import {
   ROLES,
@@ -58,32 +58,50 @@ function rosterFor(org: string | null, teams?: TeamsFile | null): (string | null
   );
 }
 
-/** Clickable best-fit suggestion shown under an empty champion slot: the
- *  available champion that most raises this side's win probability given the
- *  current draft, and that resulting win %. Clicking it fills the slot. */
+/** Clickable suggestions shown under an empty champion slot: the highest
+ *  win-rate champion for the role, and — when it differs — the champion that
+ *  best fits the comp (synergy with your picks + counter vs the enemy laner).
+ *  Clicking either fills the slot. */
 function SuggestionLine({
   suggestion,
   side,
   onPick,
 }: {
-  suggestion: PickSuggestion | undefined;
+  suggestion: SlotSuggestion | undefined;
   side: "blue" | "red";
   onPick: (champion: string) => void;
 }) {
   if (!suggestion) return null;
   const accent = side === "blue" ? "text-sky-300" : "text-rose-300";
+  const { best, fit } = suggestion;
   return (
-    <button
-      type="button"
-      onClick={() => onPick(suggestion.champion)}
-      title={`Fill with ${suggestion.champion}`}
-      className="mt-1 self-start text-[11px] text-slate-500 transition hover:text-slate-300"
-    >
-      ↳ best fit <span className={`font-medium ${accent}`}>{suggestion.champion}</span>{" "}
-      <span className="tabular-nums text-slate-400">
-        {(suggestion.sideWinProbability * 100).toFixed(1)}%
-      </span>
-    </button>
+    <div className="mt-1 flex flex-col gap-0.5">
+      <button
+        type="button"
+        onClick={() => onPick(best.champion)}
+        title={`Fill with ${best.champion}`}
+        className="self-start text-[11px] text-slate-500 transition hover:text-slate-300"
+      >
+        ↳ top win rate <span className={`font-medium ${accent}`}>{best.champion}</span>{" "}
+        <span className="tabular-nums text-slate-400">
+          {(best.sideWinProbability * 100).toFixed(1)}%
+        </span>
+      </button>
+      {fit && (
+        <button
+          type="button"
+          onClick={() => onPick(fit.champion)}
+          title={`Fill with ${fit.champion}`}
+          className="self-start text-[11px] text-slate-500 transition hover:text-slate-300"
+        >
+          ↳ best synergy/counter{" "}
+          <span className={`font-medium ${accent}`}>{fit.champion}</span>{" "}
+          <span className="tabular-nums text-slate-400">
+            {(fit.sideWinProbability * 100).toFixed(1)}%
+          </span>
+        </button>
+      )}
+    </div>
   );
 }
 
