@@ -331,6 +331,31 @@ export default function MethodologyPage() {
                 prediction stays fundamentally data-starved. The draft builder
                 flags these matchups so you can weight them accordingly.
               </p>
+              <p>
+                <span className="text-slate-300">
+                  What about wombo combos, all-AD/all-AP teams, or a
+                  low-damage/all-squishy comp?
+                </span>{" "}
+                This is a real gap: the model&apos;s only inter-champion signal
+                is pairwise synergy (exactly 2 champions at a time, shrunk
+                toward 0) &mdash; there is no feature that looks at the
+                5-champion whole. We built the best measurable proxies
+                available and tested each: team damage output and tankiness
+                (from real per-game damage/tanking stats), damage-share
+                concentration (one carry vs a balanced comp), and AD/AP
+                balance and engage-champion count (from champion attributes,
+                since Oracle&apos;s Elixir has no crowd-control-time column to
+                measure a true &ldquo;wombo&rdquo; signal from). Draft-only,
+                one candidate (AD/AP lean) showed a small, consistent gain
+                across every test fold. But once combined with team and
+                player Elo &mdash; the model actually used once you pick
+                teams &mdash; that gain vanished into noise (currentSeason
+                65.71% &rarr; 65.76%, well within run-to-run variance) while
+                overall accuracy and log-loss both got marginally worse.
+                Team/player identity is simply too dominant a signal for
+                these subtler structural effects to move the needle on real
+                pro outcomes. None of these features ship.
+              </p>
             </div>
           </section>
 
