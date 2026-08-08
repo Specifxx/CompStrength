@@ -64,3 +64,48 @@ def test_presence_feature_off_gives_zero_weight():
     for key in ("scoreDiffWeight", "synergyWeight", "matchupWeight",
                 "presenceWeight", "blueSideBias", "intercept"):
         assert key in result.coefficients
+
+
+def test_training_frame_carries_the_team_strength_features():
+    games = _tiny_games(4)
+    frame = build_training_frame(
+        games, {}, None, None, None, None, None, None, None,
+        gpr_diffs={"g0": 1.5},
+        econ_diffs={"g1": -2.0},
+    )
+    for column in ("gpr_diff", "econ_diff"):
+        assert column in frame.columns and column in FEATURE_COLUMNS
+    by_game = frame.set_index("gameid")
+    assert by_game.loc["g0", "gpr_diff"] == 1.5
+    assert by_game.loc["g1", "econ_diff"] == -2.0
+    # Games absent from a map contribute 0 -- "unknown", not "a real gap".
+    assert by_game.loc["g1", "gpr_diff"] == 0.0
+    assert by_game.loc["g0", "econ_diff"] == 0.0
+
+
+def test_gpr_and_econ_weights_are_zero_without_their_data():
+    """Every coefficient the frontend reads must exist on every model.json,
+    and a feature with no data must fit to exactly 0 so old snapshots and new
+    ones behave identically."""
+    result = train_model(_tiny_games(), {"A1": 0.1, "B1": -0.1})
+    assert result.coefficients["gprWeight"] == 0.0
+    assert result.coefficients["econWeight"] == 0.0
+    for key in ("teamEloWeight", "playerEloWeight", "profWeight",
+                "gprWeight", "econWeight"):
+        assert key in result.coefficients
+
+
+def test_gpr_and_econ_weights_are_learned_when_predictive():
+    """A feature that perfectly tracks the outcome should earn a non-zero
+    weight in the right direction (sanity check that the columns are actually
+    wired into the fit, not just present in the frame)."""
+    games = _tiny_games(60)
+    # g0,g2,... are blue wins; give those games a positive gap and the rest a
+    # negative one, for both features.
+    signed = {f"g{g}": (1.0 if g % 2 else -1.0) for g in range(60)}
+    result = train_model(
+        games, {}, None, None, None, None, None, None, None,
+        gpr_diffs=signed, econ_diffs=signed,
+    )
+    assert result.coefficients["gprWeight"] > 0
+    assert result.coefficients["econWeight"] > 0

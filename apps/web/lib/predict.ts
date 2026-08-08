@@ -172,6 +172,23 @@ function resolveTeamContext(
     crossRegion: !!blueLeague && !!redLeague && blueLeague !== redLeague,
   };
 
+  // Early-game (gold-at-15) rating gap. Both-or-nothing like the Elo gap:
+  // one known rating against an unrated opponent isn't a neutral 0 gap.
+  if (blueRating.econ !== undefined && redRating.econ !== undefined) {
+    const econScale = options.teams.params.econScale || 750;
+    context.blueEcon = blueRating.econ;
+    context.redEcon = redRating.econ;
+    context.econDiff = (blueRating.econ - redRating.econ) / econScale;
+  }
+  // Riot's Global Power Rankings gap — only when Riot rates BOTH orgs (they
+  // cover tier-1 only), for the same reason.
+  if (blueRating.gpr !== undefined && redRating.gpr !== undefined) {
+    const gprScale = options.teams.params.gprScale || 60;
+    context.blueGpr = blueRating.gpr;
+    context.redGpr = redRating.gpr;
+    context.gprDiff = (blueRating.gpr - redRating.gpr) / gprScale;
+  }
+
   const index = options.players?.players;
   const blueNames = playersByRole(blueRating.roster, options.bluePlayers);
   const redNames = playersByRole(redRating.roster, options.redPlayers);
@@ -268,6 +285,8 @@ export function predictMatchup(
   const teamEloDiff = teamContext?.eloDiff ?? 0;
   const playerEloDiff = teamContext?.playerEloDiff ?? 0;
   const profDiff = teamContext?.profDiff ?? 0;
+  const gprDiff = teamContext?.gprDiff ?? 0;
+  const econDiff = teamContext?.econDiff ?? 0;
 
   const {
     scoreDiffWeight,
@@ -279,6 +298,8 @@ export function predictMatchup(
     teamEloWeight = 0,
     playerEloWeight = 0,
     profWeight = 0,
+    gprWeight = 0,
+    econWeight = 0,
   } = model.coefficients;
   const logit =
     intercept +
@@ -289,6 +310,8 @@ export function predictMatchup(
     teamEloWeight * teamEloDiff +
     playerEloWeight * playerEloDiff +
     profWeight * profDiff +
+    gprWeight * gprDiff +
+    econWeight * econDiff +
     blueSideBias;
   const blueWinProbability = sigmoid(logit);
 
@@ -365,6 +388,8 @@ function winProbabilityPartial(
     teamEloWeight = 0,
     playerEloWeight = 0,
     profWeight = 0,
+    gprWeight = 0,
+    econWeight = 0,
   } = model.coefficients;
   const logit =
     intercept +
@@ -375,6 +400,8 @@ function winProbabilityPartial(
     teamEloWeight * (ctx?.eloDiff ?? 0) +
     playerEloWeight * (ctx?.playerEloDiff ?? 0) +
     profWeight * (ctx?.profDiff ?? 0) +
+    gprWeight * (ctx?.gprDiff ?? 0) +
+    econWeight * (ctx?.econDiff ?? 0) +
     blueSideBias;
   return sigmoid(logit);
 }

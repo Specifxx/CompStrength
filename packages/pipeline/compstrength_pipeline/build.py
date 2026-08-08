@@ -35,6 +35,7 @@ import pandas as pd
 from compstrength_pipeline import backtest, etl, features, pairwise, players, teams, train_model
 from compstrength_pipeline.config import DEFAULT_CONFIG, PipelineConfig
 from compstrength_pipeline.sources import leaguepedia as leaguepedia_source
+from compstrength_pipeline.sources import lolesports_gpr
 from compstrength_pipeline.sources import soloqueue as soloqueue_module
 from compstrength_pipeline.sources import oracles_elixir as oracles_elixir_source
 from compstrength_pipeline.sources.oracles_elixir import (
@@ -383,6 +384,8 @@ def run_pipeline_on_data(
     # today" ratings for the frontend's optional team inputs.
     team_elo_diffs: dict[str, float] = {}
     elo_result = None
+    econ_result = None
+    gpr_result = None
     if config.use_team_feature:
         elo_result = teams.compute_team_elo(
             games_df,
@@ -390,10 +393,33 @@ def run_pipeline_on_data(
             season_carryover=config.elo_season_carryover,
             international_leagues=config.international_leagues,
             international_k_multiplier=config.international_elo_k_multiplier,
+            mov_alpha=config.elo_mov_alpha,
         )
         team_elo_diffs = teams.elo_diff_by_gameid(
             elo_result, feature_scale=config.elo_feature_scale
         )
+        # Early-game (gold-at-15) rating: same chronological pre-game
+        # construction as the Elo pass, so likewise leak-free.
+        if config.use_econ_feature:
+            econ_result = teams.compute_econ_ratings(
+                games_df,
+                k=config.econ_k,
+                season_carryover=config.econ_season_carryover,
+                feature_scale=config.econ_feature_scale,
+            )
+        # Riot's published Global Power Rankings, joined "as of strictly
+        # before each game" from the committed timestamped history.
+        if config.use_gpr_feature:
+            gpr_result = teams.compute_gpr_diffs(
+                games_df,
+                lolesports_gpr.load_gpr_history(REPO_ROOT / "data" / "gpr_history.json"),
+                feature_scale=config.gpr_feature_scale,
+                field_name=config.gpr_field,
+            )
+            print(
+                f"GPR: {len(gpr_result.name_map)} teams matched, "
+                f"{gpr_result.covered_games} games covered"
+            )
 
     # Player-level features (players.py): same chronological pre-game
     # construction, riding on the same optional team selection. The artifact
@@ -416,6 +442,8 @@ def run_pipeline_on_data(
         champion_presence, team_elo_diffs, loo_score_diffs,
         player_stats.player_elo_diff if player_stats else None,
         player_stats.prof_diff if player_stats else None,
+        gpr_result.per_game if gpr_result else None,
+        econ_result.per_game if econ_result else None,
     )
 
     champion_ratings_payload = _build_champion_ratings_payload(
@@ -425,7 +453,9 @@ def run_pipeline_on_data(
     synergy_payload = _build_synergy_payload(
         synergy_table, matchup_table, resolved_patch, patches_used, config
     )
-    teams_payload = _build_teams_payload(elo_result, resolved_patch, config, player_stats)
+    teams_payload = _build_teams_payload(
+        elo_result, resolved_patch, config, player_stats, econ_result, gpr_result
+    )
     players_payload = _build_players_payload(player_stats, resolved_patch, config)
 
     return (
@@ -567,11 +597,17 @@ def _build_synergy_payload(
 
 
 def _build_teams_payload(
-    elo_result, patch: str, config: PipelineConfig, player_stats=None
+    elo_result,
+    patch: str,
+    config: PipelineConfig,
+    player_stats=None,
+    econ_result=None,
+    gpr_result=None,
 ) -> dict:
-    """``data/teams.json``: per-team Elo "as of today" for the frontend's
-    optional team inputs. Empty ``teams`` when the feature is disabled or no
-    team names were present in the data.
+    """``data/teams.json``: per-team strength "as of today" for the frontend's
+    optional team inputs -- our own Elo, the early-game (gold-at-15) rating,
+    and Riot's published GPR where the team has one. Empty ``teams`` when the
+    feature is disabled or no team names were present in the data.
 
     When player features are on, each team also carries its CURRENT roster --
     the five (player, position) seats from its most recent game. The players'
@@ -589,6 +625,13 @@ def _build_teams_payload(
                 "league": elo_result.last_league.get(team, ""),
                 "lastPlayed": elo_result.last_played.get(team, ""),
             }
+            if econ_result is not None and team in econ_result.ratings:
+                entry["econ"] = float(econ_result.ratings[team])
+            # Only tier-1 teams have a GPR; the key is simply absent
+            # otherwise, and the frontend then zeroes that term (both-or
+            # -nothing, exactly like the Elo gap).
+            if gpr_result is not None and team in gpr_result.ratings:
+                entry["gpr"] = float(gpr_result.ratings[team])
             if player_stats is not None and team in player_stats.rosters:
                 entry["roster"] = [
                     {"player": player, "position": position}
@@ -604,6 +647,10 @@ def _build_teams_payload(
             # frontend must divide the Elo gap by -- not Elo's own 400 curve.
             "eloScale": config.elo_feature_scale,
             "initialElo": teams.INITIAL_ELO,
+            # Divisors for the two newer team-strength gaps, so the frontend
+            # reproduces those features exactly (see teams.py).
+            "econScale": config.econ_feature_scale,
+            "gprScale": config.gpr_feature_scale,
             # Pseudo-games shrinking a player-champion winrate toward the
             # player's own overall winrate (players.proficiency); the
             # frontend must use the same value to reproduce profDiff.

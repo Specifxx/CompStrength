@@ -43,6 +43,7 @@ from sklearn.metrics import log_loss
 
 from compstrength_pipeline import etl, features, pairwise, players, teams, train_model
 from compstrength_pipeline.config import DEFAULT_CONFIG, PipelineConfig
+from compstrength_pipeline.sources import lolesports_gpr
 from compstrength_pipeline.sources import soloqueue as soloqueue_module
 from compstrength_pipeline.sources.soloqueue import SoloQueueSource, StaticSoloQueueSource
 
@@ -96,6 +97,8 @@ def _predict_proba(
     team_elo_diff: float = 0.0,
     player_elo_diff: float = 0.0,
     prof_diff: float = 0.0,
+    gpr_diff: float = 0.0,
+    econ_diff: float = 0.0,
 ) -> float:
     """Mirror the frontend's combination rule (see train_model.py docstring):
 
@@ -104,6 +107,7 @@ def _predict_proba(
                 + presenceWeight * presenceDiff
                 + teamEloWeight * teamEloDiff
                 + playerEloWeight * playerEloDiff + profWeight * profDiff
+                + gprWeight * gprDiff + econWeight * econDiff
                 + blueSideBias
     """
     logit_val = (
@@ -115,6 +119,8 @@ def _predict_proba(
         + coefficients.get("teamEloWeight", 0.0) * team_elo_diff
         + coefficients.get("playerEloWeight", 0.0) * player_elo_diff
         + coefficients.get("profWeight", 0.0) * prof_diff
+        + coefficients.get("gprWeight", 0.0) * gpr_diff
+        + coefficients.get("econWeight", 0.0) * econ_diff
         + coefficients.get("blueSideBias", 0.0)
     )
     return 1.0 / (1.0 + math.exp(-logit_val))
@@ -131,6 +137,8 @@ def _fit_snapshot_and_predict(
     solo_history: list | None = None,
     player_elo_diffs: dict[str, float] | None = None,
     prof_diffs: dict[str, float] | None = None,
+    gpr_diffs: dict[str, float] | None = None,
+    econ_diffs: dict[str, float] | None = None,
 ) -> list[tuple[float, int, str, str, float]]:
     """Fit the full pipeline on ``train_games_df`` (as of ``reference_date``)
     and predict blue-win-probability for every game in ``test_games_df``.
@@ -223,6 +231,8 @@ def _fit_snapshot_and_predict(
     team_elo_diffs = team_elo_diffs or {}
     player_elo_diffs = player_elo_diffs or {}
     prof_diffs = prof_diffs or {}
+    gpr_diffs = gpr_diffs or {}
+    econ_diffs = econ_diffs or {}
     model_result = train_model.train_model(
         restricted_train_games,
         champion_strength,
@@ -233,6 +243,8 @@ def _fit_snapshot_and_predict(
         loo_score_diffs,
         player_elo_diffs,
         prof_diffs,
+        gpr_diffs,
+        econ_diffs,
     )
     # Draft-only companion fit (team AND player features zeroed -- both ride
     # on the optional team selection) for the honest "you don't know the
@@ -277,6 +289,8 @@ def _fit_snapshot_and_predict(
         team_elo_diff = team_elo_diffs.get(gameid, 0.0)
         player_elo_diff = player_elo_diffs.get(gameid, 0.0)
         prof_diff = prof_diffs.get(gameid, 0.0)
+        gpr_diff = gpr_diffs.get(gameid, 0.0)
+        econ_diff = econ_diffs.get(gameid, 0.0)
 
         proba = _predict_proba(
             model_result.coefficients,
@@ -287,6 +301,8 @@ def _fit_snapshot_and_predict(
             team_elo_diff,
             player_elo_diff,
             prof_diff,
+            gpr_diff,
+            econ_diff,
         )
         draft_only_proba = (
             _predict_proba(
@@ -559,6 +575,8 @@ def run_backtest(
     team_elo_diffs: dict[str, float] = {}
     player_elo_diffs: dict[str, float] = {}
     prof_diffs: dict[str, float] = {}
+    gpr_diffs: dict[str, float] = {}
+    econ_diffs: dict[str, float] = {}
     if config.use_team_feature:
         team_elo_diffs = teams.elo_diff_by_gameid(
             teams.compute_team_elo(
@@ -567,9 +585,29 @@ def run_backtest(
                 season_carryover=config.elo_season_carryover,
                 international_leagues=config.international_leagues,
                 international_k_multiplier=config.international_elo_k_multiplier,
+                mov_alpha=config.elo_mov_alpha,
             ),
             feature_scale=config.elo_feature_scale,
         )
+        # Same pre-game reasoning: the early-game rating gap recorded for a
+        # game uses only strictly-earlier games, and the GPR gap uses only
+        # snapshots Riot published strictly before it, so one global pass of
+        # each is leak-free across every fold.
+        if config.use_econ_feature:
+            econ_diffs = teams.compute_econ_ratings(
+                games_df,
+                k=config.econ_k,
+                season_carryover=config.econ_season_carryover,
+                feature_scale=config.econ_feature_scale,
+            ).per_game
+        if config.use_gpr_feature:
+            repo_root = Path(__file__).resolve().parent.parent.parent.parent
+            gpr_diffs = teams.compute_gpr_diffs(
+                games_df,
+                lolesports_gpr.load_gpr_history(repo_root / "data" / "gpr_history.json"),
+                feature_scale=config.gpr_feature_scale,
+                field_name=config.gpr_field,
+            ).per_game
         # Player-level features (players.py) ride on the same optional team
         # selection and use the same pre-game construction, so one global
         # chronological pass is likewise leak-free.
@@ -631,6 +669,8 @@ def run_backtest(
                 solo_history,
                 player_elo_diffs,
                 prof_diffs,
+                gpr_diffs,
+                econ_diffs,
             )
         except Exception as exc:  # noqa: BLE001 - one bad fold shouldn't sink the backtest
             warnings.warn(f"Backtest fold {i + 1}/{chosen_k} failed: {exc!r}")
@@ -731,6 +771,11 @@ def run_backtest(
         # Player Elo + champion proficiency (players.py) ride on the same
         # optional team selection; false when disabled or teams are off.
         "playerFeaturesUsed": bool(player_elo_diffs),
+        # Riot's Global Power Rankings gap (tier-1 teams only) and the
+        # early-game gold-at-15 rating gap -- both also ride on the team
+        # selection. False when disabled or when no data was joinable.
+        "gprFeatureUsed": any(v for v in gpr_diffs.values()),
+        "econFeatureUsed": any(v for v in econ_diffs.values()),
         "calibration": calibration,
         "dataComposition": data_composition,
         "breakdowns": breakdowns,

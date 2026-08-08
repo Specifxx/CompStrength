@@ -90,9 +90,10 @@ export default function MethodologyPage() {
           performance, plus champion-pair synergy and lane matchup history,
           into a logistic model of blue-side win probability &mdash; and,
           when you optionally select the two teams, adds team Elo, per-player
-          Elo, and player-champion comfort from the inferred starting fives.
-          The numbers below come from holding out games the model never
-          trained on.
+          Elo, player-champion comfort from the inferred starting fives, an
+          early-game (gold-at-15) rating, and Riot&apos;s own Global Power
+          Rankings. The numbers below come from holding out games the model
+          never trained on.
         </p>
       </header>
 
@@ -212,14 +213,56 @@ export default function MethodologyPage() {
                 <p className="mt-2 text-xs text-slate-500">
                   Team strength carries most of the predictable signal in pro
                   play; the draft refines it. &ldquo;Teams + draft&rdquo; uses
-                  three history signals that all ride on the team selection:
+                  five history signals that all ride on the team selection:
                   team Elo over the game history, per-player Elo of the five
                   starters (tracks roster moves the team rating smooths over),
-                  and each player&apos;s record on the champion they&apos;re
-                  drafting (comfort picks). Select both teams on the draft
+                  each player&apos;s record on the champion they&apos;re
+                  drafting (comfort picks), an early-game rating, and Riot&apos;s
+                  own Global Power Ranking. Select both teams on the draft
                   builder to get the top row&apos;s model &mdash; the starting
                   five is pre-filled from each team&apos;s most recent game and
                   you can edit any seat to swap in a substitute.
+                </p>
+                <p className="mt-2 text-xs text-slate-500">
+                  <span className="text-slate-300">
+                    Two signals added in the latest model update.
+                  </span>{" "}
+                  <span className="text-slate-300">Early-game strength:</span>{" "}
+                  win/loss is one bit per game, but a team&apos;s{" "}
+                  <em>gold lead at 15 minutes</em> is a continuous, much
+                  lower-variance read on how good they are &mdash; and it&apos;s
+                  settled before most of the swing (and the throws). Rating
+                  teams on that margin, opponent-adjusted the same way Elo is,
+                  converges far faster than Elo does off the very same games:
+                  held-out accuracy{" "}
+                  <span className="text-emerald-400">+0.4 points</span> with
+                  log-loss down from 0.632 to 0.625. Elo itself now also weighs{" "}
+                  <span className="text-slate-300">margin of victory</span> — a
+                  25-minute win moves a rating more than a 40-minute grind
+                  (another <span className="text-emerald-400">+0.4 points</span>
+                  ).{" "}
+                  <span className="text-slate-300">
+                    Riot&apos;s Global Power Rankings:
+                  </span>{" "}
+                  Riot publishes its own team rating at{" "}
+                  <a
+                    href="https://lolesports.com/gpr"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sky-400 hover:underline"
+                  >
+                    lolesports.com/gpr
+                  </a>
+                  , built from inputs this model has no access to (in-game
+                  execution metrics, an explicit regional-strength score). It
+                  correlates 0.75 with our own team Elo &mdash; related, but far
+                  from the same number &mdash; so it earns its own term as a
+                  second opinion rather than a restatement. Riot rates tier-1
+                  teams only (~58 orgs), so it applies to LCK/LPL/LEC/LCS/LCP
+                  matchups and is simply absent elsewhere; on the games it does
+                  cover it is worth another{" "}
+                  <span className="text-emerald-400">+0.6 points</span> of
+                  held-out accuracy.
                 </p>
                 <p className="mt-2 text-xs text-slate-500">
                   <span className="text-slate-300">

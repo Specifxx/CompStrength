@@ -121,6 +121,24 @@ source below like any other game — no special-casing needed.
   rate-limits aggressively on shared CI IPs (~40 requests per refresh gets
   throttled), which is exactly why Oracle's Elixir's single bulk download is
   the default.
+- **[Riot Global Power Rankings](https://lolesports.com/gpr)**
+  (`sources/lolesports_gpr.py`) — Riot's own official team-strength rating,
+  used as an *independent second opinion* alongside the Elo this pipeline
+  computes itself. It's worth a term of its own because Riot's model sees
+  inputs this one cannot: in-game execution metrics beyond win/loss, an
+  explicit regional-strength score, and strength of schedule. (Measured
+  correlation with our own pre-game Elo gap: 0.75 — strongly related, far from
+  the same number.) The rankings page is a React Server Components app whose
+  payload embeds every team's **timestamped rating history** (~one snapshot
+  per 10 days, back to the season opener) as plain JSON, so a single ordinary
+  GET of the page yields the whole season and each game can be scored with the
+  newest snapshot published *strictly before* it — the same leakage rule the
+  solo-queue history uses, and what makes this usable in the walk-forward
+  backtest rather than only in live predictions. Riot rates **tier-1 teams
+  only** (~58 orgs), so the feature applies to LCK/LPL/LEC/LCS/LCP matchups and
+  is simply absent (0, like an unknown team) elsewhere. Committed to
+  `data/gpr_history.json`; refresh with
+  `python -m compstrength_pipeline.sources.lolesports_gpr`.
 - **Solo-queue win-rate source** — used as a prior for champions with a
   limited professional sample. Not currently wired to a live source (no
   reliable live endpoint confirmed yet — see Roadmap); when running against
@@ -147,7 +165,7 @@ whichever sources you point the pipeline at, and keep request volume low.
 ## How the model works
 
 At a high level, the pipeline turns raw match history into a single blue-side
-win probability estimate via five steps:
+win probability estimate via six steps:
 
 1. **A target sample size, not a patch cutoff.** The pipeline trains on the
    most recent `TARGET_TRAINING_GAMES` games overall (default 1000),
@@ -193,8 +211,28 @@ win probability estimate via five steps:
      (a coarse proxy for lane-matchup history).
    A side's total score is its five champions' ratings, plus the synergy
    terms for all pairs on that side, plus the matchup terms for each lane.
-5. **Logistic calibration.** The blue-minus-red score differential (across
-   all three signals above) is passed through a logistic regression fit
+5. **Team-strength signals (only when you select both teams).** Draft alone
+   is a weak predictor at the pro level; *who is playing* is where most of
+   the predictable signal lives. Five signals ride on the optional team
+   selection, and every one of them records a **pre-game** value (it depends
+   only on strictly earlier games), which is what makes them safe to use in
+   the walk-forward backtest:
+   - **Team Elo** — a sequential Elo pass over the game history. Its
+     K-factor is scaled by **margin of victory** (game length as the proxy):
+     a 25-minute win is much stronger evidence of strength than a 40-minute
+     grind, so it moves the rating further.
+   - **Early-game rating** — an Elo-shaped rating on each team's **gold lead
+     at 15 minutes** rather than on win/loss, opponent-adjusted the same way
+     (a +2k lead against the league's worst team is worth less than against
+     its best). Win/loss is one bit per game; a gold margin is continuous and
+     far lower-variance, so this converges much faster than Elo does off the
+     very same matches — and measurably improves prediction on top of it.
+   - **Per-player Elo** and **player-champion proficiency** for the inferred
+     starting fives (rosters change; people don't).
+   - **Riot's Global Power Ranking** for the two orgs, where they have one
+     (see Data sources above).
+6. **Logistic calibration.** The blue-minus-red differential across all of
+   the signals above is passed through a logistic regression fit
    against actual historical pro game outcomes, which maps it to a final,
    calibrated blue-side win probability (a number between 0 and 1) — and also
    corrects for blue side's known small structural advantage (first pick/ban,
@@ -336,3 +374,15 @@ This is the important part — follow these steps in order.
   recent `TARGET_TRAINING_GAMES`, to better support long-term trend analysis.
 - **Per-league model variants** (LCK vs. LPL vs. LEC vs. others), since
   regional metas and playstyles can diverge from the global average.
+- **More pre-game team ratings from the same match data.** The early-game
+  (gold-at-15) rating showed that rating teams on a *continuous in-game
+  margin* rather than on win/loss adds real signal. Oracle's Elixir publishes
+  plenty more of these — objective control (dragons/barons/towers), vision,
+  kill participation — each of which could become its own opponent-adjusted
+  pre-game rating the same way. Diminishing returns are likely (they all
+  correlate with gold), but the machinery is now in place
+  (`teams.compute_econ_ratings`) to test one in a few lines.
+- **GPR coverage below tier 1.** Riot only rates ~58 tier-1 orgs, so the GPR
+  term is absent for the ~70% of this dataset that is academy/ERL play. An
+  analogous published rating for those tiers (or deriving one) would extend
+  the second-opinion signal to the rest of the data.

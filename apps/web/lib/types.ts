@@ -56,6 +56,11 @@ export interface ModelFile {
     // snapshots — treat as `?? 0`.
     playerEloWeight?: number;
     profWeight?: number;
+    // Riot Global Power Rankings gap (gprScale-divided) and early-game
+    // gold-at-15 rating gap (econScale-divided). Both ride on the optional
+    // team selection. Absent on older snapshots — treat as `?? 0`.
+    gprWeight?: number;
+    econWeight?: number;
   };
   metrics: {
     logLoss: number;
@@ -148,6 +153,10 @@ export interface BacktestReportFile {
   // Player Elo + champion proficiency (players.py) — ride on the same
   // optional team selection. Absent on older reports.
   playerFeaturesUsed?: boolean;
+  // Riot GPR gap and early-game (gold-at-15) rating gap. Absent on older
+  // reports.
+  gprFeatureUsed?: boolean;
+  econFeatureUsed?: boolean;
   calibration: BacktestCalibrationBucket[];
   // Composition of the data the model is built on, and held-out accuracy
   // broken down by patch/league. Optional so older reports still type-check.
@@ -205,6 +214,13 @@ export interface TeamRating {
   games: number;
   league: string;
   lastPlayed: string;
+  // Opponent-adjusted expected gold lead at 15 minutes, in gold (0 = exactly
+  // average). Absent on older snapshots or when the feature is disabled.
+  econ?: number;
+  // Riot's published Global Power Ranking score. Present only for the ~58
+  // tier-1 orgs Riot rates; absent for everyone else, which zeroes the GPR
+  // term for that matchup.
+  gpr?: number;
   // The five (player, position) seats from the team's most recent game.
   // Absent on older snapshots or when player features are disabled.
   roster?: RosterSeat[];
@@ -217,6 +233,9 @@ export interface TeamsFile {
     eloK: number;
     eloScale: number;
     initialElo: number;
+    // Divisors for the early-game and GPR gaps. Absent on older snapshots.
+    econScale?: number;
+    gprScale?: number;
     // Pseudo-games shrinking a player-champion winrate toward the player's
     // own overall winrate (proficiency). Absent on older snapshots.
     profShrink?: number;
@@ -274,6 +293,18 @@ export interface TeamContext {
   playerEloDiff?: number;
   /** Blue proficiency sum - red proficiency sum on the drafted champions. */
   profDiff?: number;
+  // Early-game (gold-at-15) team ratings and the model feature they produce.
+  // Present when both teams carry an `econ` rating.
+  blueEcon?: number;
+  redEcon?: number;
+  /** (blueEcon - redEcon) / econScale — the model feature value. */
+  econDiff?: number;
+  // Riot Global Power Rankings, present only when BOTH teams are tier-1 orgs
+  // Riot rates. Absent otherwise, and the GPR term is then 0.
+  blueGpr?: number;
+  redGpr?: number;
+  /** (blueGpr - redGpr) / gprScale — the model feature value. */
+  gprDiff?: number;
 }
 
 export interface ChampionContribution {

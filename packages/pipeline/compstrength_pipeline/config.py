@@ -241,6 +241,61 @@ class PipelineConfig:
     # involving a team whose strength was set partly by cross-region play.
     # 1.0 disables (uniform K, the old behaviour).
     international_elo_k_multiplier: float = 3.0
+    # Margin-of-victory sensitivity for the team Elo pass (teams.py). Plain
+    # Elo sees only who won; this scales each game's K by how DECISIVE it was
+    # (short game = dominant win), using game length as the margin proxy.
+    # MEASURED (walk-forward over the pre-game feature layer, 15,060 held-out
+    # 2025+2026 games): 0 -> 64.32%/0.6342, 0.5 -> 64.40%/0.6326,
+    # 0.7 -> 64.60%/0.6323, 1.0 -> 64.73%/0.6322, 1.4 -> 64.67%/0.6322.
+    # 1.0 is the peak; 0.0 restores the old uniform-K behaviour.
+    elo_mov_alpha: float = 1.0
+    # Early-game ("lane economy") team rating: an opponent-adjusted rating on
+    # each team's GOLD LEAD AT 15 MINUTES rather than on win/loss (see
+    # teams.compute_econ_ratings). A continuous margin converges much faster
+    # than one bit of win/loss per game, so this adds real signal on top of
+    # the Elo pass over the very same matches -- the single largest
+    # improvement in this round. MEASURED (same harness, on top of MOV Elo):
+    # off 64.73%/0.6322 -> on 65.13%/0.6253. Needs the source to publish
+    # golddiffat15 (Oracle's Elixir does; Leaguepedia does not, which simply
+    # zeroes the feature). Rides on the same optional team selection as Elo.
+    use_econ_feature: bool = True
+    # Learning rate on the gold residual. Swept 0.05/0.10/0.20/0.35 on the
+    # walk-forward harness; 0.20 gave the best accuracy (65.13% vs 65.05% at
+    # 0.10) with essentially the same log-loss.
+    econ_k: float = 0.20
+    # Season-boundary carryover, same roster-turnover logic as team Elo.
+    econ_season_carryover: float = 0.7
+    # Divisor turning a gold-rating gap into the model feature -- the same
+    # regularization knob as elo_feature_scale. Swept 3000/1500/750/375:
+    # accuracy peaks at 750 (65.13%) and log-loss keeps creeping down to 375
+    # (0.6248 vs 0.6253) -- 750 ships. Shipped in teams.json as
+    # params.econScale so the frontend computes the identical feature.
+    econ_feature_scale: float = 750.0
+    # Riot's official Global Power Rankings (lolesports.com/gpr) as a SECOND,
+    # independent team-strength opinion alongside our own Elo pass. Worth its
+    # own feature rather than being redundant with elo_k/teams.py because
+    # Riot's model sees inputs this pipeline cannot -- in-game execution
+    # metrics beyond win/loss, an explicit regional-strength score, and
+    # strength of schedule. Measured correlation with our own pre-game Elo gap
+    # on the games GPR covers is 0.75: strongly related, far from the same
+    # number. GPR rates TIER-1 TEAMS ONLY (~58 orgs), so the feature is 0 for
+    # the ~70% of this dataset that is academy/ERL play -- exactly like an
+    # unknown team's Elo gap. MEASURED (walk-forward over the pre-game feature
+    # layer, on top of the MOV Elo + early-game stack): on the tier-1 games it
+    # covers, adding it moves held-out accuracy 64.28% -> 64.87% and log-loss
+    # 0.6397 -> 0.6370; across all games 65.13% -> 65.25% at an unchanged
+    # 0.6253 log-loss. Requires use_team_feature (it rides on the same
+    # optional team selection).
+    use_gpr_feature: bool = True
+    # Which published GPR number to consume: "gpr" (the headline power score
+    # shown on the site) or "elo" (its underlying raw Elo).
+    gpr_field: str = "gpr"
+    # Divisor turning a GPR gap into the model feature -- the same
+    # regularization knob as elo_feature_scale. Shipped in teams.json as
+    # params.gprScale so the frontend computes the identical feature. Swept
+    # 60/30/15 on the walk-forward harness: 60 was best on BOTH the tier-1
+    # subset GPR covers (64.87% vs 64.62%/64.82%) and across all games.
+    gpr_feature_scale: float = 60.0
     # Divisor turning an Elo gap into the model feature. A regularization
     # knob, not an Elo parameter: under L2, a bigger feature (smaller
     # divisor) is penalized effectively less, letting the NON-leaky Elo
@@ -298,6 +353,18 @@ class PipelineConfig:
             raise ValueError("strength_feature_scale must be positive")
         if self.elo_feature_scale <= 0:
             raise ValueError("elo_feature_scale must be positive")
+        if self.elo_mov_alpha < 0:
+            raise ValueError("elo_mov_alpha must be non-negative")
+        if self.econ_k <= 0:
+            raise ValueError("econ_k must be positive")
+        if not (0.0 <= self.econ_season_carryover <= 1.0):
+            raise ValueError("econ_season_carryover must be in [0, 1]")
+        if self.econ_feature_scale <= 0:
+            raise ValueError("econ_feature_scale must be positive")
+        if self.gpr_feature_scale <= 0:
+            raise ValueError("gpr_feature_scale must be positive")
+        if self.gpr_field not in ("gpr", "elo"):
+            raise ValueError("gpr_field must be 'gpr' or 'elo'")
         if self.premier_league_target_share is not None and not (
             0.0 < self.premier_league_target_share < 1.0
         ):
@@ -395,6 +462,13 @@ LEAGUEPEDIA_CARGO_TABLES = ("ScoreboardGames", "ScoreboardPlayers", "PicksAndBan
 LOLALYTICS_TIERLIST_URL_TEMPLATE = (
     "https://a1.lolalytics.com/mega/?ep=champion&patch={patch}&tier={tier}&queue=ranked"
 )
+
+# Riot's official Global Power Rankings. The page is a React Server
+# Components app whose flight payload embeds the whole season's per-team
+# rating history as plain JSON, so one GET of the page HTML yields every
+# timestamped snapshot (see sources/lolesports_gpr.py). "current" resolves to
+# the latest ranking of that season -- for a finished season, its final one.
+LOLESPORTS_GPR_URL_TEMPLATE = "https://lolesports.com/{locale}/gpr/{year}/current"
 
 # Riot Data Dragon, used to fetch the live champion list (roles, ids) so we
 # never have to hardcode a champion roster that goes stale when new

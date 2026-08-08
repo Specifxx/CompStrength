@@ -123,6 +123,15 @@ jobs:
               print(f"snapshot for {now[:10]} already present; skipping")
           EOF
 
+      # Keep Riot's Global Power Rankings current: one GET per season of
+      # lolesports.com/gpr, merged into the committed timestamped history the
+      # pipeline joins on (see sources/lolesports_gpr.py). Merging means a
+      # failed fetch or a season rollover never loses history we already have.
+      # Best-effort: any failure leaves the committed file untouched.
+      - name: Refresh Riot Global Power Rankings history
+        continue-on-error: true
+        run: python -m compstrength_pipeline.sources.lolesports_gpr
+
       - name: Run data pipeline (real match data from Oracle's Elixir bulk CSV)
         env:
           COMPSTRENGTH_TARGET_GAMES: ${{ github.event.inputs.target_games }}
@@ -143,6 +152,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/champion_ratings.json data/model.json data/synergy.json data/teams.json data/players.json data/backtest_report.json data/soloqueue_history.json
+          git add data/champion_ratings.json data/model.json data/synergy.json data/teams.json data/players.json data/backtest_report.json data/soloqueue_history.json data/gpr_history.json
           git commit -m "chore: refresh champion ratings and model data [skip ci]"
           git push

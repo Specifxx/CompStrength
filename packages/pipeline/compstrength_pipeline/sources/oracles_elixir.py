@@ -67,6 +67,15 @@ CANONICAL_GAME_COLUMNS = [
     "position",
     "champion",
     "result",
+    # Not used by any champion-level statistic -- these feed the TEAM-level
+    # pre-game ratings in teams.py: gamelength is the margin-of-victory proxy
+    # that scales the Elo K-factor (a 25-minute win is stronger evidence than
+    # a 40-minute one), and golddiffat15 (summed over a side's five players =
+    # that side's gold lead at 15 minutes) drives the opponent-adjusted
+    # early-game rating. Sources that don't publish them (Leaguepedia) leave
+    # them NA, which simply disables those refinements.
+    "gamelength",
+    "golddiffat15",
 ]
 
 # Canonical output schema for the normalized bans table.

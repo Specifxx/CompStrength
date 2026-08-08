@@ -40,9 +40,25 @@ Features:
                          player's shrunk pre-game winrate edge on that
                          champion, minus red's (players.py.proficiency) --
                          the comfort-pick signal. 0 when players are unknown.
+    ``gpr_diff``      = (blue team's GPR - red team's) /
+                         config.gpr_feature_scale, using the newest Riot
+                         Global Power Rankings snapshot published strictly
+                         BEFORE the game (teams.compute_gpr_diffs). An
+                         independent second opinion on team strength -- Riot's
+                         model sees in-game execution and regional strength,
+                         which ours does not. 0 when either team is outside
+                         GPR's tier-1 coverage, same convention as above.
+    ``econ_diff``     = (blue team's pre-game early-game rating - red's) /
+                         config.econ_feature_scale -- each side's
+                         opponent-adjusted expected GOLD LEAD AT 15 MINUTES
+                         (teams.compute_econ_ratings). A continuous margin
+                         rather than one bit of win/loss, so it reads team
+                         strength faster than Elo does off the same games.
+                         Same pre-game construction, so leak-free; 0 when the
+                         teams are unknown.
 Label: ``did blue side win`` (1/0)
 
-We fit a 7-feature logistic regression:
+We fit a 9-feature logistic regression:
 
     P(blue wins) = sigmoid(
         scoreDiffWeight * score_diff
@@ -52,6 +68,8 @@ We fit a 7-feature logistic regression:
         + teamEloWeight * team_elo_diff
         + playerEloWeight * player_elo_diff
         + profWeight * prof_diff
+        + gprWeight * gpr_diff
+        + econWeight * econ_diff
         + blueSideBias
     )
 
@@ -221,10 +239,12 @@ def build_training_frame(
     score_diff_by_game: dict[str, float] | None = None,
     player_elo_diffs: dict[str, float] | None = None,
     prof_diffs: dict[str, float] | None = None,
+    gpr_diffs: dict[str, float] | None = None,
+    econ_diffs: dict[str, float] | None = None,
 ) -> pd.DataFrame:
     """Build a per-game training frame with columns [gameid, score_diff,
     synergy_diff, matchup_diff, presence_diff, team_elo_diff,
-    player_elo_diff, prof_diff, blue_win].
+    player_elo_diff, prof_diff, gpr_diff, econ_diff, blue_win].
 
     Args:
         games_df: Cleaned per-player-game table with exactly 10 rows per
@@ -250,6 +270,8 @@ def build_training_frame(
     score_diff_by_game = score_diff_by_game or {}
     player_elo_diffs = player_elo_diffs or {}
     prof_diffs = prof_diffs or {}
+    gpr_diffs = gpr_diffs or {}
+    econ_diffs = econ_diffs or {}
 
     records = []
     for gameid, group in games_df.groupby("gameid"):
@@ -291,6 +313,11 @@ def build_training_frame(
                 # players are unknown -- i.e. "assume equal, average players".
                 "player_elo_diff": player_elo_diffs.get(gameid, 0.0),
                 "prof_diff": prof_diffs.get(gameid, 0.0),
+                # Riot's published GPR gap as of strictly before this game
+                # (teams.compute_gpr_diffs); 0 outside GPR's tier-1 coverage.
+                "gpr_diff": gpr_diffs.get(gameid, 0.0),
+                # Pre-game gold-at-15 rating gap (teams.compute_econ_ratings).
+                "econ_diff": econ_diffs.get(gameid, 0.0),
                 "blue_win": blue_win,
             }
         )
@@ -300,7 +327,7 @@ def build_training_frame(
 
 FEATURE_COLUMNS = [
     "score_diff", "synergy_diff", "matchup_diff", "presence_diff",
-    "team_elo_diff", "player_elo_diff", "prof_diff",
+    "team_elo_diff", "player_elo_diff", "prof_diff", "gpr_diff", "econ_diff",
 ]
 
 
@@ -314,6 +341,8 @@ def train_model(
     score_diff_by_game: dict[str, float] | None = None,
     player_elo_diffs: dict[str, float] | None = None,
     prof_diffs: dict[str, float] | None = None,
+    gpr_diffs: dict[str, float] | None = None,
+    econ_diffs: dict[str, float] | None = None,
 ) -> ModelResult:
     """Fit the logistic regression model and compute evaluation metrics.
 
@@ -338,7 +367,7 @@ def train_model(
     training = build_training_frame(
         games_df, champion_strength, synergy_residuals, matchup_residuals,
         champion_presence, team_elo_diffs, score_diff_by_game,
-        player_elo_diffs, prof_diffs,
+        player_elo_diffs, prof_diffs, gpr_diffs, econ_diffs,
     )
     n = len(training)
 
@@ -367,6 +396,8 @@ def train_model(
                 "teamEloWeight": 0.0,
                 "playerEloWeight": 0.0,
                 "profWeight": 0.0,
+                "gprWeight": 0.0,
+                "econWeight": 0.0,
                 "blueSideBias": 0.0,
                 "intercept": 0.0,
             },
@@ -397,6 +428,8 @@ def train_model(
             "teamEloWeight": 0.0,
             "playerEloWeight": 0.0,
             "profWeight": 0.0,
+            "gprWeight": 0.0,
+            "econWeight": 0.0,
             "blueSideBias": float(np.log(constant_prob / (1 - constant_prob))),
             "intercept": 0.0,
         }
@@ -424,6 +457,8 @@ def train_model(
     team_elo_weight = float(model.coef_[0][4])
     player_elo_weight = float(model.coef_[0][5])
     prof_weight = float(model.coef_[0][6])
+    gpr_weight = float(model.coef_[0][7])
+    econ_weight = float(model.coef_[0][8])
     intercept = float(model.intercept_[0])
 
     preds_proba = model.predict_proba(X)[:, 1]
@@ -452,6 +487,8 @@ def train_model(
         "teamEloWeight": team_elo_weight,
         "playerEloWeight": player_elo_weight,
         "profWeight": prof_weight,
+        "gprWeight": gpr_weight,
+        "econWeight": econ_weight,
         "blueSideBias": intercept,
         "intercept": 0.0,
     }

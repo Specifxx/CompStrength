@@ -462,6 +462,38 @@ export function DraftBuilder({
                 Elo — team strength is the strongest single predictor; the draft
                 adjusts it.
               </p>
+              {result.teamContext.gprDiff !== undefined && (
+                <p className="text-xs text-slate-500">
+                  Riot Global Power Ranking (lolesports.com/gpr) applied:{" "}
+                  <span className="font-mono text-slate-400">
+                    {Math.round(result.teamContext.blueGpr ?? 0)}
+                  </span>{" "}
+                  vs{" "}
+                  <span className="font-mono text-slate-400">
+                    {Math.round(result.teamContext.redGpr ?? 0)}
+                  </span>{" "}
+                  — Riot&apos;s own rating, which weighs in-game execution and
+                  regional strength this model can&apos;t see, so it&apos;s a
+                  second opinion rather than a restatement of the Elo above.
+                  Tier-1 teams only.
+                </p>
+              )}
+              {result.teamContext.econDiff !== undefined && (
+                <p className="text-xs text-slate-500">
+                  Early-game strength applied (opponent-adjusted expected gold
+                  lead at 15 minutes):{" "}
+                  <span className="font-mono text-slate-400">
+                    {(result.teamContext.blueEcon ?? 0) >= 0 ? "+" : ""}
+                    {Math.round(result.teamContext.blueEcon ?? 0)}
+                  </span>{" "}
+                  vs{" "}
+                  <span className="font-mono text-slate-400">
+                    {(result.teamContext.redEcon ?? 0) >= 0 ? "+" : ""}
+                    {Math.round(result.teamContext.redEcon ?? 0)}
+                  </span>{" "}
+                  gold.
+                </p>
+              )}
               {result.teamContext.blueRoster && result.teamContext.redRoster && (
                 <p className="text-xs text-slate-500">
                   Player strength applied (inferred starting fives, avg player
