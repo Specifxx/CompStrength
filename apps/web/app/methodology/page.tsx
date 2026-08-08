@@ -225,26 +225,37 @@ export default function MethodologyPage() {
                 </p>
                 <p className="mt-2 text-xs text-slate-500">
                   <span className="text-slate-300">
-                    Two signals added in the latest model update.
+                    Three signals added in the latest model update
                   </span>{" "}
-                  <span className="text-slate-300">Early-game strength:</span>{" "}
-                  win/loss is one bit per game, but a team&apos;s{" "}
-                  <em>gold lead at 15 minutes</em> is a continuous, much
-                  lower-variance read on how good they are &mdash; and it&apos;s
-                  settled before most of the swing (and the throws). Rating
-                  teams on that margin, opponent-adjusted the same way Elo is,
-                  converges far faster than Elo does off the very same games:
-                  held-out accuracy{" "}
-                  <span className="text-emerald-400">+0.4 points</span> with
-                  log-loss down from 0.632 to 0.625. Elo itself now also weighs{" "}
-                  <span className="text-slate-300">margin of victory</span> — a
-                  25-minute win moves a rating more than a 40-minute grind
-                  (another <span className="text-emerald-400">+0.4 points</span>
-                  ).{" "}
+                  moved held-out accuracy on current-season games from 65.7% to{" "}
+                  <span className="text-emerald-400">66.5%</span> and log-loss
+                  from 0.622 to 0.612. Draft-only prediction is untouched
+                  &mdash; all three ride on the team selection.
+                </p>
+                <p className="mt-2 text-xs text-slate-500">
+                  <span className="text-slate-300">Early-game strength</span>{" "}
+                  was the biggest of the three. Win/loss is one bit per game,
+                  but a team&apos;s <em>gold lead at 15 minutes</em> is a
+                  continuous, much lower-variance read on how good they are
+                  &mdash; and it&apos;s settled before most of the swing (and
+                  the throws). Rating teams on that margin, opponent-adjusted
+                  the same way Elo is, converges far faster than Elo does off
+                  the very same games, which is why it adds signal on top of a
+                  rating built from those identical matches rather than
+                  restating it.
+                </p>
+                <p className="mt-2 text-xs text-slate-500">
+                  <span className="text-slate-300">Margin of victory</span> now
+                  feeds Elo itself: a 25-minute win is much stronger evidence of
+                  strength than a 40-minute grind, so it moves the rating
+                  further. Game length is the margin proxy, clamped so one
+                  blowout can&apos;t swing a rating.
+                </p>
+                <p className="mt-2 text-xs text-slate-500">
                   <span className="text-slate-300">
-                    Riot&apos;s Global Power Rankings:
+                    Riot&apos;s Global Power Rankings
                   </span>{" "}
-                  Riot publishes its own team rating at{" "}
+                  are published at{" "}
                   <a
                     href="https://lolesports.com/gpr"
                     target="_blank"
@@ -254,13 +265,15 @@ export default function MethodologyPage() {
                     lolesports.com/gpr
                   </a>
                   , built from inputs this model has no access to (in-game
-                  execution metrics, an explicit regional-strength score). It
-                  correlates 0.75 with our own team Elo &mdash; related, but far
-                  from the same number &mdash; so it earns its own term as a
-                  second opinion rather than a restatement. Riot rates tier-1
-                  teams only (~58 orgs), so it applies to LCK/LPL/LEC/LCS/LCP
-                  matchups and is simply absent elsewhere; on the games it does
-                  cover it is worth another{" "}
+                  execution metrics, an explicit regional-strength score). They
+                  correlate 0.75 with our own team Elo &mdash; related, but far
+                  from the same number &mdash; so they earn a term as a second
+                  opinion rather than a restatement. This is the smallest of the
+                  three gains, and a narrow one: Riot rates tier-1 orgs only
+                  (~58), so it applies to LCK/LPL/LEC/LCS/LCP matchups and is
+                  simply absent for the roughly 70% of this dataset that is
+                  academy and regional-league play. On the games it does cover
+                  it is worth about{" "}
                   <span className="text-emerald-400">+0.6 points</span> of
                   held-out accuracy.
                 </p>

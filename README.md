@@ -59,9 +59,11 @@ execution (fights, objectives, macro calls) all matter enormously — arguably
 far more than draft alone. Two identical drafts piloted by different rosters,
 or played a week apart on a slightly different patch, can produce very
 different results. (This is exactly why the optional team selection helps so
-much: with both teams chosen the model adds team Elo, per-player Elo for the
-inferred starting fives, and each player's own record on the champion they're
-drafting — measured at ~65% held-out accuracy vs ~55% for draft alone.)
+much: with both teams chosen the model adds team Elo, an early-game
+gold-at-15 rating, per-player Elo for the inferred starting fives, each
+player's own record on the champion they're drafting, and Riot's published
+Global Power Ranking — measured at ~66.5% held-out accuracy on current-season
+games vs ~55% for draft alone.)
 
 What CompStrength actually gives you is a **calibrated "draft strength" win
 probability**: given historical outcomes for these champions/comps in recent
