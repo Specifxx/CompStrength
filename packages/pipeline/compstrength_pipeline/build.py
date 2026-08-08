@@ -424,7 +424,7 @@ def run_pipeline_on_data(
             international_leagues=config.international_leagues,
             international_k_multiplier=config.international_elo_k_multiplier,
             game_margins=game_margins,
-            mov_tau=config.elo_mov_tau,
+            mov_scale=config.elo_mov_scale,
         )
         team_elo_diffs = teams.elo_diff_by_gameid(
             elo_result, feature_scale=config.elo_feature_scale

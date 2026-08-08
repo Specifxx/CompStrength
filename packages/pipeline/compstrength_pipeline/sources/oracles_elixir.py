@@ -483,24 +483,30 @@ def extract_bans(raw: pd.DataFrame) -> pd.DataFrame:
 
 
 def extract_game_margins(raw: pd.DataFrame) -> dict[str, float]:
-    """Extract each game's blue-minus-red gold-per-minute differential.
+    """Extract how DOMINANT each game's win was, as a relative gold margin.
 
     Like :func:`extract_bans`, this reads the *team-summary* rows
     (``position == "team"``) that the canonical per-player table drops, so it
     must be given the raw Oracle's Elixir frame rather than the normalized
     one.
 
-    Gold per minute (rather than raw gold) is the margin of choice because it
-    is duration-normalized: a 12,000-gold lead taken in 25 minutes is a far
-    more dominant performance than the same lead ground out over 45, and the
-    per-minute form separates the two. Feeding this to
-    :func:`compstrength_pipeline.teams.compute_team_elo` lets Elo learn from
-    *how* a game was won, not just that it was.
+    The margin is the winner's gold advantage as a FRACTION of the loser's
+    gold: ``(winner_gold - loser_gold) / loser_gold``. Expressing it
+    relatively (rather than as an absolute or per-minute gold difference)
+    makes it comparable across game lengths without needing the duration at
+    all -- a 20% gold lead is a stomp whether it took 25 minutes or 40, while
+    an absolute-gold margin mostly measures how long the game ran. Measured
+    head-to-head, the relative form also preserved cross-region accuracy
+    where the per-minute form degraded it.
+
+    Feeding this to :func:`compstrength_pipeline.teams.compute_team_elo` lets
+    Elo learn from *how* a game was won, not just that it was.
 
     Returns:
-        ``{gameid: (blue_gold - red_gold) / minutes}``. Games missing a
-        usable gold total or game length are omitted entirely, so callers
-        can fall back to the binary result for them.
+        ``{gameid: relative_gold_margin}``, always >= 0 (it describes the
+        winner's dominance, and the caller already knows who won). Games
+        missing usable gold totals or a result are omitted entirely, so
+        callers fall back to the plain binary update for them.
     """
     missing = [c for c in ("gameid", "position") if c not in raw.columns]
     if missing:
@@ -508,8 +514,7 @@ def extract_game_margins(raw: pd.DataFrame) -> dict[str, float]:
             f"Input does not look like an Oracle's Elixir export; missing "
             f"required columns: {missing}"
         )
-    needed = {"side", "totalgold", "gamelength"}
-    if not needed.issubset(raw.columns):
+    if not {"totalgold", "result"}.issubset(raw.columns):
         return {}
 
     team_rows = raw[raw["position"].astype(str).str.lower() == _TEAM_ROW_POSITION]
@@ -517,15 +522,20 @@ def extract_game_margins(raw: pd.DataFrame) -> dict[str, float]:
     for gameid, group in team_rows.groupby("gameid"):
         if len(group) != 2:
             continue
-        sides = group["side"].astype(str).str.lower()
-        blue = group[sides == "blue"]
-        red = group[sides == "red"]
-        if len(blue) != 1 or len(red) != 1:
+        gold = pd.to_numeric(group["totalgold"], errors="coerce")
+        result = pd.to_numeric(group["result"], errors="coerce")
+        if gold.isna().any() or result.isna().any():
             continue
-        blue_gold = pd.to_numeric(blue["totalgold"].iloc[0], errors="coerce")
-        red_gold = pd.to_numeric(red["totalgold"].iloc[0], errors="coerce")
-        seconds = pd.to_numeric(blue["gamelength"].iloc[0], errors="coerce")
-        if pd.isna(blue_gold) or pd.isna(red_gold) or pd.isna(seconds) or seconds <= 0:
+        winners = group[result == 1]
+        losers = group[result == 0]
+        if len(winners) != 1 or len(losers) != 1:
+            continue  # both-won / both-lost rows are corrupt; skip
+        win_gold = float(pd.to_numeric(winners["totalgold"].iloc[0], errors="coerce"))
+        lose_gold = float(pd.to_numeric(losers["totalgold"].iloc[0], errors="coerce"))
+        if lose_gold <= 0:
             continue
-        out[gameid] = float(blue_gold - red_gold) / (float(seconds) / 60.0)
+        # A team can win while behind in gold (a late steal); that is a
+        # maximally NON-dominant win, so floor the margin at 0 rather than
+        # letting it go negative and shrink the update below a normal win.
+        out[gameid] = max(win_gold - lose_gold, 0.0) / lose_gold
     return out

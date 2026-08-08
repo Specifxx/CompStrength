@@ -223,26 +223,22 @@ class PipelineConfig:
     # within noise (64.94-65.02% at K=24); 8 ships.
     prof_shrink_games: float = 8.0
     # Elo K-factor (rating movement per game) for the team feature. 32 beat
-    # 16/24/48 on the walk-forward backtest at the shipped feature scale for
-    # the ORIGINAL binary Elo; with margin-of-victory scoring enabled (see
-    # elo_mov_tau) K and tau were re-swept jointly and 64 won -- continuous
-    # scores sit closer to the expected value, so each update is a smaller
-    # step and a larger K restores the same effective learning pace.
-    elo_k: float = 64.0
-    # Margin-of-victory scoring for team Elo. None = classic binary Elo (a
-    # win is a win). When set, a game's observed score becomes a continuous
-    # dominance value derived from the blue-minus-red GOLD PER MINUTE
-    # differential, squashed through a logistic with this tau: a lopsided
-    # 25-minute win teaches the ratings far more than a 45-minute coinflip.
+    # 16/24/48 on the walk-forward backtest at the shipped feature scale, and
+    # remains the best value with margin-of-victory weighting enabled (which
+    # scales K per game rather than replacing it).
+    elo_k: float = 32.0
+    # Margin-of-victory weighting for team Elo. None = classic Elo, where a
+    # 12-minute stomp and a 45-minute base race move ratings identically.
+    # When set, each game's K is multiplied by a log1p-damped function of the
+    # winner's RELATIVE gold margin (see teams._mov_multiplier and
+    # sources.oracles_elixir.extract_game_margins), so decisive wins teach
+    # the ratings more. This value scales the margin inside the log1p.
     # Measured on the walk-forward backtest (15,060 held-out games):
-    # current-season accuracy 65.73% -> 66.42%, log-loss 0.6218 -> 0.6125,
-    # with log-loss improving in 7/7 folds. Hyperparameters were also chosen
-    # on EARLY folds only and re-checked on later folds they never saw
-    # (65.96%/0.6193 -> 66.56%/0.6128), so the gain is not grid-selection
-    # luck. The effect is broad, not a knife-edge: every tau in [400, 1600]
-    # crossed with every K in [32, 96] beat the binary baseline on both
-    # metrics.
-    elo_mov_tau: float | None = 800.0
+    # current-season accuracy 65.73% -> 66.16%, log-loss 0.6218 -> 0.6183.
+    # It also SHARPENS the ratings rather than blurring them: spread rises
+    # (sd 130 -> 143) and the major-league-vs-rest gap widens (+23.6 ->
+    # +26.9), while cross-region accuracy holds at 61.9%.
+    elo_mov_scale: float | None = 10.0
     # Fraction of a team's Elo deviation kept across a season boundary
     # (rosters change). Measured: 0.7 beats 1.0/0.85/0.5/0.25 on 2026
     # pre-game Elo predictions (64.11%/0.6326 vs 63.86%/0.6357 at 1.0).
@@ -292,8 +288,8 @@ class PipelineConfig:
             raise ValueError("major_league_weight_multiplier must be positive")
         if self.elo_k <= 0:
             raise ValueError("elo_k must be positive")
-        if self.elo_mov_tau is not None and self.elo_mov_tau <= 0:
-            raise ValueError("elo_mov_tau must be positive when set")
+        if self.elo_mov_scale is not None and self.elo_mov_scale <= 0:
+            raise ValueError("elo_mov_scale must be positive when set")
         if self.international_elo_k_multiplier <= 0:
             raise ValueError("international_elo_k_multiplier must be positive")
         if self.player_elo_k <= 0:

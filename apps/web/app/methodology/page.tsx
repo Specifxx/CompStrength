@@ -230,19 +230,38 @@ export default function MethodologyPage() {
                   <span className="font-mono">K &times; (result &minus; expected)</span>,
                   which treats a 12-minute demolition and a 45-minute base race
                   as the same event &mdash; throwing away the most informative
-                  thing about a pro game. Each game is instead scored
-                  continuously from the two teams&apos; gold-per-minute
-                  differential (per-minute, so a lead taken fast counts for
-                  more than the same lead ground out over a long game). Held
-                  out on the walk-forward backtest this lifted current-season
-                  accuracy <span className="text-emerald-400">65.7% &rarr; 66.4%</span>{" "}
+                  thing about a pro game. Each win now moves ratings in
+                  proportion to how decisive it was, measured by the winner&apos;s
+                  gold lead as a fraction of the loser&apos;s gold (relative, so
+                  it compares fairly across game lengths), with diminishing
+                  returns on huge margins and a damping term so favourites who
+                  were *expected* to stomp don&apos;t run away. Held out on the
+                  walk-forward backtest this lifted current-season accuracy{" "}
+                  <span className="text-emerald-400">65.7% &rarr; 66.2%</span>{" "}
                   and log-loss{" "}
-                  <span className="text-emerald-400">0.622 &rarr; 0.613</span>,
-                  improving log-loss in 7 of 7 folds. The settings were chosen
-                  on early folds and re-checked on later folds they never saw,
-                  so the gain isn&apos;t tuning luck. The margin only ever
-                  affects the post-game update &mdash; every prediction still
-                  uses strictly pre-game ratings.
+                  <span className="text-emerald-400">0.622 &rarr; 0.618</span>.
+                  The margin only ever affects the post-game update &mdash;
+                  every prediction still uses strictly pre-game ratings.
+                </p>
+                <p className="mt-2 text-xs text-slate-500">
+                  <span className="text-slate-300">
+                    A stronger-looking version of this was rejected.
+                  </span>{" "}
+                  Replacing the win/loss outcome entirely with a continuous
+                  dominance score scored better on the pooled metric
+                  (66.4%/0.613) &mdash; but it compressed the rating spread by
+                  two-thirds, which flattens Elo&apos;s expected-score term and
+                  quietly removes the opponent-strength correction. The ratings
+                  degenerated into &ldquo;average gold margin against whoever
+                  you happened to play&rdquo;: minor-league and academy sides
+                  floated to the top of the table (majors held 1 of the top 10
+                  slots, down from 6), and accuracy on cross-region games
+                  actually <span className="text-rose-400">dropped</span> 61.9%
+                  &rarr; 60.7%. The pooled number hid it because international
+                  games are a small slice of the total. The shipped version
+                  moves the ratings the other way, making them{" "}
+                  <span className="text-slate-300">more</span> separated than
+                  before (spread +10%).
                 </p>
                 <p className="mt-2 text-xs text-slate-500">
                   <span className="text-slate-300">

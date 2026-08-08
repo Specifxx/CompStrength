@@ -195,27 +195,27 @@ def test_empty_and_teamless_games_handled():
 
 
 # --------------------------------------------------------------------------
-# Margin-of-victory scoring (mov_tau / game_margins)
+# Margin-of-victory weighting (mov_scale / game_margins)
 # --------------------------------------------------------------------------
 
 
-def test_mov_tau_none_is_exactly_the_binary_update():
-    """The default path must be bit-identical to classic binary Elo, so
-    enabling the feature is the only thing that can change ratings."""
+def test_mov_scale_none_is_exactly_the_plain_update():
+    """The default path must be bit-identical to classic Elo, so enabling the
+    feature is the only thing that can change ratings."""
     games = pd.DataFrame(_game("g1", "2026-01-01", "A", "B", blue_win=1))
-    margins = {"g1": 5000.0}  # huge margin, but tau=None must ignore it
+    margins = {"g1": 0.5}  # huge margin, but mov_scale=None must ignore it
 
-    binary = compute_team_elo(games)
-    with_margins_disabled = compute_team_elo(games, game_margins=margins, mov_tau=None)
-    assert with_margins_disabled.ratings == binary.ratings
+    plain = compute_team_elo(games)
+    disabled = compute_team_elo(games, game_margins=margins, mov_scale=None)
+    assert disabled.ratings == plain.ratings
 
 
 def test_mov_dominant_win_moves_ratings_more_than_a_narrow_one():
     """A blowout should teach the ratings more than a coinflip win."""
     games = pd.DataFrame(_game("g1", "2026-01-01", "A", "B", blue_win=1))
 
-    narrow = compute_team_elo(games, game_margins={"g1": 20.0}, mov_tau=800.0)
-    blowout = compute_team_elo(games, game_margins={"g1": 2000.0}, mov_tau=800.0)
+    narrow = compute_team_elo(games, game_margins={"g1": 0.01}, mov_scale=10.0)
+    blowout = compute_team_elo(games, game_margins={"g1": 0.40}, mov_scale=10.0)
 
     assert blowout.ratings["A"] > narrow.ratings["A"] > INITIAL_ELO
     # Still zero-sum: whatever the winner gains, the loser loses.
@@ -223,10 +223,18 @@ def test_mov_dominant_win_moves_ratings_more_than_a_narrow_one():
         assert res.ratings["A"] - INITIAL_ELO == pytest.approx(INITIAL_ELO - res.ratings["B"])
 
 
-def test_mov_games_without_a_margin_fall_back_to_binary():
+def test_mov_direction_still_follows_who_actually_won():
+    """The margin scales the update; it must never flip its SIGN. A dominant
+    loss (winning the gold game but losing the game) still costs rating."""
+    games = pd.DataFrame(_game("g1", "2026-01-01", "A", "B", blue_win=0))
+    res = compute_team_elo(games, game_margins={"g1": 0.35}, mov_scale=10.0)
+    assert res.ratings["A"] < INITIAL_ELO < res.ratings["B"]
+
+
+def test_mov_games_without_a_margin_fall_back_to_plain_elo():
     """Sources lacking gold data (e.g. Leaguepedia) must still rate normally."""
     games = pd.DataFrame(_game("g1", "2026-01-01", "A", "B", blue_win=1))
-    fallback = compute_team_elo(games, game_margins={}, mov_tau=800.0)
+    fallback = compute_team_elo(games, game_margins={}, mov_scale=10.0)
     assert fallback.ratings == compute_team_elo(games).ratings
 
 
@@ -237,16 +245,20 @@ def test_mov_uses_pre_game_ratings_only():
         _game("g1", "2026-01-01", "A", "B", blue_win=1)
         + _game("g2", "2026-01-02", "A", "B", blue_win=1)
     )
-    res = compute_team_elo(games, game_margins={"g1": 3000.0, "g2": 3000.0}, mov_tau=800.0)
+    res = compute_team_elo(games, game_margins={"g1": 0.3, "g2": 0.3}, mov_scale=10.0)
     assert res.per_game.loc["g1", "blue_elo_pre"] == pytest.approx(INITIAL_ELO)
     assert res.per_game.loc["g1", "red_elo_pre"] == pytest.approx(INITIAL_ELO)
     # Game 2 has absorbed game 1's dominant result.
     assert res.per_game.loc["g2", "blue_elo_pre"] > INITIAL_ELO
 
 
-def test_mov_a_narrow_loss_still_costs_less_than_a_blowout_loss():
-    """Losing narrowly should cost the loser less than being demolished."""
-    games = pd.DataFrame(_game("g1", "2026-01-01", "A", "B", blue_win=0))
-    narrow = compute_team_elo(games, game_margins={"g1": -20.0}, mov_tau=800.0)
-    crushed = compute_team_elo(games, game_margins={"g1": -2000.0}, mov_tau=800.0)
-    assert crushed.ratings["A"] < narrow.ratings["A"] < INITIAL_ELO
+def test_mov_autocorrelation_correction_damps_expected_blowouts():
+    """The same blowout should move ratings LESS when the winner was already
+    rated far above its opponent -- that damping is what stops runaway
+    ratings (see teams._MOV_AUTOCORR_C)."""
+    from compstrength_pipeline.teams import _mov_multiplier
+
+    underdog_wins_big = _mov_multiplier(0.3, winner_rating_advantage=-300.0, scale=10.0)
+    even_match_big = _mov_multiplier(0.3, winner_rating_advantage=0.0, scale=10.0)
+    favourite_wins_big = _mov_multiplier(0.3, winner_rating_advantage=300.0, scale=10.0)
+    assert underdog_wins_big > even_match_big > favourite_wins_big > 0

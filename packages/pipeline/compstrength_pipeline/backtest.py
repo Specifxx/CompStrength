@@ -574,7 +574,7 @@ def run_backtest(
                 international_leagues=config.international_leagues,
                 international_k_multiplier=config.international_elo_k_multiplier,
                 game_margins=game_margins,
-                mov_tau=config.elo_mov_tau,
+                mov_scale=config.elo_mov_scale,
             ),
             feature_scale=config.elo_feature_scale,
         )

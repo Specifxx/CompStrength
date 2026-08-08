@@ -102,11 +102,27 @@ def _per_game_rows(games_df: pd.DataFrame) -> pd.DataFrame:
     return frame.sort_values(["date", "gameid"]).reset_index(drop=True)
 
 
-def _dominance_score(gold_per_min_diff: float, tau: float) -> float:
-    """Map a blue-minus-red gold/min differential to a continuous game score
-    in (0, 1), where 0.5 is a dead-even game and the extremes are one-sided
-    stompings. ``tau`` sets how much gold/min counts as decisive."""
-    return 1.0 / (1.0 + math.exp(-gold_per_min_diff / tau))
+# Autocorrelation correction constant for the margin multiplier (the
+# FiveThirtyEight Elo convention). Without it, a strong favourite who is
+# EXPECTED to stomp gets rewarded twice -- once for winning and again for the
+# blowout -- and ratings run away. Swept over [1, 10]; results were flat, so
+# the conventional 2.2 is kept.
+_MOV_AUTOCORR_C = 2.2
+
+
+def _mov_multiplier(margin: float, winner_rating_advantage: float, scale: float) -> float:
+    """Scale factor applied to K for a game won by ``margin`` (a relative gold
+    advantage, see ``sources.oracles_elixir.extract_game_margins``).
+
+    ``log1p`` keeps blowouts from dominating: the multiplier grows with the
+    margin but with sharply diminishing returns, so a 40% gold lead counts
+    for more than a 10% one without counting for four times as much. The
+    second term damps the update when the winner was already rated well above
+    its opponent, which is what stops runaway ratings.
+    """
+    return math.log1p(max(margin, 0.0) * scale) * (
+        _MOV_AUTOCORR_C / (_MOV_AUTOCORR_C + 0.001 * winner_rating_advantage)
+    )
 
 
 def compute_team_elo(
@@ -116,7 +132,7 @@ def compute_team_elo(
     international_leagues: frozenset[str] | None = None,
     international_k_multiplier: float = 1.0,
     game_margins: dict[str, float] | None = None,
-    mov_tau: float | None = None,
+    mov_scale: float | None = None,
 ) -> TeamEloResult:
     """Run one chronological Elo pass over ``games_df``.
 
@@ -137,24 +153,31 @@ def compute_team_elo(
             that calibrate Elo across regions, so they carry more information;
             measured to lift held-out international-event accuracy without
             hurting overall (see config.international_elo_k_multiplier).
-        game_margins: Optional ``{gameid: blue_minus_red_gold_per_minute}``
-            (see ``sources.oracles_elixir.extract_game_margins``). Required
-            for ``mov_tau`` to have any effect; games absent from this map
-            fall back to the binary result.
-        mov_tau: Enables MARGIN-OF-VICTORY scoring. ``None`` (default) keeps
-            the classic binary Elo, where the observed score is exactly 1/0.
-            When set, the observed score becomes
-            ``_dominance_score(margin, mov_tau)`` -- a continuous value in
-            (0, 1) reflecting *how decisively* the game was won, so a
-            25-minute demolition moves ratings much further than a 45-minute
-            coinflip. Measured on the walk-forward backtest (2025+2026 real
-            pro data, 15,060 held-out games) this lifted current-season
-            accuracy 65.73% -> 66.42% and log-loss 0.6218 -> 0.6125, with
-            log-loss improving in 7 of 7 folds. The gain is robust across
-            tau in [400, 1600] and K in [32, 96]; the shipped pairing is
-            re-tuned together (see config.elo_k / config.elo_mov_tau)
-            because continuous scores yield smaller ``actual - expected``
-            steps and so want a larger K to keep the same effective pace.
+        game_margins: Optional ``{gameid: relative_gold_margin}`` (see
+            ``sources.oracles_elixir.extract_game_margins``). Required for
+            ``mov_scale`` to have any effect; games absent from this map fall
+            back to the plain binary update.
+        mov_scale: Enables MARGIN-OF-VICTORY weighting. ``None`` (default)
+            keeps the classic Elo where every win moves ratings equally.
+            When set, K is multiplied by ``_mov_multiplier(...)`` so a
+            dominant win teaches the ratings more than a narrow one, while
+            the win/loss outcome itself still drives the direction. Measured
+            on the walk-forward backtest (2025+2026 real pro data, 15,060
+            held-out games): current-season accuracy 65.73% -> 66.16% and
+            log-loss 0.6218 -> 0.6183.
+
+            NOTE: an alternative formulation that replaced the binary outcome
+            with a continuous dominance score scored *better* on the pooled
+            metric (66.42%/0.6125) but was rejected -- it compressed the
+            rating spread (sd 130 -> 42), which collapses the
+            expected-score term toward 0.5 and so removes the
+            opponent-strength correction. The ratings then degenerate toward
+            "average gold margin against whoever you happened to play":
+            majors held only 1 of the top 10 slots (vs 6 here), and
+            cross-region accuracy DROPPED 61.9% -> 60.7%. Pooled log-loss
+            hid that because inter-region games are a small slice of it.
+            This K-scaling form keeps the gain and improves rating
+            separation instead (sd 130 -> 143).
 
     Returns:
         A :class:`TeamEloResult`; see its docstring. ``per_game`` records the
@@ -217,18 +240,21 @@ def compute_team_elo(
         )
         game_k = k * boost if inter_region else k
 
-        # Observed score: binary by default, or margin-of-victory weighted
-        # when enabled and this game has a usable margin. Either way it is
-        # applied only to the POST-game update -- the feature consumed by the
-        # model is the pre-game rating recorded above, so this stays leak-free.
-        actual = float(row.blue_win)
-        if mov_tau is not None and game_margins:
+        exp_blue = expected_score(blue_elo, red_elo)
+
+        # Margin-of-victory: a decisive win moves ratings further than a
+        # narrow one. This only ever scales the POST-game update -- the
+        # feature the model consumes is the pre-game rating recorded above,
+        # so it stays leak-free.
+        if mov_scale is not None and game_margins:
             margin = game_margins.get(row.gameid)
             if margin is not None:
-                actual = _dominance_score(float(margin), mov_tau)
+                winner_advantage = (
+                    (blue_elo - red_elo) if row.blue_win == 1 else (red_elo - blue_elo)
+                )
+                game_k *= _mov_multiplier(float(margin), winner_advantage, mov_scale)
 
-        exp_blue = expected_score(blue_elo, red_elo)
-        delta = game_k * (actual - exp_blue)
+        delta = game_k * (row.blue_win - exp_blue)
         ratings[blue] = blue_elo + delta
         ratings[red] = red_elo - delta
 
