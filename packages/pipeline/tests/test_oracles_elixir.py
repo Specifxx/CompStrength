@@ -190,3 +190,49 @@ def test_corrupt_cache_is_ignored_and_redownloaded(tmp_path, monkeypatch):
     assert result.read_text() == _FAKE_CSV
     # And the good download replaced the corrupt cache entry.
     assert corrupt.read_text() == _FAKE_CSV
+
+
+def test_extract_game_margins_computes_gold_per_minute_difference():
+    """Margins come from the team-summary rows the canonical table drops."""
+    import pandas as pd
+
+    from compstrength_pipeline.sources.oracles_elixir import extract_game_margins
+
+    raw = pd.DataFrame(
+        [
+            {"gameid": "g1", "position": "team", "side": "Blue",
+             "totalgold": 60000, "gamelength": 1800},
+            {"gameid": "g1", "position": "team", "side": "Red",
+             "totalgold": 51000, "gamelength": 1800},
+        ]
+    )
+    margins = extract_game_margins(raw)
+    # 9000 gold over 30 minutes = 300 gold/min in blue's favour.
+    assert margins == {"g1": pytest.approx(300.0)}
+
+
+def test_extract_game_margins_skips_unusable_games():
+    """Missing gold / zero length / half-recorded games are omitted so the
+    Elo pass can fall back to the binary result for them."""
+    import pandas as pd
+
+    from compstrength_pipeline.sources.oracles_elixir import extract_game_margins
+
+    raw = pd.DataFrame(
+        [
+            # zero-length game
+            {"gameid": "g1", "position": "team", "side": "Blue",
+             "totalgold": 60000, "gamelength": 0},
+            {"gameid": "g1", "position": "team", "side": "Red",
+             "totalgold": 51000, "gamelength": 0},
+            # missing gold
+            {"gameid": "g2", "position": "team", "side": "Blue",
+             "totalgold": None, "gamelength": 1800},
+            {"gameid": "g2", "position": "team", "side": "Red",
+             "totalgold": 51000, "gamelength": 1800},
+            # only one side present
+            {"gameid": "g3", "position": "team", "side": "Blue",
+             "totalgold": 60000, "gamelength": 1800},
+        ]
+    )
+    assert extract_game_margins(raw) == {}

@@ -490,6 +490,7 @@ def run_backtest(
     config: PipelineConfig = DEFAULT_CONFIG,
     k_folds: int = DEFAULT_K_FOLDS,
     solo_history: list | None = None,
+    game_margins: dict[str, float] | None = None,
 ) -> dict:
     """Run walk-forward cross-validation over ``games_df``/``bans_df``.
 
@@ -504,6 +505,11 @@ def run_backtest(
             fold's boundary), not globally beforehand.
         k_folds: Requested number of folds (auto-reduced if there isn't
             enough data; see module docstring).
+        game_margins: Optional ``{gameid: blue_minus_red_gold_per_minute}``
+            enabling margin-of-victory team Elo (see
+            ``teams.compute_team_elo``). Elo is computed once over all games
+            but records each game's PRE-game rating, so passing margins does
+            not leak: a game's margin only ever affects LATER games' ratings.
 
     Returns:
         A dict matching the ``data/backtest_report.json`` schema (see
@@ -567,6 +573,8 @@ def run_backtest(
                 season_carryover=config.elo_season_carryover,
                 international_leagues=config.international_leagues,
                 international_k_multiplier=config.international_elo_k_multiplier,
+                game_margins=game_margins,
+                mov_tau=config.elo_mov_tau,
             ),
             feature_scale=config.elo_feature_scale,
         )

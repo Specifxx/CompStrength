@@ -23,6 +23,7 @@ itself (we deliberately do NOT bake in Elo's own 10^(d/400) curve).
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 
 import pandas as pd
@@ -101,12 +102,21 @@ def _per_game_rows(games_df: pd.DataFrame) -> pd.DataFrame:
     return frame.sort_values(["date", "gameid"]).reset_index(drop=True)
 
 
+def _dominance_score(gold_per_min_diff: float, tau: float) -> float:
+    """Map a blue-minus-red gold/min differential to a continuous game score
+    in (0, 1), where 0.5 is a dead-even game and the extremes are one-sided
+    stompings. ``tau`` sets how much gold/min counts as decisive."""
+    return 1.0 / (1.0 + math.exp(-gold_per_min_diff / tau))
+
+
 def compute_team_elo(
     games_df: pd.DataFrame,
     k: float = DEFAULT_ELO_K,
     season_carryover: float = DEFAULT_SEASON_CARRYOVER,
     international_leagues: frozenset[str] | None = None,
     international_k_multiplier: float = 1.0,
+    game_margins: dict[str, float] | None = None,
+    mov_tau: float | None = None,
 ) -> TeamEloResult:
     """Run one chronological Elo pass over ``games_df``.
 
@@ -127,6 +137,24 @@ def compute_team_elo(
             that calibrate Elo across regions, so they carry more information;
             measured to lift held-out international-event accuracy without
             hurting overall (see config.international_elo_k_multiplier).
+        game_margins: Optional ``{gameid: blue_minus_red_gold_per_minute}``
+            (see ``sources.oracles_elixir.extract_game_margins``). Required
+            for ``mov_tau`` to have any effect; games absent from this map
+            fall back to the binary result.
+        mov_tau: Enables MARGIN-OF-VICTORY scoring. ``None`` (default) keeps
+            the classic binary Elo, where the observed score is exactly 1/0.
+            When set, the observed score becomes
+            ``_dominance_score(margin, mov_tau)`` -- a continuous value in
+            (0, 1) reflecting *how decisively* the game was won, so a
+            25-minute demolition moves ratings much further than a 45-minute
+            coinflip. Measured on the walk-forward backtest (2025+2026 real
+            pro data, 15,060 held-out games) this lifted current-season
+            accuracy 65.73% -> 66.42% and log-loss 0.6218 -> 0.6125, with
+            log-loss improving in 7 of 7 folds. The gain is robust across
+            tau in [400, 1600] and K in [32, 96]; the shipped pairing is
+            re-tuned together (see config.elo_k / config.elo_mov_tau)
+            because continuous scores yield smaller ``actual - expected``
+            steps and so want a larger K to keep the same effective pace.
 
     Returns:
         A :class:`TeamEloResult`; see its docstring. ``per_game`` records the
@@ -189,8 +217,18 @@ def compute_team_elo(
         )
         game_k = k * boost if inter_region else k
 
+        # Observed score: binary by default, or margin-of-victory weighted
+        # when enabled and this game has a usable margin. Either way it is
+        # applied only to the POST-game update -- the feature consumed by the
+        # model is the pre-game rating recorded above, so this stays leak-free.
+        actual = float(row.blue_win)
+        if mov_tau is not None and game_margins:
+            margin = game_margins.get(row.gameid)
+            if margin is not None:
+                actual = _dominance_score(float(margin), mov_tau)
+
         exp_blue = expected_score(blue_elo, red_elo)
-        delta = game_k * (row.blue_win - exp_blue)
+        delta = game_k * (actual - exp_blue)
         ratings[blue] = blue_elo + delta
         ratings[red] = red_elo - delta
 

@@ -183,7 +183,7 @@ def test_oracles_elixir_source_merges_previous_season(monkeypatch, tmp_path):
 
     monkeypatch.setattr(oe, "download_oracles_elixir_csv", fake_download)
 
-    games_df, bans_df = build.load_raw_games_and_bans(
+    games_df, bans_df, _margins = build.load_raw_games_and_bans(
         "oracles-elixir", str(ORACLES_ELIXIR_FIXTURE), None, target_games=1000
     )
 
@@ -191,7 +191,7 @@ def test_oracles_elixir_source_merges_previous_season(monkeypatch, tmp_path):
     assert len(fetched_years) == 2
     assert fetched_years[0] - 1 == fetched_years[1]
     # Merged: every fixture game appears twice (once per pseudo-season).
-    single_games, _ = build.load_games_and_bans(str(ORACLES_ELIXIR_FIXTURE), None)
+    single_games, _, _ = build.load_games_and_bans(str(ORACLES_ELIXIR_FIXTURE), None)
     assert games_df["gameid"].nunique() == 2 * single_games["gameid"].nunique()
     assert bans_df["gameid"].nunique() > 0
 
@@ -208,10 +208,10 @@ def test_oracles_elixir_source_drops_gameids_duplicated_across_seasons(
 
     monkeypatch.setattr(oe, "download_oracles_elixir_csv", fake_download)
 
-    games_df, _ = build.load_raw_games_and_bans(
+    games_df, _, _margins = build.load_raw_games_and_bans(
         "oracles-elixir", str(ORACLES_ELIXIR_FIXTURE), None, target_games=1000
     )
-    single_games, _ = build.load_games_and_bans(str(ORACLES_ELIXIR_FIXTURE), None)
+    single_games, _, _ = build.load_games_and_bans(str(ORACLES_ELIXIR_FIXTURE), None)
     # Full overlap -> merged result identical to a single season, and every
     # game still has exactly 10 player rows.
     assert games_df["gameid"].nunique() == single_games["gameid"].nunique()
@@ -233,10 +233,10 @@ def test_oracles_elixir_source_survives_missing_previous_season(monkeypatch):
     monkeypatch.setattr(oe, "download_oracles_elixir_csv", fake_download)
 
     with pytest.warns(UserWarning, match="previous season"):
-        games_df, _ = build.load_raw_games_and_bans(
+        games_df, _, _margins = build.load_raw_games_and_bans(
             "oracles-elixir", str(ORACLES_ELIXIR_FIXTURE), None, target_games=1000
         )
-    single_games, _ = build.load_games_and_bans(str(ORACLES_ELIXIR_FIXTURE), None)
+    single_games, _, _ = build.load_games_and_bans(str(ORACLES_ELIXIR_FIXTURE), None)
     assert games_df["gameid"].nunique() == single_games["gameid"].nunique()
 
 

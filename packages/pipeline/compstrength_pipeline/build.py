@@ -125,29 +125,37 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def _games_and_bans_from_csv_path(csv_path: str) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Read a local Oracle's-Elixir-shaped CSV ONCE and produce both the
-    normalized games table and the bans table from the same in-memory frame."""
+def _games_and_bans_from_csv_path(
+    csv_path: str,
+) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, float]]:
+    """Read a local Oracle's-Elixir-shaped CSV ONCE and produce the normalized
+    games table, the bans table, and the per-game gold/min margins from the
+    same in-memory frame (all three need the team-summary rows)."""
     # Read patch as a string (see oracles_elixir._READ_CSV_KWARGS): otherwise
     # pandas coerces "16.10" -> 16.1, silently corrupting patch-recency logic.
     raw = pd.read_csv(csv_path, **oracles_elixir_source._READ_CSV_KWARGS)
     games_df = oracles_elixir_source._normalize_player_games(raw)
-    bans_df = (
-        oracles_elixir_source.extract_bans(raw)
-        if not raw.empty
-        else pd.DataFrame(columns=["gameid", "team", "champion", "ban_number"])
+    if raw.empty:
+        return (
+            games_df,
+            pd.DataFrame(columns=["gameid", "team", "champion", "ban_number"]),
+            {},
+        )
+    return (
+        games_df,
+        oracles_elixir_source.extract_bans(raw),
+        oracles_elixir_source.extract_game_margins(raw),
     )
-    return games_df, bans_df
 
 
 def load_games_and_bans(
     oracles_elixir_path: str, oracles_elixir_url: str | None
-) -> tuple[pd.DataFrame, pd.DataFrame]:
+) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, float]]:
     """Load raw Oracle's Elixir data (live URL if given, else local path/fixture)."""
     if oracles_elixir_url:
         games_df = fetch_oracles_elixir(oracles_elixir_url)
-        # Best-effort: re-fetch raw for ban extraction. Failures here are
-        # non-fatal to the overall pipeline (bans just come back empty).
+        # Best-effort: re-fetch raw for ban + margin extraction. Failures here
+        # are non-fatal (bans come back empty and Elo falls back to binary).
         try:
             import io
 
@@ -158,13 +166,19 @@ def load_games_and_bans(
             raw = pd.read_csv(
                 io.StringIO(resp.text), **oracles_elixir_source._READ_CSV_KWARGS
             )
-            bans_df = extract_bans(raw) if not raw.empty else pd.DataFrame(
-                columns=["gameid", "team", "champion", "ban_number"]
-            )
+            if raw.empty:
+                bans_df = pd.DataFrame(
+                    columns=["gameid", "team", "champion", "ban_number"]
+                )
+                margins: dict[str, float] = {}
+            else:
+                bans_df = extract_bans(raw)
+                margins = oracles_elixir_source.extract_game_margins(raw)
         except Exception as exc:  # pragma: no cover - network path
             warnings.warn(f"Could not fetch raw data for ban extraction: {exc!r}")
             bans_df = pd.DataFrame(columns=["gameid", "team", "champion", "ban_number"])
-        return games_df, bans_df
+            margins = {}
+        return games_df, bans_df, margins
     return _games_and_bans_from_csv_path(oracles_elixir_path)
 
 
@@ -184,8 +198,13 @@ def load_raw_games_and_bans(
     oracles_elixir_url: str | None,
     target_games: int,
     year: int | None = None,
-) -> tuple[pd.DataFrame, pd.DataFrame]:
+) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, float]]:
     """Dispatch to the requested data source's raw fetch.
+
+    Returns ``(games_df, bans_df, game_margins)``. ``game_margins`` maps
+    gameid -> blue-minus-red gold per minute and powers margin-of-victory
+    Elo; sources that don't expose team gold totals (Leaguepedia) return an
+    empty map, which makes Elo fall back to the classic binary update.
 
     - ``oracles-elixir``: download the bulk season CSV from Google Drive
       ONCE (one request, no per-request rate limiting), and derive both the
@@ -198,7 +217,7 @@ def load_raw_games_and_bans(
         resolved_year = _resolve_oe_year(year)
         try:
             csv_path = oracles_elixir_source.download_oracles_elixir_csv(resolved_year)
-            games_df, bans_df = _games_and_bans_from_csv_path(str(csv_path))
+            games_df, bans_df, margins = _games_and_bans_from_csv_path(str(csv_path))
             # The min_patch floor (25.1 -> current) deliberately spans TWO
             # seasons, so also pull the PREVIOUS season's file: its patches are
             # exponentially down-weighted (patch_decay_base ** distance) so it
@@ -211,7 +230,9 @@ def load_raw_games_and_bans(
             prev_year = resolved_year - 1
             try:
                 prev_csv = oracles_elixir_source.download_oracles_elixir_csv(prev_year)
-                prev_games, prev_bans = _games_and_bans_from_csv_path(str(prev_csv))
+                prev_games, prev_bans, prev_margins = _games_and_bans_from_csv_path(
+                    str(prev_csv)
+                )
                 # Defensive: a gameid present in BOTH season files would merge
                 # into a 20-row "game" that ETL's exactly-10-rows filter then
                 # silently drops -- so keep only prev-season games that don't
@@ -221,6 +242,11 @@ def load_raw_games_and_bans(
                 prev_bans = prev_bans[~prev_bans["gameid"].isin(current_ids)]
                 games_df = pd.concat([prev_games, games_df], ignore_index=True)
                 bans_df = pd.concat([prev_bans, bans_df], ignore_index=True)
+                # Current season wins any gameid collision (same rule as above).
+                margins = {
+                    **{g: m for g, m in prev_margins.items() if g not in current_ids},
+                    **margins,
+                }
                 print(
                     f"Merged {prev_year} season: total {games_df['gameid'].nunique()} "
                     "games across both seasons (older patches exponentially "
@@ -231,7 +257,7 @@ def load_raw_games_and_bans(
                     f"Could not fetch the previous season ({prev_year}) CSV "
                     f"({prev_exc}); continuing with {resolved_year} only."
                 )
-            return games_df, bans_df
+            return games_df, bans_df, margins
         except oracles_elixir_source.DataSourceUnavailableError as exc:
             # The shared 2026 Drive file is heavily used and can hit Google's
             # per-file public-download quota ("too many users..."). That's an
@@ -251,9 +277,15 @@ def load_raw_games_and_bans(
                 f"to a live Leaguepedia Cargo fetch of the {fallback_games} "
                 "most recent games."
             )
-            return leaguepedia_source.fetch_recent_games(target_games=fallback_games)
+            lp_games, lp_bans = leaguepedia_source.fetch_recent_games(
+                target_games=fallback_games
+            )
+            return lp_games, lp_bans, {}
     if source == "leaguepedia":
-        return leaguepedia_source.fetch_recent_games(target_games=target_games)
+        lp_games, lp_bans = leaguepedia_source.fetch_recent_games(
+            target_games=target_games
+        )
+        return lp_games, lp_bans, {}
     return load_games_and_bans(oracles_elixir_path, oracles_elixir_url)
 
 
@@ -263,6 +295,7 @@ def run_pipeline_on_data(
     soloqueue_source,
     patch: str | None,
     config: PipelineConfig = DEFAULT_CONFIG,
+    game_margins: dict[str, float] | None = None,
 ) -> tuple[dict, dict, dict, dict, dict]:
     """Run ETL -> features -> pairwise -> train_model on already-fetched data.
 
@@ -390,6 +423,8 @@ def run_pipeline_on_data(
             season_carryover=config.elo_season_carryover,
             international_leagues=config.international_leagues,
             international_k_multiplier=config.international_elo_k_multiplier,
+            game_margins=game_margins,
+            mov_tau=config.elo_mov_tau,
         )
         team_elo_diffs = teams.elo_diff_by_gameid(
             elo_result, feature_scale=config.elo_feature_scale
@@ -467,11 +502,13 @@ def run_pipeline(
     :func:`run_pipeline_on_data` for the reusable, already-fetched-data core
     (used by ``main()`` so the backtest doesn't re-fetch).
     """
-    raw_games_df, raw_bans_df = load_raw_games_and_bans(
+    raw_games_df, raw_bans_df, game_margins = load_raw_games_and_bans(
         source, oracles_elixir_path, oracles_elixir_url, config.target_training_games, year
     )
     soloqueue_source = soloqueue_source_for(source, soloqueue_fixture)
-    return run_pipeline_on_data(raw_games_df, raw_bans_df, soloqueue_source, patch, config)
+    return run_pipeline_on_data(
+        raw_games_df, raw_bans_df, soloqueue_source, patch, config, game_margins
+    )
 
 
 def _most_recent_patch(games_df: pd.DataFrame) -> str:
@@ -738,6 +775,7 @@ def write_backtest_report_on_data(
     soloqueue_source,
     output_dir: str,
     config: PipelineConfig = DEFAULT_CONFIG,
+    game_margins: dict[str, float] | None = None,
 ) -> Path:
     """Run the walk-forward backtest on already-fetched data and write
     ``data/backtest_report.json``. Degrades gracefully: any exception (e.g.
@@ -754,7 +792,8 @@ def write_backtest_report_on_data(
             REPO_ROOT / "data" / "soloqueue_history.json"
         )
         report = backtest.run_backtest(
-            games_df, bans_df, soloqueue_source, config, solo_history=solo_history
+            games_df, bans_df, soloqueue_source, config,
+            solo_history=solo_history, game_margins=game_margins,
         )
     except Exception as exc:  # noqa: BLE001 - build must never crash on backtest failure
         warnings.warn(f"Backtest failed, writing a degraded report instead: {exc!r}")
@@ -779,12 +818,12 @@ def write_backtest_report(
     :func:`write_backtest_report_on_data` for the reusable,
     already-fetched-data core (used by ``main()`` so this doesn't re-fetch).
     """
-    raw_games_df, raw_bans_df = load_raw_games_and_bans(
+    raw_games_df, raw_bans_df, game_margins = load_raw_games_and_bans(
         source, oracles_elixir_path, oracles_elixir_url, config.target_training_games
     )
     soloqueue_source = soloqueue_source_for(source, soloqueue_fixture)
     return write_backtest_report_on_data(
-        raw_games_df, raw_bans_df, soloqueue_source, output_dir, config
+        raw_games_df, raw_bans_df, soloqueue_source, output_dir, config, game_margins
     )
 
 
@@ -801,7 +840,7 @@ def main(argv: list[str] | None = None) -> None:
     # Fetch once and reuse for both the live build and the backtest -- for
     # a real source (oracles-elixir / leaguepedia) this avoids repeating the
     # download/network round-trips.
-    raw_games_df, raw_bans_df = load_raw_games_and_bans(
+    raw_games_df, raw_bans_df, game_margins = load_raw_games_and_bans(
         args.source,
         args.oracles_elixir_path,
         args.oracles_elixir_url,
@@ -811,7 +850,7 @@ def main(argv: list[str] | None = None) -> None:
     soloqueue_source = soloqueue_source_for(args.source, args.soloqueue_fixture)
 
     champion_ratings, model, synergy, teams_payload, players_payload = run_pipeline_on_data(
-        raw_games_df, raw_bans_df, soloqueue_source, args.patch, config
+        raw_games_df, raw_bans_df, soloqueue_source, args.patch, config, game_margins
     )
 
     ratings_path, model_path, synergy_path = write_outputs(
@@ -839,7 +878,7 @@ def main(argv: list[str] | None = None) -> None:
     )
 
     report_path = write_backtest_report_on_data(
-        raw_games_df, raw_bans_df, soloqueue_source, args.output_dir, config
+        raw_games_df, raw_bans_df, soloqueue_source, args.output_dir, config, game_margins
     )
     print(f"Wrote {report_path}")
 
