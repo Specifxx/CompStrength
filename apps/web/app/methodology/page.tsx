@@ -223,6 +223,29 @@ export default function MethodologyPage() {
                 </p>
                 <p className="mt-2 text-xs text-slate-500">
                   <span className="text-slate-300">
+                    Team Elo scores how decisively a game was won, not just
+                    who won it.
+                  </span>{" "}
+                  Classic Elo moves ratings by{" "}
+                  <span className="font-mono">K &times; (result &minus; expected)</span>,
+                  which treats a 12-minute demolition and a 45-minute base race
+                  as the same event &mdash; throwing away the most informative
+                  thing about a pro game. Each game is instead scored
+                  continuously from the two teams&apos; gold-per-minute
+                  differential (per-minute, so a lead taken fast counts for
+                  more than the same lead ground out over a long game). Held
+                  out on the walk-forward backtest this lifted current-season
+                  accuracy <span className="text-emerald-400">65.7% &rarr; 66.4%</span>{" "}
+                  and log-loss{" "}
+                  <span className="text-emerald-400">0.622 &rarr; 0.613</span>,
+                  improving log-loss in 7 of 7 folds. The settings were chosen
+                  on early folds and re-checked on later folds they never saw,
+                  so the gain isn&apos;t tuning luck. The margin only ever
+                  affects the post-game update &mdash; every prediction still
+                  uses strictly pre-game ratings.
+                </p>
+                <p className="mt-2 text-xs text-slate-500">
+                  <span className="text-slate-300">
                     Aren&apos;t multi-season team ratings stale, since rosters
                     change?
                   </span>{" "}
@@ -355,6 +378,40 @@ export default function MethodologyPage() {
                 Team/player identity is simply too dominant a signal for
                 these subtler structural effects to move the needle on real
                 pro outcomes. None of these features ship.
+              </p>
+              <p>
+                <span className="text-slate-300">
+                  Why not just use Riot&apos;s official Global Power Rankings?
+                </span>{" "}
+                We tested it properly rather than assuming. The GPR history is
+                real and, importantly, not retroactively rewritten &mdash; we
+                verified 7,032 overlapping historical observations fetched
+                through different query windows and found zero conflicts, so
+                using it wouldn&apos;t leak future results into past
+                predictions. Added as a feature it changed held-out log-loss
+                from 0.6125 to 0.6125: <span className="text-slate-300">nothing</span>.
+                The reason is that GPR is itself an Elo-style rating computed
+                from the same match results our own Elo already consumes
+                &mdash; and ours covers all 612 teams in the data, where GPR
+                ranks only ~58 tier-1 teams (about a quarter of games, with no
+                academy or regional sides at all). It is a less complete
+                version of a signal the model already has.
+              </p>
+              <p>
+                <span className="text-slate-300">
+                  What about form, streaks, rest days, or head-to-head records?
+                </span>{" "}
+                Also tested, also negative. Recent form correlates{" "}
+                <span className="text-slate-300">0.75</span> with team Elo
+                &mdash; it is a noisier restatement of what the rating already
+                encodes. Win/loss streaks actively hurt (&minus;0.5 points of
+                current-season accuracy). Days of rest and games-in-the-last-week
+                have essentially no relationship with the outcome at all
+                (correlation ~0.015). Head-to-head history, series game number,
+                playoffs-vs-regular-season, and roster changes all landed inside
+                the measurement noise. The honest summary: once you know who is
+                playing and how dominant they have been, schedule and momentum
+                narratives add nothing measurable.
               </p>
             </div>
           </section>
