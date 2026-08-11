@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-10T05:47:11.508830+00:00",
+  "generatedAt": "2026-08-11T05:32:30.151662+00:00",
   "patch": "16.15",
   "patchesUsed": [
     "16.15",
@@ -40129,14 +40129,6 @@
     }
   },
   "matchup": {
-    "Ashe>Varus": {
-      "gamesDecayed": 0.22190690810652253,
-      "residual": -0.005778878144546795
-    },
-    "Varus>Ashe": {
-      "gamesDecayed": 0.22190690810652253,
-      "residual": 0.005778878144546793
-    },
     "Viego>Nocturne": {
       "gamesDecayed": 0.002805208012244015,
       "residual": -0.0003474434097622042
@@ -40169,13 +40161,13 @@
       "gamesDecayed": 0.3569872558848935,
       "residual": 0.04608009329682544
     },
-    "Jhin>Miss Fortune": {
-      "gamesDecayed": 32.544661633924996,
-      "residual": 0.24035780369462012
+    "Ashe>Varus": {
+      "gamesDecayed": 0.22190690810652253,
+      "residual": -0.005778878144546795
     },
-    "Miss Fortune>Jhin": {
-      "gamesDecayed": 32.544661633924996,
-      "residual": -0.24035780369462
+    "Varus>Ashe": {
+      "gamesDecayed": 0.22190690810652253,
+      "residual": 0.005778878144546793
     },
     "Maokai>Wukong": {
       "gamesDecayed": 0.880757920033398,
@@ -40209,13 +40201,13 @@
       "gamesDecayed": 10.81695480966089,
       "residual": 0.367555945094636
     },
-    "Ziggs>Jinx": {
-      "gamesDecayed": 0.10970851185367277,
-      "residual": -0.013931092011729923
+    "Jhin>Miss Fortune": {
+      "gamesDecayed": 32.544661633924996,
+      "residual": 0.24035780369462012
     },
-    "Jinx>Ziggs": {
-      "gamesDecayed": 0.10970851185367277,
-      "residual": 0.013931092011729923
+    "Miss Fortune>Jhin": {
+      "gamesDecayed": 32.544661633924996,
+      "residual": -0.24035780369462
     },
     "Zyra>Sejuani": {
       "gamesDecayed": 4.205001726366914e-14,
@@ -40249,13 +40241,13 @@
       "gamesDecayed": 10.472032589193299,
       "residual": 0.32995531916541815
     },
-    "Kalista>Ezreal": {
-      "gamesDecayed": 0.49318811927877154,
-      "residual": -0.06519980725753281
+    "Ziggs>Jinx": {
+      "gamesDecayed": 0.10970851185367277,
+      "residual": -0.013931092011729923
     },
-    "Ezreal>Kalista": {
-      "gamesDecayed": 0.49318811927877154,
-      "residual": 0.0651998072575328
+    "Jinx>Ziggs": {
+      "gamesDecayed": 0.10970851185367277,
+      "residual": 0.013931092011729923
     },
     "Pantheon>Vi": {
       "gamesDecayed": 68.95333769776077,
@@ -40289,13 +40281,13 @@
       "gamesDecayed": 0.9500536942917044,
       "residual": -0.11822040214932938
     },
-    "Kai'Sa>Corki": {
-      "gamesDecayed": 24.65902288959043,
-      "residual": -0.7320305188146681
+    "Kalista>Ezreal": {
+      "gamesDecayed": 0.49318811927877154,
+      "residual": -0.06519980725753281
     },
-    "Corki>Kai'Sa": {
-      "gamesDecayed": 24.65902288959043,
-      "residual": 0.7320305188146682
+    "Ezreal>Kalista": {
+      "gamesDecayed": 0.49318811927877154,
+      "residual": 0.0651998072575328
     },
     "Wukong>Lee Sin": {
       "gamesDecayed": 8.746966868323291,
@@ -40320,6 +40312,14 @@
     "Renekton>Gnar": {
       "gamesDecayed": 34.62761008370289,
       "residual": 0.48389137922028275
+    },
+    "Kai'Sa>Corki": {
+      "gamesDecayed": 24.65902288959043,
+      "residual": -0.7320305188146681
+    },
+    "Corki>Kai'Sa": {
+      "gamesDecayed": 24.65902288959043,
+      "residual": 0.7320305188146682
     },
     "Volibear>Xin Zhao": {
       "gamesDecayed": 0.0023003355244317126,
@@ -40353,14 +40353,6 @@
       "gamesDecayed": 0.004119957705994783,
       "residual": -0.0005305437444212606
     },
-    "Twitch>Jinx": {
-      "gamesDecayed": 7.517716227405491e-07,
-      "residual": 9.932987898165069e-08
-    },
-    "Jinx>Twitch": {
-      "gamesDecayed": 7.517716227405491e-07,
-      "residual": -9.93298789816507e-08
-    },
     "Sejuani>Viego": {
       "gamesDecayed": 0.0003065683545327714,
       "residual": 3.920853432544391e-05
@@ -40393,13 +40385,13 @@
       "gamesDecayed": 2.7983340333249442,
       "residual": 0.02500692685994242
     },
-    "Ashe>Kalista": {
-      "gamesDecayed": 0.02224187387119906,
-      "residual": -0.0005927623522089262
+    "Twitch>Jinx": {
+      "gamesDecayed": 7.517716227405491e-07,
+      "residual": 9.932987898165069e-08
     },
-    "Kalista>Ashe": {
-      "gamesDecayed": 0.02224187387119906,
-      "residual": 0.0005927623522089257
+    "Jinx>Twitch": {
+      "gamesDecayed": 7.517716227405491e-07,
+      "residual": -9.93298789816507e-08
     },
     "Viego>Vi": {
       "gamesDecayed": 0.37072654337894984,
@@ -40417,13 +40409,13 @@
       "gamesDecayed": 0.3676576937565284,
       "residual": -0.04275560088689246
     },
-    "Varus>Miss Fortune": {
-      "gamesDecayed": 0.01628114730364897,
-      "residual": 0.0005237618609117072
+    "Ashe>Kalista": {
+      "gamesDecayed": 0.02224187387119906,
+      "residual": -0.0005927623522089262
     },
-    "Miss Fortune>Varus": {
-      "gamesDecayed": 0.01628114730364897,
-      "residual": -0.0005237618609117071
+    "Kalista>Ashe": {
+      "gamesDecayed": 0.02224187387119906,
+      "residual": 0.0005927623522089257
     },
     "Akali>Sylas": {
       "gamesDecayed": 1.2640388889502605,
@@ -40449,13 +40441,13 @@
       "gamesDecayed": 4.299134063996116,
       "residual": -0.06152267065548141
     },
-    "Jinx>Aphelios": {
-      "gamesDecayed": 0.005395269874766528,
-      "residual": 8.65623589242111e-05
+    "Varus>Miss Fortune": {
+      "gamesDecayed": 0.01628114730364897,
+      "residual": 0.0005237618609117072
     },
-    "Aphelios>Jinx": {
-      "gamesDecayed": 0.005395269874766528,
-      "residual": -8.656235892421122e-05
+    "Miss Fortune>Varus": {
+      "gamesDecayed": 0.01628114730364897,
+      "residual": -0.0005237618609117071
     },
     "Sejuani>Xin Zhao": {
       "gamesDecayed": 0.10831835961587313,
@@ -40481,13 +40473,13 @@
       "gamesDecayed": 0.3574235869664373,
       "residual": -0.045860140374930275
     },
-    "Sivir>Tristana": {
-      "gamesDecayed": 1.8064788902860496,
-      "residual": -0.23803192681552482
+    "Jinx>Aphelios": {
+      "gamesDecayed": 0.005395269874766528,
+      "residual": 8.65623589242111e-05
     },
-    "Tristana>Sivir": {
-      "gamesDecayed": 1.8064788902860496,
-      "residual": 0.23803192681552476
+    "Aphelios>Jinx": {
+      "gamesDecayed": 0.005395269874766528,
+      "residual": -8.656235892421122e-05
     },
     "Nidalee>Karthus": {
       "gamesDecayed": 2.134208718262001e-12,
@@ -40521,6 +40513,14 @@
       "gamesDecayed": 17.325771114411566,
       "residual": -0.10361827375868948
     },
+    "Sivir>Tristana": {
+      "gamesDecayed": 1.8064788902860496,
+      "residual": -0.23803192681552482
+    },
+    "Tristana>Sivir": {
+      "gamesDecayed": 1.8064788902860496,
+      "residual": 0.23803192681552476
+    },
     "Wukong>Vi": {
       "gamesDecayed": 20.68760067259661,
       "residual": 0.12021461749941512
@@ -40552,14 +40552,6 @@
     "Rell>Braum": {
       "gamesDecayed": 1.3677564355092142,
       "residual": -0.029898507430695175
-    },
-    "Kalista>Miss Fortune": {
-      "gamesDecayed": 0.00011222685165978548,
-      "residual": 4.272359457653965e-06
-    },
-    "Miss Fortune>Kalista": {
-      "gamesDecayed": 0.00011222685165978548,
-      "residual": -4.272359457653964e-06
     },
     "Viego>Lee Sin": {
       "gamesDecayed": 0.008844857377065245,
@@ -40593,13 +40585,13 @@
       "gamesDecayed": 0.29064888854104337,
       "residual": -0.001253872967622214
     },
-    "Corki>Ezreal": {
-      "gamesDecayed": 25.93304638178351,
-      "residual": 0.5872235505997139
+    "Kalista>Miss Fortune": {
+      "gamesDecayed": 0.00011222685165978548,
+      "residual": 4.272359457653965e-06
     },
-    "Ezreal>Corki": {
-      "gamesDecayed": 25.93304638178351,
-      "residual": -0.5872235505997139
+    "Miss Fortune>Kalista": {
+      "gamesDecayed": 0.00011222685165978548,
+      "residual": -4.272359457653964e-06
     },
     "Pantheon>Xin Zhao": {
       "gamesDecayed": 3.8639858275481656,
@@ -40617,13 +40609,13 @@
       "gamesDecayed": 3.5777867931897935,
       "residual": 0.14086448186690945
     },
-    "Xayah>Jinx": {
-      "gamesDecayed": 1.8415609544673277,
-      "residual": -0.23678031514244163
+    "Corki>Ezreal": {
+      "gamesDecayed": 25.93304638178351,
+      "residual": 0.5872235505997139
     },
-    "Jinx>Xayah": {
-      "gamesDecayed": 1.8415609544673277,
-      "residual": 0.23678031514244158
+    "Ezreal>Corki": {
+      "gamesDecayed": 25.93304638178351,
+      "residual": -0.5872235505997139
     },
     "Kindred>Nocturne": {
       "gamesDecayed": 0.0006705977470993029,
@@ -40657,13 +40649,13 @@
       "gamesDecayed": 1.3244401825142502,
       "residual": -0.16533350738646335
     },
-    "Varus>Corki": {
-      "gamesDecayed": 2.705403359705045,
-      "residual": -0.061965544216727
+    "Xayah>Jinx": {
+      "gamesDecayed": 1.8415609544673277,
+      "residual": -0.23678031514244163
     },
-    "Corki>Varus": {
-      "gamesDecayed": 2.705403359705045,
-      "residual": 0.061965544216727
+    "Jinx>Xayah": {
+      "gamesDecayed": 1.8415609544673277,
+      "residual": 0.23678031514244158
     },
     "K'Sante>Jayce": {
       "gamesDecayed": 49.2420591588095,
@@ -40673,13 +40665,13 @@
       "gamesDecayed": 49.2420591588095,
       "residual": -0.11922390205260439
     },
-    "Jinx>Miss Fortune": {
-      "gamesDecayed": 0.0012725750209739322,
-      "residual": 0.00013349207265416939
+    "Varus>Corki": {
+      "gamesDecayed": 2.705403359705045,
+      "residual": -0.061965544216727
     },
-    "Miss Fortune>Jinx": {
-      "gamesDecayed": 0.0012725750209739322,
-      "residual": -0.0001334920726541696
+    "Corki>Varus": {
+      "gamesDecayed": 2.705403359705045,
+      "residual": 0.061965544216727
     },
     "Udyr>Ambessa": {
       "gamesDecayed": 0.0016997255309674768,
@@ -40697,13 +40689,13 @@
       "gamesDecayed": 8.580344183801264e-06,
       "residual": 2.1871262006003632e-07
     },
-    "Xayah>Kai'Sa": {
-      "gamesDecayed": 22.163535748698074,
-      "residual": -0.6928636739763576
+    "Jinx>Miss Fortune": {
+      "gamesDecayed": 0.0012725750209739322,
+      "residual": 0.00013349207265416939
     },
-    "Kai'Sa>Xayah": {
-      "gamesDecayed": 22.163535748698074,
-      "residual": 0.692863673976357
+    "Miss Fortune>Jinx": {
+      "gamesDecayed": 0.0012725750209739322,
+      "residual": -0.0001334920726541696
     },
     "Ahri>LeBlanc": {
       "gamesDecayed": 0.5596886178953169,
@@ -40712,6 +40704,14 @@
     "LeBlanc>Ahri": {
       "gamesDecayed": 0.5596886178953169,
       "residual": -0.05113721629536816
+    },
+    "Xayah>Kai'Sa": {
+      "gamesDecayed": 22.163535748698074,
+      "residual": -0.6928636739763576
+    },
+    "Kai'Sa>Xayah": {
+      "gamesDecayed": 22.163535748698074,
+      "residual": 0.692863673976357
     },
     "Viego>Zyra": {
       "gamesDecayed": 1.147517885926381e-12,
@@ -40737,14 +40737,6 @@
       "gamesDecayed": 11.330516514049002,
       "residual": -0.11588805797215898
     },
-    "Xayah>Ezreal": {
-      "gamesDecayed": 0.7113594445388631,
-      "residual": -0.03227436662142086
-    },
-    "Ezreal>Xayah": {
-      "gamesDecayed": 0.7113594445388631,
-      "residual": 0.03227436662142087
-    },
     "Xin Zhao>Vi": {
       "gamesDecayed": 50.027126263594226,
       "residual": -0.13833174807617624
@@ -40753,13 +40745,13 @@
       "gamesDecayed": 50.027126263594226,
       "residual": 0.13833174807617618
     },
-    "Ashe>Jhin": {
-      "gamesDecayed": 0.876200319197202,
-      "residual": 0.04511237491718952
+    "Xayah>Ezreal": {
+      "gamesDecayed": 0.7113594445388631,
+      "residual": -0.03227436662142086
     },
-    "Jhin>Ashe": {
-      "gamesDecayed": 0.876200319197202,
-      "residual": -0.04511237491718952
+    "Ezreal>Xayah": {
+      "gamesDecayed": 0.7113594445388631,
+      "residual": 0.03227436662142087
     },
     "Taliyah>Swain": {
       "gamesDecayed": 0.3415138451339368,
@@ -40785,6 +40777,14 @@
       "gamesDecayed": 0.0003145631224911762,
       "residual": 3.272592168941435e-05
     },
+    "Ashe>Jhin": {
+      "gamesDecayed": 0.876200319197202,
+      "residual": 0.04511237491718952
+    },
+    "Jhin>Ashe": {
+      "gamesDecayed": 0.876200319197202,
+      "residual": -0.04511237491718952
+    },
     "Nocturne>Rengar": {
       "gamesDecayed": 3.113595643312949e-15,
       "residual": 4.2023241122869734e-16
@@ -40801,14 +40801,6 @@
       "gamesDecayed": 12.845924834648962,
       "residual": -0.19472481485893514
     },
-    "Ezreal>Miss Fortune": {
-      "gamesDecayed": 8.053270172668967,
-      "residual": 0.5148632491826647
-    },
-    "Miss Fortune>Ezreal": {
-      "gamesDecayed": 8.053270172668967,
-      "residual": -0.5148632491826645
-    },
     "Braum>Alistar": {
       "gamesDecayed": 18.315834959564476,
       "residual": -1.5213871937461558
@@ -40817,13 +40809,13 @@
       "gamesDecayed": 18.315834959564476,
       "residual": 1.5213871937461554
     },
-    "Ziggs>Ashe": {
-      "gamesDecayed": 8.36881592403642,
-      "residual": 0.714132031697522
+    "Ezreal>Miss Fortune": {
+      "gamesDecayed": 8.053270172668967,
+      "residual": 0.5148632491826647
     },
-    "Ashe>Ziggs": {
-      "gamesDecayed": 8.36881592403642,
-      "residual": -0.7141320316975222
+    "Miss Fortune>Ezreal": {
+      "gamesDecayed": 8.053270172668967,
+      "residual": -0.5148632491826645
     },
     "Yone>Smolder": {
       "gamesDecayed": 6.331160934226315e-05,
@@ -40848,6 +40840,14 @@
     "Rell>Pyke": {
       "gamesDecayed": 0.3145066251572286,
       "residual": 0.03159401918969894
+    },
+    "Ziggs>Ashe": {
+      "gamesDecayed": 8.36881592403642,
+      "residual": 0.714132031697522
+    },
+    "Ashe>Ziggs": {
+      "gamesDecayed": 8.36881592403642,
+      "residual": -0.7141320316975222
     },
     "Xin Zhao>Wukong": {
       "gamesDecayed": 9.169707737155088,
@@ -40913,14 +40913,6 @@
       "gamesDecayed": 95.50871299366968,
       "residual": 0.052394936107579455
     },
-    "Jinx>Kai'Sa": {
-      "gamesDecayed": 0.001036260004402249,
-      "residual": -0.00013326998332620083
-    },
-    "Kai'Sa>Jinx": {
-      "gamesDecayed": 0.001036260004402249,
-      "residual": 0.0001332699833262008
-    },
     "Aurora>Ryze": {
       "gamesDecayed": 0.7103011855696896,
       "residual": -0.022763019463699543
@@ -40944,6 +40936,14 @@
     "Rakan>Lulu": {
       "gamesDecayed": 2.019252873205981,
       "residual": -0.028401062760601573
+    },
+    "Jinx>Kai'Sa": {
+      "gamesDecayed": 0.001036260004402249,
+      "residual": -0.00013326998332620083
+    },
+    "Kai'Sa>Jinx": {
+      "gamesDecayed": 0.001036260004402249,
+      "residual": 0.0001332699833262008
     },
     "Pantheon>Brand": {
       "gamesDecayed": 0.0006955389275539716,
@@ -40977,14 +40977,6 @@
       "gamesDecayed": 0.6720206038960419,
       "residual": 0.04218125288645138
     },
-    "Ziggs>Varus": {
-      "gamesDecayed": 21.46943263455015,
-      "residual": 0.43151896966269915
-    },
-    "Varus>Ziggs": {
-      "gamesDecayed": 21.46943263455015,
-      "residual": -0.43151896966269915
-    },
     "Nidalee>Xin Zhao": {
       "gamesDecayed": 0.15167435970372678,
       "residual": 0.019019240142442023
@@ -41008,6 +41000,14 @@
     "Rell>Leona": {
       "gamesDecayed": 38.80125971264013,
       "residual": -0.6278492361570174
+    },
+    "Ziggs>Varus": {
+      "gamesDecayed": 21.46943263455015,
+      "residual": 0.43151896966269915
+    },
+    "Varus>Ziggs": {
+      "gamesDecayed": 21.46943263455015,
+      "residual": -0.43151896966269915
     },
     "Lillia>Zyra": {
       "gamesDecayed": 0.0031606759687632996,
@@ -41033,14 +41033,6 @@
       "gamesDecayed": 1.5899432853189255e-17,
       "residual": -8.839429156424815e-19
     },
-    "Kai'Sa>Ezreal": {
-      "gamesDecayed": 48.08357909439279,
-      "residual": -0.9835886621444621
-    },
-    "Ezreal>Kai'Sa": {
-      "gamesDecayed": 48.08357909439279,
-      "residual": 0.9835886621444621
-    },
     "Tryndamere>Viktor": {
       "gamesDecayed": 8.070852037419811e-11,
       "residual": -1.0523177080365884e-11
@@ -41064,6 +41056,14 @@
     "Galio>Elise": {
       "gamesDecayed": 1.715584692552074e-18,
       "residual": 8.872657910108917e-20
+    },
+    "Kai'Sa>Ezreal": {
+      "gamesDecayed": 48.08357909439279,
+      "residual": -0.9835886621444621
+    },
+    "Ezreal>Kai'Sa": {
+      "gamesDecayed": 48.08357909439279,
+      "residual": 0.9835886621444621
     },
     "K'Sante>Poppy": {
       "gamesDecayed": 1.05053101049402,
@@ -41121,14 +41121,6 @@
       "gamesDecayed": 2.598625475076786,
       "residual": -0.02966871168873054
     },
-    "Kalista>Ziggs": {
-      "gamesDecayed": 0.33994796820132306,
-      "residual": 0.015478237323219811
-    },
-    "Ziggs>Kalista": {
-      "gamesDecayed": 0.33994796820132306,
-      "residual": -0.015478237323219811
-    },
     "Kha'Zix>Zyra": {
       "gamesDecayed": 1.0913729099948624e-18,
       "residual": -1.1205196648502027e-20
@@ -41153,6 +41145,14 @@
       "gamesDecayed": 1.4606993009942624,
       "residual": 0.024286092772435562
     },
+    "Kalista>Ziggs": {
+      "gamesDecayed": 0.33994796820132306,
+      "residual": 0.015478237323219811
+    },
+    "Ziggs>Kalista": {
+      "gamesDecayed": 0.33994796820132306,
+      "residual": -0.015478237323219811
+    },
     "Yone>Aurora": {
       "gamesDecayed": 0.3610273827306051,
       "residual": -0.04894130565075896
@@ -41169,14 +41169,6 @@
       "gamesDecayed": 9.99442288731943,
       "residual": 0.7662008888637584
     },
-    "Caitlyn>Ashe": {
-      "gamesDecayed": 7.312391886739285,
-      "residual": -0.4093135022978964
-    },
-    "Ashe>Caitlyn": {
-      "gamesDecayed": 7.312391886739285,
-      "residual": 0.4093135022978969
-    },
     "Nocturne>Pantheon": {
       "gamesDecayed": 13.087426040674279,
       "residual": 0.21905226135675415
@@ -41192,6 +41184,14 @@
     "Seraphine>Bard": {
       "gamesDecayed": 8.641927261849002,
       "residual": 0.37362180119684063
+    },
+    "Caitlyn>Ashe": {
+      "gamesDecayed": 7.312391886739285,
+      "residual": -0.4093135022978964
+    },
+    "Ashe>Caitlyn": {
+      "gamesDecayed": 7.312391886739285,
+      "residual": 0.4093135022978969
     },
     "Aurora>Galio": {
       "gamesDecayed": 1.9483579252222316,
@@ -41233,14 +41233,6 @@
       "gamesDecayed": 0.9933652396682014,
       "residual": 0.0971882946152301
     },
-    "Ziggs>Miss Fortune": {
-      "gamesDecayed": 0.6667419438229814,
-      "residual": -0.0024906758458687435
-    },
-    "Miss Fortune>Ziggs": {
-      "gamesDecayed": 0.6667419438229814,
-      "residual": 0.0024906758458687448
-    },
     "Pantheon>Sejuani": {
       "gamesDecayed": 0.382703280430587,
       "residual": 0.04393921777919901
@@ -41257,13 +41249,13 @@
       "gamesDecayed": 0.008567741177341355,
       "residual": -0.0011368852914632127
     },
-    "Tristana>Jinx": {
-      "gamesDecayed": 0.03203969402965054,
-      "residual": -0.0040632955254712826
+    "Ziggs>Miss Fortune": {
+      "gamesDecayed": 0.6667419438229814,
+      "residual": -0.0024906758458687435
     },
-    "Jinx>Tristana": {
-      "gamesDecayed": 0.03203969402965054,
-      "residual": 0.004063295525471282
+    "Miss Fortune>Ziggs": {
+      "gamesDecayed": 0.6667419438229814,
+      "residual": 0.0024906758458687448
     },
     "Lee Sin>Volibear": {
       "gamesDecayed": 0.0011756431198172211,
@@ -41289,13 +41281,13 @@
       "gamesDecayed": 10.010950823246993,
       "residual": -0.42407074932214006
     },
-    "Ezreal>Varus": {
-      "gamesDecayed": 55.655618309798506,
-      "residual": -0.17464320916864062
+    "Tristana>Jinx": {
+      "gamesDecayed": 0.03203969402965054,
+      "residual": -0.0040632955254712826
     },
-    "Varus>Ezreal": {
-      "gamesDecayed": 55.655618309798506,
-      "residual": 0.17464320916864087
+    "Jinx>Tristana": {
+      "gamesDecayed": 0.03203969402965054,
+      "residual": 0.004063295525471282
     },
     "Braum>Elise": {
       "gamesDecayed": 8.290510399622623e-05,
@@ -41304,6 +41296,14 @@
     "Elise>Braum": {
       "gamesDecayed": 8.290510399622623e-05,
       "residual": -8.301395800749862e-06
+    },
+    "Ezreal>Varus": {
+      "gamesDecayed": 55.655618309798506,
+      "residual": -0.17464320916864062
+    },
+    "Varus>Ezreal": {
+      "gamesDecayed": 55.655618309798506,
+      "residual": 0.17464320916864087
     },
     "Akali>Azir": {
       "gamesDecayed": 0.3560985925421399,
@@ -41345,14 +41345,6 @@
       "gamesDecayed": 0.3354550734225001,
       "residual": -0.04271531176862471
     },
-    "Kalista>Varus": {
-      "gamesDecayed": 0.26549778993024387,
-      "residual": 0.03435799499053524
-    },
-    "Varus>Kalista": {
-      "gamesDecayed": 0.26549778993024387,
-      "residual": -0.034357994990535254
-    },
     "Nocturne>Wukong": {
       "gamesDecayed": 16.942866361843947,
       "residual": 0.27566763378436393
@@ -41369,13 +41361,13 @@
       "gamesDecayed": 1.2089183238114821e-12,
       "residual": -1.554642744947436e-13
     },
-    "Ashe>Miss Fortune": {
-      "gamesDecayed": 0.2616957495717574,
-      "residual": -0.01822973200469202
+    "Kalista>Varus": {
+      "gamesDecayed": 0.26549778993024387,
+      "residual": 0.03435799499053524
     },
-    "Miss Fortune>Ashe": {
-      "gamesDecayed": 0.2616957495717574,
-      "residual": 0.01822973200469203
+    "Varus>Kalista": {
+      "gamesDecayed": 0.26549778993024387,
+      "residual": -0.034357994990535254
     },
     "Kindred>Vi": {
       "gamesDecayed": 0.003400215319762715,
@@ -41393,13 +41385,13 @@
       "gamesDecayed": 0.3144049113998933,
       "residual": 0.03783307151888063
     },
-    "Caitlyn>Ziggs": {
-      "gamesDecayed": 1.3119766880618893,
-      "residual": -0.019891071834691784
+    "Ashe>Miss Fortune": {
+      "gamesDecayed": 0.2616957495717574,
+      "residual": -0.01822973200469202
     },
-    "Ziggs>Caitlyn": {
-      "gamesDecayed": 1.3119766880618893,
-      "residual": 0.019891071834691798
+    "Miss Fortune>Ashe": {
+      "gamesDecayed": 0.2616957495717574,
+      "residual": 0.01822973200469203
     },
     "Zac>Xin Zhao": {
       "gamesDecayed": 1.164455926247551e-13,
@@ -41425,13 +41417,13 @@
       "gamesDecayed": 0.40891862077932273,
       "residual": 0.00710487891775414
     },
-    "Miss Fortune>Corki": {
-      "gamesDecayed": 0.533988986686177,
-      "residual": 0.027948590366237775
+    "Caitlyn>Ziggs": {
+      "gamesDecayed": 1.3119766880618893,
+      "residual": -0.019891071834691784
     },
-    "Corki>Miss Fortune": {
-      "gamesDecayed": 0.533988986686177,
-      "residual": -0.027948590366237792
+    "Ziggs>Caitlyn": {
+      "gamesDecayed": 1.3119766880618893,
+      "residual": 0.019891071834691798
     },
     "Aurora>Viktor": {
       "gamesDecayed": 22.051230502075743,
@@ -41440,6 +41432,14 @@
     "Viktor>Aurora": {
       "gamesDecayed": 22.051230502075743,
       "residual": -0.6780971905223825
+    },
+    "Miss Fortune>Corki": {
+      "gamesDecayed": 0.533988986686177,
+      "residual": 0.027948590366237775
+    },
+    "Corki>Miss Fortune": {
+      "gamesDecayed": 0.533988986686177,
+      "residual": -0.027948590366237792
     },
     "Orianna>Ryze": {
       "gamesDecayed": 11.609836959485271,
@@ -41465,14 +41465,6 @@
       "gamesDecayed": 0.6490971063155915,
       "residual": 0.0010443955960593796
     },
-    "Varus>Sivir": {
-      "gamesDecayed": 27.583783784581723,
-      "residual": -0.39943736378218997
-    },
-    "Sivir>Varus": {
-      "gamesDecayed": 27.583783784581723,
-      "residual": 0.39943736378218964
-    },
     "Tristana>Sylas": {
       "gamesDecayed": 4.3889833916195663e-13,
       "residual": -4.6329456293328764e-14
@@ -41488,6 +41480,14 @@
     "Renekton>Ornn": {
       "gamesDecayed": 0.5923421174920258,
       "residual": 0.049330690791305525
+    },
+    "Varus>Sivir": {
+      "gamesDecayed": 27.583783784581723,
+      "residual": -0.39943736378218997
+    },
+    "Sivir>Varus": {
+      "gamesDecayed": 27.583783784581723,
+      "residual": 0.39943736378218964
     },
     "Nocturne>Vi": {
       "gamesDecayed": 32.000754730096965,
@@ -41529,14 +41529,6 @@
       "gamesDecayed": 1.3121280941385225,
       "residual": -0.03217276980320727
     },
-    "Caitlyn>Corki": {
-      "gamesDecayed": 2.3831127021671517,
-      "residual": 0.07598186364347509
-    },
-    "Corki>Caitlyn": {
-      "gamesDecayed": 2.3831127021671517,
-      "residual": -0.0759818636434751
-    },
     "Camille>Sion": {
       "gamesDecayed": 0.9345485535157465,
       "residual": 0.11770779455126336
@@ -41544,6 +41536,14 @@
     "Sion>Camille": {
       "gamesDecayed": 0.9345485535157465,
       "residual": -0.11770779455126339
+    },
+    "Caitlyn>Corki": {
+      "gamesDecayed": 2.3831127021671517,
+      "residual": 0.07598186364347509
+    },
+    "Corki>Caitlyn": {
+      "gamesDecayed": 2.3831127021671517,
+      "residual": -0.0759818636434751
     },
     "Ryze>LeBlanc": {
       "gamesDecayed": 0.7614534876864241,
@@ -41568,14 +41568,6 @@
     "Rell>Renata Glasc": {
       "gamesDecayed": 1.1160576315298962,
       "residual": -0.1434364047304127
-    },
-    "Jinx>Ezreal": {
-      "gamesDecayed": 0.004026844433394904,
-      "residual": -0.0005270988186564662
-    },
-    "Ezreal>Jinx": {
-      "gamesDecayed": 0.004026844433394904,
-      "residual": 0.0005270988186564662
     },
     "Viego>Lillia": {
       "gamesDecayed": 5.3101363861266665e-11,
@@ -41608,6 +41600,14 @@
     "Karma>Elise": {
       "gamesDecayed": 9.9429209964571e-05,
       "residual": -1.3101762786725302e-05
+    },
+    "Jinx>Ezreal": {
+      "gamesDecayed": 0.004026844433394904,
+      "residual": -0.0005270988186564662
+    },
+    "Ezreal>Jinx": {
+      "gamesDecayed": 0.004026844433394904,
+      "residual": 0.0005270988186564662
     },
     "Jax>Xin Zhao": {
       "gamesDecayed": 0.06818868116243502,
@@ -41665,14 +41665,6 @@
       "gamesDecayed": 0.09656507241619872,
       "residual": 0.012681953683036984
     },
-    "Zeri>Jinx": {
-      "gamesDecayed": 0.001107590261576764,
-      "residual": -0.0001446193552135208
-    },
-    "Jinx>Zeri": {
-      "gamesDecayed": 0.001107590261576764,
-      "residual": 0.00014461935521352078
-    },
     "Galio>Orianna": {
       "gamesDecayed": 41.14885115965843,
       "residual": 0.36483550761014427
@@ -41697,6 +41689,14 @@
       "gamesDecayed": 0.01838180392691732,
       "residual": 0.0001831360689323587
     },
+    "Zeri>Jinx": {
+      "gamesDecayed": 0.001107590261576764,
+      "residual": -0.0001446193552135208
+    },
+    "Jinx>Zeri": {
+      "gamesDecayed": 0.001107590261576764,
+      "residual": 0.00014461935521352078
+    },
     "Jayce>Wukong": {
       "gamesDecayed": 0.20950841764861847,
       "residual": -0.02368542733857451
@@ -41704,14 +41704,6 @@
     "Wukong>Jayce": {
       "gamesDecayed": 0.20950841764861847,
       "residual": 0.023685427338574594
-    },
-    "Ezreal>Ashe": {
-      "gamesDecayed": 0.860927998728763,
-      "residual": 0.009930736035808525
-    },
-    "Ashe>Ezreal": {
-      "gamesDecayed": 0.860927998728763,
-      "residual": -0.00993073603580852
     },
     "Leona>Nautilus": {
       "gamesDecayed": 68.7959418090165,
@@ -41721,13 +41713,13 @@
       "gamesDecayed": 68.7959418090165,
       "residual": -0.40487404207749067
     },
-    "Caitlyn>Kai'Sa": {
-      "gamesDecayed": 1.0780612315328522,
-      "residual": -0.14011589075194666
+    "Ezreal>Ashe": {
+      "gamesDecayed": 0.860927998728763,
+      "residual": 0.009930736035808525
     },
-    "Kai'Sa>Caitlyn": {
-      "gamesDecayed": 1.0780612315328522,
-      "residual": 0.1401158907519466
+    "Ashe>Ezreal": {
+      "gamesDecayed": 0.860927998728763,
+      "residual": -0.00993073603580852
     },
     "Pantheon>Zyra": {
       "gamesDecayed": 0.002157046477310045,
@@ -41744,6 +41736,14 @@
     "Alistar>Lux": {
       "gamesDecayed": 2.325313318076829e-18,
       "residual": 3.1127885082663555e-19
+    },
+    "Caitlyn>Kai'Sa": {
+      "gamesDecayed": 1.0780612315328522,
+      "residual": -0.14011589075194666
+    },
+    "Kai'Sa>Caitlyn": {
+      "gamesDecayed": 1.0780612315328522,
+      "residual": 0.1401158907519466
     },
     "Sejuani>Poppy": {
       "gamesDecayed": 9.567091352017385e-06,
@@ -41769,14 +41769,6 @@
       "gamesDecayed": 0.7854701511948479,
       "residual": 0.007564760138051353
     },
-    "Jhin>Ziggs": {
-      "gamesDecayed": 35.25341213956111,
-      "residual": 0.5586110552874057
-    },
-    "Ziggs>Jhin": {
-      "gamesDecayed": 35.25341213956111,
-      "residual": -0.5586110552874057
-    },
     "Gnar>Jax": {
       "gamesDecayed": 27.279792936383878,
       "residual": -1.2644347594322058
@@ -41784,6 +41776,14 @@
     "Jax>Gnar": {
       "gamesDecayed": 27.279792936383878,
       "residual": 1.2644347594322058
+    },
+    "Jhin>Ziggs": {
+      "gamesDecayed": 35.25341213956111,
+      "residual": 0.5586110552874057
+    },
+    "Ziggs>Jhin": {
+      "gamesDecayed": 35.25341213956111,
+      "residual": -0.5586110552874057
     },
     "Jinx>Ashe": {
       "gamesDecayed": 0.1462931844940467,
@@ -41849,14 +41849,6 @@
       "gamesDecayed": 7.219561385822792e-08,
       "residual": 9.803298578461144e-09
     },
-    "Ezreal>Aphelios": {
-      "gamesDecayed": 0.0039845674650373746,
-      "residual": 0.00026500251941513245
-    },
-    "Aphelios>Ezreal": {
-      "gamesDecayed": 0.0039845674650373746,
-      "residual": -0.0002650025194151328
-    },
     "Ryze>Azir": {
       "gamesDecayed": 3.040578549701663,
       "residual": 0.2195323852170567
@@ -41881,6 +41873,14 @@
       "gamesDecayed": 0.0011680038054770075,
       "residual": -3.9607698456485433e-05
     },
+    "Ezreal>Aphelios": {
+      "gamesDecayed": 0.0039845674650373746,
+      "residual": 0.00026500251941513245
+    },
+    "Aphelios>Ezreal": {
+      "gamesDecayed": 0.0039845674650373746,
+      "residual": -0.0002650025194151328
+    },
     "Corki>Ashe": {
       "gamesDecayed": 0.07411894607012763,
       "residual": -0.004278906376169848
@@ -41888,14 +41888,6 @@
     "Ashe>Corki": {
       "gamesDecayed": 0.07411894607012763,
       "residual": 0.00427890637616984
-    },
-    "Jhin>Varus": {
-      "gamesDecayed": 23.394571037446138,
-      "residual": -1.0629526725428042
-    },
-    "Varus>Jhin": {
-      "gamesDecayed": 23.394571037446138,
-      "residual": 1.0629526725428033
     },
     "Jayce>Akali": {
       "gamesDecayed": 0.016677337025236577,
@@ -41913,13 +41905,13 @@
       "gamesDecayed": 1.6792502466203734,
       "residual": -0.020594950784047817
     },
-    "Twitch>Ezreal": {
-      "gamesDecayed": 3.517809431038506e-18,
-      "residual": 4.661293332166907e-19
+    "Jhin>Varus": {
+      "gamesDecayed": 23.394571037446138,
+      "residual": -1.0629526725428042
     },
-    "Ezreal>Twitch": {
-      "gamesDecayed": 3.517809431038506e-18,
-      "residual": -4.661293332166907e-19
+    "Varus>Jhin": {
+      "gamesDecayed": 23.394571037446138,
+      "residual": 1.0629526725428033
     },
     "Sylas>Aurora": {
       "gamesDecayed": 1.1642011463613473,
@@ -41944,6 +41936,14 @@
     "Pantheon>Elise": {
       "gamesDecayed": 2.184699136698757e-15,
       "residual": 1.8471945377610764e-16
+    },
+    "Twitch>Ezreal": {
+      "gamesDecayed": 3.517809431038506e-18,
+      "residual": 4.661293332166907e-19
+    },
+    "Ezreal>Twitch": {
+      "gamesDecayed": 3.517809431038506e-18,
+      "residual": -4.661293332166907e-19
     },
     "Ahri>Ryze": {
       "gamesDecayed": 81.09905628507607,
@@ -42065,14 +42065,6 @@
       "gamesDecayed": 0.28383565427154744,
       "residual": -0.025482403529132874
     },
-    "Draven>Varus": {
-      "gamesDecayed": 4.720413496483196e-13,
-      "residual": 2.986272375252231e-14
-    },
-    "Varus>Draven": {
-      "gamesDecayed": 4.720413496483196e-13,
-      "residual": -2.986272375252231e-14
-    },
     "Wukong>Nidalee": {
       "gamesDecayed": 6.143045614199549,
       "residual": 0.7320843187526008
@@ -42089,6 +42081,14 @@
       "gamesDecayed": 0.3214779470482837,
       "residual": 0.020295510090997677
     },
+    "Draven>Varus": {
+      "gamesDecayed": 4.720413496483196e-13,
+      "residual": 2.986272375252231e-14
+    },
+    "Varus>Draven": {
+      "gamesDecayed": 4.720413496483196e-13,
+      "residual": -2.986272375252231e-14
+    },
     "Corki>Smolder": {
       "gamesDecayed": 0.00638332576818556,
       "residual": 0.00031277921697244707
@@ -42096,14 +42096,6 @@
     "Smolder>Corki": {
       "gamesDecayed": 0.00638332576818556,
       "residual": -0.000312779216972447
-    },
-    "Kog'Maw>Kai'Sa": {
-      "gamesDecayed": 1.3558652672525035e-15,
-      "residual": -1.6910672986083626e-16
-    },
-    "Kai'Sa>Kog'Maw": {
-      "gamesDecayed": 1.3558652672525035e-15,
-      "residual": 1.6910672986083626e-16
     },
     "Sejuani>Lillia": {
       "gamesDecayed": 4.332327227357925e-06,
@@ -42137,13 +42129,13 @@
       "gamesDecayed": 0.002548140403665425,
       "residual": 0.00033305520317251594
     },
-    "Lucian>Jhin": {
-      "gamesDecayed": 5.526392314106292,
-      "residual": -0.014375369214589222
+    "Kog'Maw>Kai'Sa": {
+      "gamesDecayed": 1.3558652672525035e-15,
+      "residual": -1.6910672986083626e-16
     },
-    "Jhin>Lucian": {
-      "gamesDecayed": 5.526392314106292,
-      "residual": 0.014375369214589187
+    "Kai'Sa>Kog'Maw": {
+      "gamesDecayed": 1.3558652672525035e-15,
+      "residual": 1.6910672986083626e-16
     },
     "Poppy>Pantheon": {
       "gamesDecayed": 0.03230526942957536,
@@ -42168,6 +42160,14 @@
     "Karma>Nami": {
       "gamesDecayed": 0.4595367500978398,
       "residual": 0.026462399324747025
+    },
+    "Lucian>Jhin": {
+      "gamesDecayed": 5.526392314106292,
+      "residual": -0.014375369214589222
+    },
+    "Jhin>Lucian": {
+      "gamesDecayed": 5.526392314106292,
+      "residual": 0.014375369214589187
     },
     "Nidalee>Lillia": {
       "gamesDecayed": 2.1408364316948e-14,
@@ -42209,14 +42209,6 @@
       "gamesDecayed": 1.2304752337761249e-05,
       "residual": -2.3403065164800966e-07
     },
-    "Senna>Miss Fortune": {
-      "gamesDecayed": 0.0294904989686828,
-      "residual": 8.980846050244632e-06
-    },
-    "Miss Fortune>Senna": {
-      "gamesDecayed": 0.0294904989686828,
-      "residual": -8.980846050244952e-06
-    },
     "Jayce>Sion": {
       "gamesDecayed": 6.046410280856584,
       "residual": -0.020187476410488594
@@ -42233,13 +42225,13 @@
       "gamesDecayed": 1.3314188591430458e-17,
       "residual": -1.740371426198975e-18
     },
-    "Zeri>Caitlyn": {
-      "gamesDecayed": 0.37191662557761174,
-      "residual": 0.05055153963574163
+    "Senna>Miss Fortune": {
+      "gamesDecayed": 0.0294904989686828,
+      "residual": 8.980846050244632e-06
     },
-    "Caitlyn>Zeri": {
-      "gamesDecayed": 0.37191662557761174,
-      "residual": -0.050551539635741646
+    "Miss Fortune>Senna": {
+      "gamesDecayed": 0.0294904989686828,
+      "residual": -8.980846050244952e-06
     },
     "Akali>Yone": {
       "gamesDecayed": 0.14728266099841225,
@@ -42264,6 +42256,14 @@
     "Karma>Lulu": {
       "gamesDecayed": 9.450387001806144,
       "residual": 0.39058807623271247
+    },
+    "Zeri>Caitlyn": {
+      "gamesDecayed": 0.37191662557761174,
+      "residual": 0.05055153963574163
+    },
+    "Caitlyn>Zeri": {
+      "gamesDecayed": 0.37191662557761174,
+      "residual": -0.050551539635741646
     },
     "Ryze>Corki": {
       "gamesDecayed": 0.3546917603662655,
@@ -42297,14 +42297,6 @@
       "gamesDecayed": 17.6534525733174,
       "residual": -1.5426976427235881
     },
-    "Smolder>Kai'Sa": {
-      "gamesDecayed": 0.0029980651796598186,
-      "residual": -0.0003664870952473241
-    },
-    "Kai'Sa>Smolder": {
-      "gamesDecayed": 0.0029980651796598186,
-      "residual": 0.0003664870952473241
-    },
     "Wukong>Volibear": {
       "gamesDecayed": 0.9312161476865396,
       "residual": -0.1128683075602639
@@ -42312,6 +42304,14 @@
     "Volibear>Wukong": {
       "gamesDecayed": 0.9312161476865396,
       "residual": 0.11286830756026388
+    },
+    "Smolder>Kai'Sa": {
+      "gamesDecayed": 0.0029980651796598186,
+      "residual": -0.0003664870952473241
+    },
+    "Kai'Sa>Smolder": {
+      "gamesDecayed": 0.0029980651796598186,
+      "residual": 0.0003664870952473241
     },
     "Taliyah>Karma": {
       "gamesDecayed": 9.30718391376008e-16,
@@ -42353,14 +42353,6 @@
       "gamesDecayed": 67.62036955674594,
       "residual": -0.35642141620649914
     },
-    "Xayah>Miss Fortune": {
-      "gamesDecayed": 0.030115719426198527,
-      "residual": 0.0038426269185092327
-    },
-    "Miss Fortune>Xayah": {
-      "gamesDecayed": 0.030115719426198527,
-      "residual": -0.0038426269185092335
-    },
     "Taliyah>Viktor": {
       "gamesDecayed": 1.2913675837729124,
       "residual": 0.06985157565557307
@@ -42377,13 +42369,13 @@
       "gamesDecayed": 3.0148117328014025e-17,
       "residual": -2.9581157969448013e-18
     },
-    "Jhin>Caitlyn": {
-      "gamesDecayed": 19.58586756591104,
-      "residual": -0.6544929283443134
+    "Xayah>Miss Fortune": {
+      "gamesDecayed": 0.030115719426198527,
+      "residual": 0.0038426269185092327
     },
-    "Caitlyn>Jhin": {
-      "gamesDecayed": 19.58586756591104,
-      "residual": 0.6544929283443129
+    "Miss Fortune>Xayah": {
+      "gamesDecayed": 0.030115719426198527,
+      "residual": -0.0038426269185092335
     },
     "Zac>Pantheon": {
       "gamesDecayed": 1.1722908744981193e-11,
@@ -42416,6 +42408,14 @@
     "Elise>Neeko": {
       "gamesDecayed": 0.3770752108820119,
       "residual": -0.047533377124769745
+    },
+    "Jhin>Caitlyn": {
+      "gamesDecayed": 19.58586756591104,
+      "residual": -0.6544929283443134
+    },
+    "Caitlyn>Jhin": {
+      "gamesDecayed": 19.58586756591104,
+      "residual": 0.6544929283443129
     },
     "Aurora>Rumble": {
       "gamesDecayed": 7.274346894466151,
@@ -42521,14 +42521,6 @@
       "gamesDecayed": 0.01179397809280931,
       "residual": 0.0015342053113377345
     },
-    "Caitlyn>Kalista": {
-      "gamesDecayed": 0.10097993944321532,
-      "residual": -0.01344203571602513
-    },
-    "Kalista>Caitlyn": {
-      "gamesDecayed": 0.10097993944321532,
-      "residual": 0.013442035716025126
-    },
     "Wukong>Sejuani": {
       "gamesDecayed": 0.15283400910091924,
       "residual": -0.008756289187274535
@@ -42553,6 +42545,14 @@
       "gamesDecayed": 1.424047913342196e-17,
       "residual": 1.836174512811246e-18
     },
+    "Caitlyn>Kalista": {
+      "gamesDecayed": 0.10097993944321532,
+      "residual": -0.01344203571602513
+    },
+    "Kalista>Caitlyn": {
+      "gamesDecayed": 0.10097993944321532,
+      "residual": 0.013442035716025126
+    },
     "Nocturne>Sejuani": {
       "gamesDecayed": 0.6699557578844108,
       "residual": -0.0069814718357196935
@@ -42569,14 +42569,6 @@
       "gamesDecayed": 0.0848486103955822,
       "residual": -0.005845850772531778
     },
-    "Senna>Ezreal": {
-      "gamesDecayed": 0.1552174194475351,
-      "residual": -0.0077171396716400175
-    },
-    "Ezreal>Senna": {
-      "gamesDecayed": 0.1552174194475351,
-      "residual": 0.00771713967164001
-    },
     "Jayce>Azir": {
       "gamesDecayed": 0.001785471066346621,
       "residual": 1.0045815677234441e-05
@@ -42592,6 +42584,14 @@
     "Karma>Sion": {
       "gamesDecayed": 2.831240022633493e-13,
       "residual": -3.6610304140775154e-14
+    },
+    "Senna>Ezreal": {
+      "gamesDecayed": 0.1552174194475351,
+      "residual": -0.0077171396716400175
+    },
+    "Ezreal>Senna": {
+      "gamesDecayed": 0.1552174194475351,
+      "residual": 0.00771713967164001
     },
     "Yasuo>Orianna": {
       "gamesDecayed": 8.589287650993404e-06,
@@ -42641,14 +42641,6 @@
       "gamesDecayed": 0.23896478494786366,
       "residual": -0.0004053762073339798
     },
-    "Jhin>Ezreal": {
-      "gamesDecayed": 50.917023881725775,
-      "residual": 0.7836194144590998
-    },
-    "Ezreal>Jhin": {
-      "gamesDecayed": 50.917023881725775,
-      "residual": -0.7836194144590991
-    },
     "Lillia>Lee Sin": {
       "gamesDecayed": 9.288403711426995e-15,
       "residual": -3.940164374542601e-16
@@ -42673,13 +42665,13 @@
       "gamesDecayed": 0.3654754648209939,
       "residual": 0.04936245894290689
     },
-    "Zeri>Ziggs": {
-      "gamesDecayed": 2.6753181031321778,
-      "residual": 0.07777700191191385
+    "Jhin>Ezreal": {
+      "gamesDecayed": 50.917023881725775,
+      "residual": 0.7836194144590998
     },
-    "Ziggs>Zeri": {
-      "gamesDecayed": 2.6753181031321778,
-      "residual": -0.07777700191191377
+    "Ezreal>Jhin": {
+      "gamesDecayed": 50.917023881725775,
+      "residual": -0.7836194144590991
     },
     "Sejuani>Shen": {
       "gamesDecayed": 2.5583635502547498e-15,
@@ -42704,6 +42696,14 @@
     "Camille>Wukong": {
       "gamesDecayed": 2.525900085321856e-16,
       "residual": 1.8536583079942318e-17
+    },
+    "Zeri>Ziggs": {
+      "gamesDecayed": 2.6753181031321778,
+      "residual": 0.07777700191191385
+    },
+    "Ziggs>Zeri": {
+      "gamesDecayed": 2.6753181031321778,
+      "residual": -0.07777700191191377
     },
     "Volibear>Viego": {
       "gamesDecayed": 0.0009066677261998291,
@@ -42817,14 +42817,6 @@
       "gamesDecayed": 1.084106736373154e-06,
       "residual": 1.4903764858173604e-07
     },
-    "Draven>Jinx": {
-      "gamesDecayed": 5.0710566815063846e-14,
-      "residual": -6.927880947962537e-15
-    },
-    "Jinx>Draven": {
-      "gamesDecayed": 5.0710566815063846e-14,
-      "residual": 6.9278809479625355e-15
-    },
     "Nautilus>Lulu": {
       "gamesDecayed": 8.244030770636082,
       "residual": 0.8694850230883645
@@ -42832,6 +42824,14 @@
     "Lulu>Nautilus": {
       "gamesDecayed": 8.244030770636082,
       "residual": -0.869485023088365
+    },
+    "Draven>Jinx": {
+      "gamesDecayed": 5.0710566815063846e-14,
+      "residual": -6.927880947962537e-15
+    },
+    "Jinx>Draven": {
+      "gamesDecayed": 5.0710566815063846e-14,
+      "residual": 6.9278809479625355e-15
     },
     "Gragas>Aatrox": {
       "gamesDecayed": 0.28875764058414466,
@@ -42849,14 +42849,6 @@
       "gamesDecayed": 0.9321582408856296,
       "residual": 0.09010278235354856
     },
-    "Corki>Draven": {
-      "gamesDecayed": 0.005220125594075058,
-      "residual": 0.00043873564888051935
-    },
-    "Draven>Corki": {
-      "gamesDecayed": 0.005220125594075058,
-      "residual": -0.0004387356488805186
-    },
     "Maokai>Pantheon": {
       "gamesDecayed": 0.014003830206487435,
       "residual": 0.0007819807041206636
@@ -42864,6 +42856,14 @@
     "Pantheon>Maokai": {
       "gamesDecayed": 0.014003830206487435,
       "residual": -0.0007819807041206633
+    },
+    "Corki>Draven": {
+      "gamesDecayed": 0.005220125594075058,
+      "residual": 0.00043873564888051935
+    },
+    "Draven>Corki": {
+      "gamesDecayed": 0.005220125594075058,
+      "residual": -0.0004387356488805186
     },
     "Aurora>Azir": {
       "gamesDecayed": 0.43722243774570785,
@@ -42929,14 +42929,6 @@
       "gamesDecayed": 13.951513868944582,
       "residual": -0.08330218967176485
     },
-    "Kalista>Kai'Sa": {
-      "gamesDecayed": 0.0029628433384698808,
-      "residual": 0.0003875531282886545
-    },
-    "Kai'Sa>Kalista": {
-      "gamesDecayed": 0.0029628433384698808,
-      "residual": -0.00038755312828865456
-    },
     "Gwen>Ambessa": {
       "gamesDecayed": 0.01786698368693048,
       "residual": -0.0004482123644981979
@@ -42953,13 +42945,13 @@
       "gamesDecayed": 0.0023241427186154896,
       "residual": -0.00028247463471044523
     },
-    "Xayah>Varus": {
-      "gamesDecayed": 0.48428854296023743,
-      "residual": -0.003169733363196469
+    "Kalista>Kai'Sa": {
+      "gamesDecayed": 0.0029628433384698808,
+      "residual": 0.0003875531282886545
     },
-    "Varus>Xayah": {
-      "gamesDecayed": 0.48428854296023743,
-      "residual": 0.0031697333631964726
+    "Kai'Sa>Kalista": {
+      "gamesDecayed": 0.0029628433384698808,
+      "residual": -0.00038755312828865456
     },
     "Alistar>Nautilus": {
       "gamesDecayed": 45.927571227407,
@@ -42968,6 +42960,14 @@
     "Nautilus>Alistar": {
       "gamesDecayed": 45.927571227407,
       "residual": -1.267453633766517
+    },
+    "Xayah>Varus": {
+      "gamesDecayed": 0.48428854296023743,
+      "residual": -0.003169733363196469
+    },
+    "Varus>Xayah": {
+      "gamesDecayed": 0.48428854296023743,
+      "residual": 0.0031697333631964726
     },
     "Nidalee>Sejuani": {
       "gamesDecayed": 0.07605088769128467,
@@ -43129,14 +43129,6 @@
       "gamesDecayed": 0.3470200499801433,
       "residual": -0.0436186694497132
     },
-    "Jhin>Kalista": {
-      "gamesDecayed": 1.699002158629372,
-      "residual": -0.1990421424176151
-    },
-    "Kalista>Jhin": {
-      "gamesDecayed": 1.699002158629372,
-      "residual": 0.19904214241761506
-    },
     "Gwen>Rumble": {
       "gamesDecayed": 0.6125847664647238,
       "residual": 0.027462917452710515
@@ -43144,6 +43136,14 @@
     "Rumble>Gwen": {
       "gamesDecayed": 0.6125847664647238,
       "residual": -0.0274629174527105
+    },
+    "Jhin>Kalista": {
+      "gamesDecayed": 1.699002158629372,
+      "residual": -0.1990421424176151
+    },
+    "Kalista>Jhin": {
+      "gamesDecayed": 1.699002158629372,
+      "residual": 0.19904214241761506
     },
     "Skarner>Lillia": {
       "gamesDecayed": 0.00021743941860363775,
@@ -43225,14 +43225,6 @@
       "gamesDecayed": 31.797245906418386,
       "residual": -0.2958207089768766
     },
-    "Varus>Mel": {
-      "gamesDecayed": 0.9692641866964429,
-      "residual": 0.11584358467012912
-    },
-    "Mel>Varus": {
-      "gamesDecayed": 0.9692641866964429,
-      "residual": -0.11584358467012917
-    },
     "Sion>Ambessa": {
       "gamesDecayed": 3.314236991540894,
       "residual": -0.14533130377264494
@@ -43241,13 +43233,13 @@
       "gamesDecayed": 3.314236991540894,
       "residual": 0.14533130377264503
     },
-    "Miss Fortune>Kai'Sa": {
-      "gamesDecayed": 0.13504647465979197,
-      "residual": 0.01795938646007361
+    "Varus>Mel": {
+      "gamesDecayed": 0.9692641866964429,
+      "residual": 0.11584358467012912
     },
-    "Kai'Sa>Miss Fortune": {
-      "gamesDecayed": 0.13504647465979197,
-      "residual": -0.017959386460073612
+    "Mel>Varus": {
+      "gamesDecayed": 0.9692641866964429,
+      "residual": -0.11584358467012917
     },
     "Skarner>Naafiri": {
       "gamesDecayed": 2.5413819393349537,
@@ -43256,6 +43248,14 @@
     "Naafiri>Skarner": {
       "gamesDecayed": 2.5413819393349537,
       "residual": -0.04809604911916339
+    },
+    "Miss Fortune>Kai'Sa": {
+      "gamesDecayed": 0.13504647465979197,
+      "residual": 0.01795938646007361
+    },
+    "Kai'Sa>Miss Fortune": {
+      "gamesDecayed": 0.13504647465979197,
+      "residual": -0.017959386460073612
     },
     "Ryze>Yone": {
       "gamesDecayed": 47.49488801375233,
@@ -43297,14 +43297,6 @@
       "gamesDecayed": 0.003269465098502874,
       "residual": 0.0004201805122926305
     },
-    "Jhin>Kai'Sa": {
-      "gamesDecayed": 1.9109128480326911,
-      "residual": -0.2234408883826609
-    },
-    "Kai'Sa>Jhin": {
-      "gamesDecayed": 1.9109128480326911,
-      "residual": 0.22344088838266085
-    },
     "Maokai>Xin Zhao": {
       "gamesDecayed": 0.010084383070761071,
       "residual": -0.0013360434830461889
@@ -43320,6 +43312,14 @@
     "Ahri>Corki": {
       "gamesDecayed": 7.589267083053705e-06,
       "residual": 9.631708429136754e-07
+    },
+    "Jhin>Kai'Sa": {
+      "gamesDecayed": 1.9109128480326911,
+      "residual": -0.2234408883826609
+    },
+    "Kai'Sa>Jhin": {
+      "gamesDecayed": 1.9109128480326911,
+      "residual": 0.22344088838266085
     },
     "Sylas>Pantheon": {
       "gamesDecayed": 0.31494947170585547,
@@ -43345,14 +43345,6 @@
       "gamesDecayed": 2.3104355588969558e-07,
       "residual": -3.004592364884135e-08
     },
-    "Draven>Jhin": {
-      "gamesDecayed": 0.38179986695877577,
-      "residual": 0.04557257540605215
-    },
-    "Jhin>Draven": {
-      "gamesDecayed": 0.38179986695877577,
-      "residual": -0.04557257540605216
-    },
     "Yone>Zed": {
       "gamesDecayed": 2.520329146272018e-16,
       "residual": 2.2236147988926814e-17
@@ -43368,6 +43360,14 @@
     "Renekton>Kennen": {
       "gamesDecayed": 0.19030381223028955,
       "residual": -0.012969122986734508
+    },
+    "Draven>Jhin": {
+      "gamesDecayed": 0.38179986695877577,
+      "residual": 0.04557257540605215
+    },
+    "Jhin>Draven": {
+      "gamesDecayed": 0.38179986695877577,
+      "residual": -0.04557257540605216
     },
     "Braum>Nautilus": {
       "gamesDecayed": 6.311122464071609,
@@ -43449,14 +43449,6 @@
       "gamesDecayed": 3.8826750991400295e-06,
       "residual": 4.854241524657493e-07
     },
-    "Corki>Kalista": {
-      "gamesDecayed": 0.004712864424272747,
-      "residual": 0.00027203529299235375
-    },
-    "Kalista>Corki": {
-      "gamesDecayed": 0.004712864424272747,
-      "residual": -0.00027203529299235386
-    },
     "Pantheon>Neeko": {
       "gamesDecayed": 0.0029783154231150617,
       "residual": -0.0003878800876834323
@@ -43464,6 +43456,14 @@
     "Neeko>Pantheon": {
       "gamesDecayed": 0.0029783154231150617,
       "residual": 0.00038788008768343224
+    },
+    "Corki>Kalista": {
+      "gamesDecayed": 0.004712864424272747,
+      "residual": 0.00027203529299235375
+    },
+    "Kalista>Corki": {
+      "gamesDecayed": 0.004712864424272747,
+      "residual": -0.00027203529299235386
     },
     "Volibear>Vi": {
       "gamesDecayed": 0.9086734527999135,
@@ -43497,14 +43497,6 @@
       "gamesDecayed": 0.05399962090374026,
       "residual": -5.929185441554271e-05
     },
-    "Jhin>Corki": {
-      "gamesDecayed": 64.26683054810627,
-      "residual": -0.828061747243294
-    },
-    "Corki>Jhin": {
-      "gamesDecayed": 64.26683054810627,
-      "residual": 0.828061747243294
-    },
     "Kennen>Ambessa": {
       "gamesDecayed": 0.40274737127741855,
       "residual": 0.05370006049015949
@@ -43512,6 +43504,14 @@
     "Ambessa>Kennen": {
       "gamesDecayed": 0.40274737127741855,
       "residual": -0.0537000604901595
+    },
+    "Jhin>Corki": {
+      "gamesDecayed": 64.26683054810627,
+      "residual": -0.828061747243294
+    },
+    "Corki>Jhin": {
+      "gamesDecayed": 64.26683054810627,
+      "residual": 0.828061747243294
     },
     "Poppy>Viego": {
       "gamesDecayed": 9.237858882828023e-06,
@@ -43633,14 +43633,6 @@
       "gamesDecayed": 2.4074650753694087e-06,
       "residual": -1.546864382983442e-07
     },
-    "Tristana>Kai'Sa": {
-      "gamesDecayed": 3.527871622757965,
-      "residual": -0.02301302096838638
-    },
-    "Kai'Sa>Tristana": {
-      "gamesDecayed": 3.527871622757965,
-      "residual": 0.023013020968386352
-    },
     "Gnar>Jayce": {
       "gamesDecayed": 7.748071653959057,
       "residual": 0.7916241935006523
@@ -43648,6 +43640,14 @@
     "Jayce>Gnar": {
       "gamesDecayed": 7.748071653959057,
       "residual": -0.7916241935006523
+    },
+    "Tristana>Kai'Sa": {
+      "gamesDecayed": 3.527871622757965,
+      "residual": -0.02301302096838638
+    },
+    "Kai'Sa>Tristana": {
+      "gamesDecayed": 3.527871622757965,
+      "residual": 0.023013020968386352
     },
     "Renekton>Yorick": {
       "gamesDecayed": 1.0366009416575552,
@@ -43721,14 +43721,6 @@
       "gamesDecayed": 0.3297359398708398,
       "residual": 0.02157835233869525
     },
-    "Jinx>Jhin": {
-      "gamesDecayed": 0.000522534573177012,
-      "residual": -8.263803066052609e-07
-    },
-    "Jhin>Jinx": {
-      "gamesDecayed": 0.000522534573177012,
-      "residual": 8.263803066052606e-07
-    },
     "Nidalee>Renekton": {
       "gamesDecayed": 0.005962813550636489,
       "residual": 0.0007627928721690442
@@ -43736,6 +43728,14 @@
     "Renekton>Nidalee": {
       "gamesDecayed": 0.005962813550636489,
       "residual": -0.0007627928721690444
+    },
+    "Jinx>Jhin": {
+      "gamesDecayed": 0.000522534573177012,
+      "residual": -8.263803066052609e-07
+    },
+    "Jhin>Jinx": {
+      "gamesDecayed": 0.000522534573177012,
+      "residual": 8.263803066052606e-07
     },
     "Xin Zhao>Lillia": {
       "gamesDecayed": 4.459195282859723e-11,
@@ -43817,14 +43817,6 @@
       "gamesDecayed": 2.245740633847894,
       "residual": 0.2576918751011849
     },
-    "Aphelios>Xayah": {
-      "gamesDecayed": 0.48555686834153444,
-      "residual": 0.01925313774914236
-    },
-    "Xayah>Aphelios": {
-      "gamesDecayed": 0.48555686834153444,
-      "residual": -0.01925313774914236
-    },
     "Wukong>Skarner": {
       "gamesDecayed": 22.59510248378716,
       "residual": -0.8397698405536661
@@ -43840,6 +43832,14 @@
     "Yorick>Jayce": {
       "gamesDecayed": 70.44006845539442,
       "residual": 0.5179153971498922
+    },
+    "Aphelios>Xayah": {
+      "gamesDecayed": 0.48555686834153444,
+      "residual": 0.01925313774914236
+    },
+    "Xayah>Aphelios": {
+      "gamesDecayed": 0.48555686834153444,
+      "residual": -0.01925313774914236
     },
     "Poppy>Gnar": {
       "gamesDecayed": 0.9975093000587848,
@@ -43889,14 +43889,6 @@
       "gamesDecayed": 0.5036074215657764,
       "residual": 0.014129735316747044
     },
-    "Xayah>Jhin": {
-      "gamesDecayed": 0.49792618959927226,
-      "residual": 0.011555019703905272
-    },
-    "Jhin>Xayah": {
-      "gamesDecayed": 0.49792618959927226,
-      "residual": -0.011555019703905272
-    },
     "Rakan>Karma": {
       "gamesDecayed": 1.061264220598469,
       "residual": -0.023782237051726583
@@ -43904,6 +43896,14 @@
     "Karma>Rakan": {
       "gamesDecayed": 1.061264220598469,
       "residual": 0.023782237051726576
+    },
+    "Xayah>Jhin": {
+      "gamesDecayed": 0.49792618959927226,
+      "residual": 0.011555019703905272
+    },
+    "Jhin>Xayah": {
+      "gamesDecayed": 0.49792618959927226,
+      "residual": -0.011555019703905272
     },
     "Viego>Olaf": {
       "gamesDecayed": 4.533228856091287e-13,
@@ -43961,14 +43961,6 @@
       "gamesDecayed": 0.9450889427655814,
       "residual": 0.11316829912224792
     },
-    "Tristana>Ezreal": {
-      "gamesDecayed": 1.3093556415710916,
-      "residual": 0.040888751446514784
-    },
-    "Ezreal>Tristana": {
-      "gamesDecayed": 1.3093556415710916,
-      "residual": -0.040888751446514826
-    },
     "Lulu>Neeko": {
       "gamesDecayed": 1.4628624285862837,
       "residual": -0.06900408798804723
@@ -43976,6 +43968,14 @@
     "Neeko>Lulu": {
       "gamesDecayed": 1.4628624285862837,
       "residual": 0.06900408798804725
+    },
+    "Tristana>Ezreal": {
+      "gamesDecayed": 1.3093556415710916,
+      "residual": 0.040888751446514784
+    },
+    "Ezreal>Tristana": {
+      "gamesDecayed": 1.3093556415710916,
+      "residual": -0.040888751446514826
     },
     "Ambessa>Yorick": {
       "gamesDecayed": 6.312688878082581,
@@ -44001,14 +44001,6 @@
       "gamesDecayed": 1.8081845043361513,
       "residual": -0.0005673503970268693
     },
-    "Zeri>Varus": {
-      "gamesDecayed": 1.550580845035429,
-      "residual": -0.10885135063348159
-    },
-    "Varus>Zeri": {
-      "gamesDecayed": 1.550580845035429,
-      "residual": 0.10885135063348153
-    },
     "Gnar>Ambessa": {
       "gamesDecayed": 78.70786079212242,
       "residual": 0.30211294113271486
@@ -44016,6 +44008,14 @@
     "Ambessa>Gnar": {
       "gamesDecayed": 78.70786079212242,
       "residual": -0.3021129411327146
+    },
+    "Zeri>Varus": {
+      "gamesDecayed": 1.550580845035429,
+      "residual": -0.10885135063348159
+    },
+    "Varus>Zeri": {
+      "gamesDecayed": 1.550580845035429,
+      "residual": 0.10885135063348153
     },
     "Shen>Sion": {
       "gamesDecayed": 0.7478943961690494,
@@ -44097,14 +44097,6 @@
       "gamesDecayed": 1.678444631729589,
       "residual": 0.05301763737686729
     },
-    "Xayah>Kalista": {
-      "gamesDecayed": 1.0610069979044103,
-      "residual": -0.13612663098275324
-    },
-    "Kalista>Xayah": {
-      "gamesDecayed": 1.0610069979044103,
-      "residual": 0.1361266309827532
-    },
     "Renekton>Jayce": {
       "gamesDecayed": 0.47033122836908303,
       "residual": -0.03610314145039191
@@ -44113,13 +44105,13 @@
       "gamesDecayed": 0.47033122836908303,
       "residual": 0.03610314145039193
     },
-    "Lucian>Kai'Sa": {
-      "gamesDecayed": 1.4327091303705488,
-      "residual": 0.02835020383525062
+    "Xayah>Kalista": {
+      "gamesDecayed": 1.0610069979044103,
+      "residual": -0.13612663098275324
     },
-    "Kai'Sa>Lucian": {
-      "gamesDecayed": 1.4327091303705488,
-      "residual": -0.028350203835250592
+    "Kalista>Xayah": {
+      "gamesDecayed": 1.0610069979044103,
+      "residual": 0.1361266309827532
     },
     "Nami>Neeko": {
       "gamesDecayed": 0.1951800241907204,
@@ -44128,6 +44120,14 @@
     "Neeko>Nami": {
       "gamesDecayed": 0.1951800241907204,
       "residual": 0.0025897154922861596
+    },
+    "Lucian>Kai'Sa": {
+      "gamesDecayed": 1.4327091303705488,
+      "residual": 0.02835020383525062
+    },
+    "Kai'Sa>Lucian": {
+      "gamesDecayed": 1.4327091303705488,
+      "residual": -0.028350203835250592
     },
     "Zeri>Ezreal": {
       "gamesDecayed": 2.583389672411339,
@@ -44209,14 +44209,6 @@
       "gamesDecayed": 0.0007454681371063191,
       "residual": 9.53088652007685e-05
     },
-    "Miss Fortune>Caitlyn": {
-      "gamesDecayed": 0.2883740650037515,
-      "residual": 0.0005375654688727037
-    },
-    "Caitlyn>Miss Fortune": {
-      "gamesDecayed": 0.2883740650037515,
-      "residual": -0.0005375654688727097
-    },
     "Jarvan IV>Lillia": {
       "gamesDecayed": 7.0103612230840505e-06,
       "residual": -9.335571424352787e-07
@@ -44232,6 +44224,14 @@
     "Jayce>Hwei": {
       "gamesDecayed": 7.767695898199259e-05,
       "residual": -1.0426624165738393e-05
+    },
+    "Miss Fortune>Caitlyn": {
+      "gamesDecayed": 0.2883740650037515,
+      "residual": 0.0005375654688727037
+    },
+    "Caitlyn>Miss Fortune": {
+      "gamesDecayed": 0.2883740650037515,
+      "residual": -0.0005375654688727097
     },
     "Sion>Rumble": {
       "gamesDecayed": 5.052069970578483,
@@ -44257,14 +44257,6 @@
       "gamesDecayed": 3.694823646235745e-14,
       "residual": 5.95871481568429e-17
     },
-    "Draven>Kalista": {
-      "gamesDecayed": 0.05254359181501384,
-      "residual": 0.004148264914671983
-    },
-    "Kalista>Draven": {
-      "gamesDecayed": 0.05254359181501384,
-      "residual": -0.0041482649146719845
-    },
     "Akali>Lissandra": {
       "gamesDecayed": 1.1856213349986726,
       "residual": 0.14293243702534436
@@ -44280,6 +44272,14 @@
     "Ashe>Renata Glasc": {
       "gamesDecayed": 4.7098965199461494e-11,
       "residual": -6.589993989183874e-12
+    },
+    "Draven>Kalista": {
+      "gamesDecayed": 0.05254359181501384,
+      "residual": 0.004148264914671983
+    },
+    "Kalista>Draven": {
+      "gamesDecayed": 0.05254359181501384,
+      "residual": -0.0041482649146719845
     },
     "Varus>Lucian": {
       "gamesDecayed": 3.289922387051461,
@@ -44433,14 +44433,6 @@
       "gamesDecayed": 0.002633434494758987,
       "residual": -0.0003326838319771965
     },
-    "Zeri>Lucian": {
-      "gamesDecayed": 1.2341236114749683,
-      "residual": -0.012010043606778821
-    },
-    "Lucian>Zeri": {
-      "gamesDecayed": 1.2341236114749683,
-      "residual": 0.012010043606778794
-    },
     "Sion>Gwen": {
       "gamesDecayed": 1.637403258863861,
       "residual": 0.106551371717088
@@ -44456,6 +44448,14 @@
     "Nami>Yuumi": {
       "gamesDecayed": 0.10102041096822861,
       "residual": 0.009984392216683827
+    },
+    "Zeri>Lucian": {
+      "gamesDecayed": 1.2341236114749683,
+      "residual": -0.012010043606778821
+    },
+    "Lucian>Zeri": {
+      "gamesDecayed": 1.2341236114749683,
+      "residual": 0.012010043606778794
     },
     "Xin Zhao>Trundle": {
       "gamesDecayed": 26.813427621304875,
@@ -44505,14 +44505,6 @@
       "gamesDecayed": 0.5710917477649917,
       "residual": -0.018741187250547887
     },
-    "Lucian>Ezreal": {
-      "gamesDecayed": 42.3334694550661,
-      "residual": -0.4660248026530932
-    },
-    "Ezreal>Lucian": {
-      "gamesDecayed": 42.3334694550661,
-      "residual": 0.46602480265309365
-    },
     "Taliyah>LeBlanc": {
       "gamesDecayed": 0.004250641755452353,
       "residual": -0.0005632336597596878
@@ -44520,6 +44512,14 @@
     "LeBlanc>Taliyah": {
       "gamesDecayed": 0.004250641755452353,
       "residual": 0.0005632336597596878
+    },
+    "Lucian>Ezreal": {
+      "gamesDecayed": 42.3334694550661,
+      "residual": -0.4660248026530932
+    },
+    "Ezreal>Lucian": {
+      "gamesDecayed": 42.3334694550661,
+      "residual": 0.46602480265309365
     },
     "Annie>Taliyah": {
       "gamesDecayed": 1.8536362027097901,
@@ -44529,14 +44529,6 @@
       "gamesDecayed": 1.8536362027097901,
       "residual": -0.054316390198811064
     },
-    "Miss Fortune>Zeri": {
-      "gamesDecayed": 0.011563579109056284,
-      "residual": 0.0015040099735421008
-    },
-    "Zeri>Miss Fortune": {
-      "gamesDecayed": 0.011563579109056284,
-      "residual": -0.001504009973542101
-    },
     "Shen>Ambessa": {
       "gamesDecayed": 1.4909014645020648,
       "residual": -0.030618392743405907
@@ -44544,6 +44536,14 @@
     "Ambessa>Shen": {
       "gamesDecayed": 1.4909014645020648,
       "residual": 0.030618392743405897
+    },
+    "Miss Fortune>Zeri": {
+      "gamesDecayed": 0.011563579109056284,
+      "residual": 0.0015040099735421008
+    },
+    "Zeri>Miss Fortune": {
+      "gamesDecayed": 0.011563579109056284,
+      "residual": -0.001504009973542101
     },
     "Orianna>Corki": {
       "gamesDecayed": 8.889997906003427e-07,
@@ -44585,14 +44585,6 @@
       "gamesDecayed": 104.67943401550434,
       "residual": 0.40982768604918846
     },
-    "Lucian>Ashe": {
-      "gamesDecayed": 3.272751886541557,
-      "residual": -0.07552931843808079
-    },
-    "Ashe>Lucian": {
-      "gamesDecayed": 3.272751886541557,
-      "residual": 0.07552931843808076
-    },
     "Syndra>Annie": {
       "gamesDecayed": 1.3509417462515443,
       "residual": -0.01370769702012274
@@ -44609,6 +44601,14 @@
       "gamesDecayed": 0.38503383875295527,
       "residual": 0.0018922582364666834
     },
+    "Lucian>Ashe": {
+      "gamesDecayed": 3.272751886541557,
+      "residual": -0.07552931843808079
+    },
+    "Ashe>Lucian": {
+      "gamesDecayed": 3.272751886541557,
+      "residual": 0.07552931843808076
+    },
     "Ornn>Taliyah": {
       "gamesDecayed": 5.411351028923702e-15,
       "residual": 7.290176463921832e-16
@@ -44616,14 +44616,6 @@
     "Taliyah>Ornn": {
       "gamesDecayed": 5.411351028923702e-15,
       "residual": -7.290176463921834e-16
-    },
-    "Corki>Sivir": {
-      "gamesDecayed": 9.983788003961354,
-      "residual": 0.2504677651509561
-    },
-    "Sivir>Corki": {
-      "gamesDecayed": 9.983788003961354,
-      "residual": -0.2504677651509561
     },
     "Lillia>Ambessa": {
       "gamesDecayed": 5.417635054508198e-15,
@@ -44640,6 +44632,14 @@
     "Aurelion Sol>Azir": {
       "gamesDecayed": 4.350255981535186e-06,
       "residual": 2.3603832087881412e-08
+    },
+    "Corki>Sivir": {
+      "gamesDecayed": 9.983788003961354,
+      "residual": 0.2504677651509561
+    },
+    "Sivir>Corki": {
+      "gamesDecayed": 9.983788003961354,
+      "residual": -0.2504677651509561
     },
     "Graves>Poppy": {
       "gamesDecayed": 5.451342728076963e-15,
@@ -44753,14 +44753,6 @@
       "gamesDecayed": 0.30691769300149874,
       "residual": -0.04141125705311409
     },
-    "Kalista>Zeri": {
-      "gamesDecayed": 0.0022849554048021206,
-      "residual": 0.0002911370256938094
-    },
-    "Zeri>Kalista": {
-      "gamesDecayed": 0.0022849554048021206,
-      "residual": -0.0002911370256938094
-    },
     "Sylas>Karma": {
       "gamesDecayed": 3.5475618182363326e-13,
       "residual": 4.5374347451787336e-14
@@ -44776,6 +44768,14 @@
     "Milio>Renata Glasc": {
       "gamesDecayed": 1.0152871283692841,
       "residual": -0.06759984825849853
+    },
+    "Kalista>Zeri": {
+      "gamesDecayed": 0.0022849554048021206,
+      "residual": 0.0002911370256938094
+    },
+    "Zeri>Kalista": {
+      "gamesDecayed": 0.0022849554048021206,
+      "residual": -0.0002911370256938094
     },
     "Sion>K'Sante": {
       "gamesDecayed": 3.0420560995629824,
@@ -44889,14 +44889,6 @@
       "gamesDecayed": 0.1187608539826629,
       "residual": -0.006695669184179229
     },
-    "Xayah>Lucian": {
-      "gamesDecayed": 58.61034110940715,
-      "residual": 0.12258011898405514
-    },
-    "Lucian>Xayah": {
-      "gamesDecayed": 58.61034110940715,
-      "residual": -0.12258011898405509
-    },
     "Nasus>Yorick": {
       "gamesDecayed": 7.80367103361242e-15,
       "residual": -1.1010849325882544e-15
@@ -44912,6 +44904,14 @@
     "Nami>Rakan": {
       "gamesDecayed": 0.10783512258131345,
       "residual": 0.005848299686946836
+    },
+    "Xayah>Lucian": {
+      "gamesDecayed": 58.61034110940715,
+      "residual": 0.12258011898405514
+    },
+    "Lucian>Xayah": {
+      "gamesDecayed": 58.61034110940715,
+      "residual": -0.12258011898405509
     },
     "Trundle>Pantheon": {
       "gamesDecayed": 8.760866914740285,
@@ -44937,14 +44937,6 @@
       "gamesDecayed": 0.0008596044252859824,
       "residual": 0.00010738800262314691
     },
-    "Zeri>Senna": {
-      "gamesDecayed": 0.15766944058209598,
-      "residual": 0.00658682822579121
-    },
-    "Senna>Zeri": {
-      "gamesDecayed": 0.15766944058209598,
-      "residual": -0.006586828225791216
-    },
     "Karma>Bard": {
       "gamesDecayed": 19.86426358520874,
       "residual": -0.05617972936311199
@@ -44953,13 +44945,13 @@
       "gamesDecayed": 19.86426358520874,
       "residual": 0.05617972936311207
     },
-    "Aphelios>Ziggs": {
-      "gamesDecayed": 3.835786496916775e-05,
-      "residual": -1.2747601569939834e-06
+    "Zeri>Senna": {
+      "gamesDecayed": 0.15766944058209598,
+      "residual": 0.00658682822579121
     },
-    "Ziggs>Aphelios": {
-      "gamesDecayed": 3.835786496916775e-05,
-      "residual": 1.274760156993983e-06
+    "Senna>Zeri": {
+      "gamesDecayed": 0.15766944058209598,
+      "residual": -0.006586828225791216
     },
     "Maokai>Zyra": {
       "gamesDecayed": 4.42974732766428e-12,
@@ -44984,6 +44976,14 @@
     "Sett>Renata Glasc": {
       "gamesDecayed": 1.7869883167592593e-14,
       "residual": 2.2453421318311603e-15
+    },
+    "Aphelios>Ziggs": {
+      "gamesDecayed": 3.835786496916775e-05,
+      "residual": -1.2747601569939834e-06
+    },
+    "Ziggs>Aphelios": {
+      "gamesDecayed": 3.835786496916775e-05,
+      "residual": 1.274760156993983e-06
     },
     "Varus>Senna": {
       "gamesDecayed": 0.13293054342139723,
@@ -45097,14 +45097,6 @@
       "gamesDecayed": 14.048989116483583,
       "residual": -0.556504712888583
     },
-    "Kai'Sa>Mel": {
-      "gamesDecayed": 5.61476581418422e-14,
-      "residual": 6.308678250777436e-15
-    },
-    "Mel>Kai'Sa": {
-      "gamesDecayed": 5.61476581418422e-14,
-      "residual": -6.3086782507774375e-15
-    },
     "Galio>Tristana": {
       "gamesDecayed": 1.5424995983916114e-13,
       "residual": -4.209167110961122e-15
@@ -45120,6 +45112,14 @@
     "Nautilus>Sett": {
       "gamesDecayed": 0.0011342753039017062,
       "residual": 0.00015658071625246952
+    },
+    "Kai'Sa>Mel": {
+      "gamesDecayed": 5.61476581418422e-14,
+      "residual": 6.308678250777436e-15
+    },
+    "Mel>Kai'Sa": {
+      "gamesDecayed": 5.61476581418422e-14,
+      "residual": -6.3086782507774375e-15
     },
     "Sivir>Jhin": {
       "gamesDecayed": 14.023472021848098,
@@ -45169,14 +45169,6 @@
       "gamesDecayed": 4.9651058828725373e-14,
       "residual": -6.30465002397735e-15
     },
-    "Kai'Sa>Draven": {
-      "gamesDecayed": 1.8664774301439802,
-      "residual": -0.2279490669819095
-    },
-    "Draven>Kai'Sa": {
-      "gamesDecayed": 1.8664774301439802,
-      "residual": 0.22794906698190945
-    },
     "Skarner>Lee Sin": {
       "gamesDecayed": 112.6093138007559,
       "residual": -0.2758431336615171
@@ -45193,13 +45185,13 @@
       "gamesDecayed": 0.010367925405597398,
       "residual": -0.0013584047990898161
     },
-    "Senna>Xayah": {
-      "gamesDecayed": 0.9983049693637001,
-      "residual": -0.12474371892966875
+    "Kai'Sa>Draven": {
+      "gamesDecayed": 1.8664774301439802,
+      "residual": -0.2279490669819095
     },
-    "Xayah>Senna": {
-      "gamesDecayed": 0.9983049693637001,
-      "residual": 0.12474371892966872
+    "Draven>Kai'Sa": {
+      "gamesDecayed": 1.8664774301439802,
+      "residual": 0.22794906698190945
     },
     "Viego>Kindred": {
       "gamesDecayed": 2.8888748740756227e-07,
@@ -45208,6 +45200,14 @@
     "Kindred>Viego": {
       "gamesDecayed": 2.8888748740756227e-07,
       "residual": -3.6661481736019814e-08
+    },
+    "Senna>Xayah": {
+      "gamesDecayed": 0.9983049693637001,
+      "residual": -0.12474371892966875
+    },
+    "Xayah>Senna": {
+      "gamesDecayed": 0.9983049693637001,
+      "residual": 0.12474371892966872
     },
     "Yuumi>Karma": {
       "gamesDecayed": 0.005373844909056109,
@@ -45233,14 +45233,6 @@
       "gamesDecayed": 0.006154575213565525,
       "residual": 0.0008202335809036361
     },
-    "Corki>Senna": {
-      "gamesDecayed": 0.030711583129957143,
-      "residual": -0.002776171224325255
-    },
-    "Senna>Corki": {
-      "gamesDecayed": 0.030711583129957143,
-      "residual": 0.002776171224325256
-    },
     "Nautilus>Tahm Kench": {
       "gamesDecayed": 0.08225996120957367,
       "residual": 0.0015932781567900465
@@ -45248,6 +45240,14 @@
     "Tahm Kench>Nautilus": {
       "gamesDecayed": 0.08225996120957367,
       "residual": -0.0015932781567900484
+    },
+    "Corki>Senna": {
+      "gamesDecayed": 0.030711583129957143,
+      "residual": -0.002776171224325255
+    },
+    "Senna>Corki": {
+      "gamesDecayed": 0.030711583129957143,
+      "residual": 0.002776171224325256
     },
     "K'Sante>Fiora": {
       "gamesDecayed": 0.07683273160253921,
@@ -45257,14 +45257,6 @@
       "gamesDecayed": 0.07683273160253921,
       "residual": -0.002999701461808799
     },
-    "Jhin>Senna": {
-      "gamesDecayed": 0.22874324522755313,
-      "residual": -0.017076450387701853
-    },
-    "Senna>Jhin": {
-      "gamesDecayed": 0.22874324522755313,
-      "residual": 0.017076450387701836
-    },
     "Annie>Ahri": {
       "gamesDecayed": 1.1783309045106236,
       "residual": -0.0583159442050088
@@ -45273,13 +45265,13 @@
       "gamesDecayed": 1.1783309045106236,
       "residual": 0.05831594420500877
     },
-    "Kalista>Smolder": {
-      "gamesDecayed": 0.0007458826150640452,
-      "residual": -0.00010501818825047637
+    "Jhin>Senna": {
+      "gamesDecayed": 0.22874324522755313,
+      "residual": -0.017076450387701853
     },
-    "Smolder>Kalista": {
-      "gamesDecayed": 0.0007458826150640452,
-      "residual": 0.00010501818825047635
+    "Senna>Jhin": {
+      "gamesDecayed": 0.22874324522755313,
+      "residual": 0.017076450387701836
     },
     "Cassiopeia>Ryze": {
       "gamesDecayed": 20.31016342391173,
@@ -45288,6 +45280,14 @@
     "Ryze>Cassiopeia": {
       "gamesDecayed": 20.31016342391173,
       "residual": -0.8087459060955132
+    },
+    "Kalista>Smolder": {
+      "gamesDecayed": 0.0007458826150640452,
+      "residual": -0.00010501818825047637
+    },
+    "Smolder>Kalista": {
+      "gamesDecayed": 0.0007458826150640452,
+      "residual": 0.00010501818825047635
     },
     "Braum>Milio": {
       "gamesDecayed": 0.011307245771746929,
@@ -45353,14 +45353,6 @@
       "gamesDecayed": 37.82620784629899,
       "residual": 0.32947901182827927
     },
-    "Lucian>Sivir": {
-      "gamesDecayed": 0.027092948061630834,
-      "residual": 0.0035483741233770924
-    },
-    "Sivir>Lucian": {
-      "gamesDecayed": 0.027092948061630834,
-      "residual": -0.003548374123377094
-    },
     "Taric>Leona": {
       "gamesDecayed": 2.2350352241073602e-06,
       "residual": -2.7710409840479625e-07
@@ -45369,13 +45361,13 @@
       "gamesDecayed": 2.2350352241073602e-06,
       "residual": 2.771040984047962e-07
     },
-    "Kai'Sa>Aphelios": {
-      "gamesDecayed": 0.30962158638350495,
-      "residual": 0.034550973218434915
+    "Lucian>Sivir": {
+      "gamesDecayed": 0.027092948061630834,
+      "residual": 0.0035483741233770924
     },
-    "Aphelios>Kai'Sa": {
-      "gamesDecayed": 0.30962158638350495,
-      "residual": -0.03455097321843496
+    "Sivir>Lucian": {
+      "gamesDecayed": 0.027092948061630834,
+      "residual": -0.003548374123377094
     },
     "Renekton>Aatrox": {
       "gamesDecayed": 26.758622968769433,
@@ -45384,6 +45376,14 @@
     "Aatrox>Renekton": {
       "gamesDecayed": 26.758622968769433,
       "residual": -0.3352501792826849
+    },
+    "Kai'Sa>Aphelios": {
+      "gamesDecayed": 0.30962158638350495,
+      "residual": 0.034550973218434915
+    },
+    "Aphelios>Kai'Sa": {
+      "gamesDecayed": 0.30962158638350495,
+      "residual": -0.03455097321843496
     },
     "Sivir>Kai'Sa": {
       "gamesDecayed": 14.889895946887867,
@@ -45417,14 +45417,6 @@
       "gamesDecayed": 0.020528611746740567,
       "residual": -0.00017964976991843843
     },
-    "Senna>Sivir": {
-      "gamesDecayed": 0.4111683649178227,
-      "residual": 0.042237855724883096
-    },
-    "Sivir>Senna": {
-      "gamesDecayed": 0.4111683649178227,
-      "residual": -0.042237855724883054
-    },
     "Annie>Aurora": {
       "gamesDecayed": 7.962864438049778,
       "residual": 0.5390010137008882
@@ -45432,6 +45424,14 @@
     "Aurora>Annie": {
       "gamesDecayed": 7.962864438049778,
       "residual": -0.5390010137008888
+    },
+    "Senna>Sivir": {
+      "gamesDecayed": 0.4111683649178227,
+      "residual": 0.042237855724883096
+    },
+    "Sivir>Senna": {
+      "gamesDecayed": 0.4111683649178227,
+      "residual": -0.042237855724883054
     },
     "Lucian>Aphelios": {
       "gamesDecayed": 0.48051822296732516,
@@ -45449,14 +45449,6 @@
       "gamesDecayed": 0.0007809923294753554,
       "residual": -0.00010367110163535933
     },
-    "Sivir>Zeri": {
-      "gamesDecayed": 8.43269507694568,
-      "residual": 0.8240334374493955
-    },
-    "Zeri>Sivir": {
-      "gamesDecayed": 8.43269507694568,
-      "residual": -0.8240334374493954
-    },
     "Ryze>Twisted Fate": {
       "gamesDecayed": 21.25552115952963,
       "residual": -0.23513025170649346
@@ -45465,13 +45457,13 @@
       "gamesDecayed": 21.25552115952963,
       "residual": 0.23513025170649407
     },
-    "Smolder>Senna": {
-      "gamesDecayed": 0.023002825807817092,
-      "residual": 0.0013348413062834524
+    "Sivir>Zeri": {
+      "gamesDecayed": 8.43269507694568,
+      "residual": 0.8240334374493955
     },
-    "Senna>Smolder": {
-      "gamesDecayed": 0.023002825807817092,
-      "residual": -0.0013348413062834509
+    "Zeri>Sivir": {
+      "gamesDecayed": 8.43269507694568,
+      "residual": -0.8240334374493954
     },
     "Trundle>Skarner": {
       "gamesDecayed": 2.63602385864306,
@@ -45488,6 +45480,14 @@
     "Nami>Braum": {
       "gamesDecayed": 0.00029646494834166943,
       "residual": 3.875714877319236e-05
+    },
+    "Smolder>Senna": {
+      "gamesDecayed": 0.023002825807817092,
+      "residual": 0.0013348413062834524
+    },
+    "Senna>Smolder": {
+      "gamesDecayed": 0.023002825807817092,
+      "residual": -0.0013348413062834509
     },
     "Sivir>Draven": {
       "gamesDecayed": 7.243594097595056,
@@ -45513,14 +45513,6 @@
       "gamesDecayed": 21.804271250208345,
       "residual": 0.7355777667302077
     },
-    "Smolder>Sivir": {
-      "gamesDecayed": 0.004765542328273021,
-      "residual": 0.0006698156705911457
-    },
-    "Sivir>Smolder": {
-      "gamesDecayed": 0.004765542328273021,
-      "residual": -0.0006698156705911458
-    },
     "Aurora>K'Sante": {
       "gamesDecayed": 0.01103645740303891,
       "residual": -0.0011936192690172977
@@ -45528,6 +45520,14 @@
     "K'Sante>Aurora": {
       "gamesDecayed": 0.01103645740303891,
       "residual": 0.0011936192690173003
+    },
+    "Smolder>Sivir": {
+      "gamesDecayed": 0.004765542328273021,
+      "residual": 0.0006698156705911457
+    },
+    "Sivir>Smolder": {
+      "gamesDecayed": 0.004765542328273021,
+      "residual": -0.0006698156705911458
     },
     "Wukong>Trundle": {
       "gamesDecayed": 9.200162054959996,
@@ -45817,14 +45817,6 @@
       "gamesDecayed": 0.9669132170510673,
       "residual": -0.011941201884935925
     },
-    "Yunara>Aphelios": {
-      "gamesDecayed": 1.3752916071292662,
-      "residual": -0.0360098456710984
-    },
-    "Aphelios>Yunara": {
-      "gamesDecayed": 1.3752916071292662,
-      "residual": 0.036009845671098425
-    },
     "Aatrox>Poppy": {
       "gamesDecayed": 0.0010576473251917337,
       "residual": -7.399486594806912e-05
@@ -45832,6 +45824,14 @@
     "Poppy>Aatrox": {
       "gamesDecayed": 0.0010576473251917337,
       "residual": 7.39948659480691e-05
+    },
+    "Yunara>Aphelios": {
+      "gamesDecayed": 1.3752916071292662,
+      "residual": -0.0360098456710984
+    },
+    "Aphelios>Yunara": {
+      "gamesDecayed": 1.3752916071292662,
+      "residual": 0.036009845671098425
     },
     "Olaf>Zed": {
       "gamesDecayed": 2.9508864885267723e-11,
@@ -45881,14 +45881,6 @@
       "gamesDecayed": 1.9339552475858661,
       "residual": 0.014521179884598664
     },
-    "Miss Fortune>Smolder": {
-      "gamesDecayed": 0.0008788946686612573,
-      "residual": 0.00010938656825393883
-    },
-    "Smolder>Miss Fortune": {
-      "gamesDecayed": 0.0008788946686612573,
-      "residual": -0.00010938656825393884
-    },
     "Vi>Lee Sin": {
       "gamesDecayed": 18.415494043687954,
       "residual": -0.21502093266099578
@@ -45897,13 +45889,13 @@
       "gamesDecayed": 18.415494043687954,
       "residual": 0.21502093266099584
     },
-    "Varus>Yunara": {
-      "gamesDecayed": 7.928329240837575,
-      "residual": 0.35918581361313395
+    "Miss Fortune>Smolder": {
+      "gamesDecayed": 0.0008788946686612573,
+      "residual": 0.00010938656825393883
     },
-    "Yunara>Varus": {
-      "gamesDecayed": 7.928329240837575,
-      "residual": -0.35918581361313395
+    "Smolder>Miss Fortune": {
+      "gamesDecayed": 0.0008788946686612573,
+      "residual": -0.00010938656825393884
     },
     "Leona>Bard": {
       "gamesDecayed": 13.72909020915588,
@@ -45912,6 +45904,14 @@
     "Bard>Leona": {
       "gamesDecayed": 13.72909020915588,
       "residual": -0.2958827246611811
+    },
+    "Varus>Yunara": {
+      "gamesDecayed": 7.928329240837575,
+      "residual": 0.35918581361313395
+    },
+    "Yunara>Varus": {
+      "gamesDecayed": 7.928329240837575,
+      "residual": -0.35918581361313395
     },
     "Brand>Lillia": {
       "gamesDecayed": 1.9472972167987026e-11,
@@ -45985,14 +45985,6 @@
       "gamesDecayed": 2.855054790750319e-11,
       "residual": 3.774459611956297e-12
     },
-    "Ziggs>Ezreal": {
-      "gamesDecayed": 24.443423107616866,
-      "residual": -0.3282211138279597
-    },
-    "Ezreal>Ziggs": {
-      "gamesDecayed": 24.443423107616866,
-      "residual": 0.32822111382795993
-    },
     "Corki>Akali": {
       "gamesDecayed": 2.899340765928834e-11,
       "residual": 3.963671790063835e-12
@@ -46000,6 +45992,14 @@
     "Akali>Corki": {
       "gamesDecayed": 2.899340765928834e-11,
       "residual": -3.9636717900638354e-12
+    },
+    "Ziggs>Ezreal": {
+      "gamesDecayed": 24.443423107616866,
+      "residual": -0.3282211138279597
+    },
+    "Ezreal>Ziggs": {
+      "gamesDecayed": 24.443423107616866,
+      "residual": 0.32822111382795993
     },
     "Poppy>Olaf": {
       "gamesDecayed": 0.41756054936934883,
@@ -46033,14 +46033,6 @@
       "gamesDecayed": 7.547599269311092e-07,
       "residual": 9.593898766358965e-08
     },
-    "Ezreal>Caitlyn": {
-      "gamesDecayed": 9.500684971915636,
-      "residual": 0.041530021751610996
-    },
-    "Caitlyn>Ezreal": {
-      "gamesDecayed": 9.500684971915636,
-      "residual": -0.041530021751610906
-    },
     "Twisted Fate>Mel": {
       "gamesDecayed": 0.25062842635824817,
       "residual": -0.017707055095929628
@@ -46056,6 +46048,14 @@
     "Elise>Blitzcrank": {
       "gamesDecayed": 1.155170928814946e-10,
       "residual": 2.7518448954871842e-12
+    },
+    "Ezreal>Caitlyn": {
+      "gamesDecayed": 9.500684971915636,
+      "residual": 0.041530021751610996
+    },
+    "Caitlyn>Ezreal": {
+      "gamesDecayed": 9.500684971915636,
+      "residual": -0.041530021751610906
     },
     "Aurora>Yorick": {
       "gamesDecayed": 0.006532323641205447,
@@ -46161,14 +46161,6 @@
       "gamesDecayed": 0.3689103403128534,
       "residual": -0.04663082421838294
     },
-    "Zeri>Vayne": {
-      "gamesDecayed": 8.07175806115074e-11,
-      "residual": 1.1493439908046649e-11
-    },
-    "Vayne>Zeri": {
-      "gamesDecayed": 8.07175806115074e-11,
-      "residual": -1.1493439908046652e-11
-    },
     "Viktor>Morgana": {
       "gamesDecayed": 8.071767049017774e-11,
       "residual": 1.084971923633522e-11
@@ -46176,6 +46168,14 @@
     "Morgana>Viktor": {
       "gamesDecayed": 8.071767049017774e-11,
       "residual": -1.0849719236335221e-11
+    },
+    "Zeri>Vayne": {
+      "gamesDecayed": 8.07175806115074e-11,
+      "residual": 1.1493439908046649e-11
+    },
+    "Vayne>Zeri": {
+      "gamesDecayed": 8.07175806115074e-11,
+      "residual": -1.1493439908046652e-11
     },
     "Kennen>Jax": {
       "gamesDecayed": 0.2715567683414667,
@@ -46321,14 +46321,6 @@
       "gamesDecayed": 1.1556156171112422e-10,
       "residual": 1.4799298754838797e-11
     },
-    "Caitlyn>Draven": {
-      "gamesDecayed": 3.117399386927292e-10,
-      "residual": -1.158141102166878e-12
-    },
-    "Draven>Caitlyn": {
-      "gamesDecayed": 3.117399386927292e-10,
-      "residual": 1.1581411021668699e-12
-    },
     "K'Sante>Mordekaiser": {
       "gamesDecayed": 0.3575957006053551,
       "residual": -0.04746892298542296
@@ -46337,13 +46329,13 @@
       "gamesDecayed": 0.3575957006053551,
       "residual": 0.047468922985422955
     },
-    "Ziggs>Lucian": {
-      "gamesDecayed": 33.30854474632012,
-      "residual": -0.09745247683645375
+    "Caitlyn>Draven": {
+      "gamesDecayed": 3.117399386927292e-10,
+      "residual": -1.158141102166878e-12
     },
-    "Lucian>Ziggs": {
-      "gamesDecayed": 33.30854474632012,
-      "residual": 0.09745247683645337
+    "Draven>Caitlyn": {
+      "gamesDecayed": 3.117399386927292e-10,
+      "residual": 1.1581411021668699e-12
     },
     "Rek'Sai>Sion": {
       "gamesDecayed": 0.06555985487846089,
@@ -46352,6 +46344,14 @@
     "Sion>Rek'Sai": {
       "gamesDecayed": 0.06555985487846089,
       "residual": 0.009062880540755856
+    },
+    "Ziggs>Lucian": {
+      "gamesDecayed": 33.30854474632012,
+      "residual": -0.09745247683645375
+    },
+    "Lucian>Ziggs": {
+      "gamesDecayed": 33.30854474632012,
+      "residual": 0.09745247683645337
     },
     "Akali>Lulu": {
       "gamesDecayed": 1.0413272528229453e-11,
@@ -46425,14 +46425,6 @@
       "gamesDecayed": 0.2263834965828838,
       "residual": -0.008438821275709546
     },
-    "Yunara>Jhin": {
-      "gamesDecayed": 0.9821942805919238,
-      "residual": 0.04963612076364295
-    },
-    "Jhin>Yunara": {
-      "gamesDecayed": 0.9821942805919238,
-      "residual": -0.04963612076364296
-    },
     "Malphite>Ambessa": {
       "gamesDecayed": 0.6750313789399689,
       "residual": -0.006596671418867237
@@ -46440,6 +46432,14 @@
     "Ambessa>Malphite": {
       "gamesDecayed": 0.6750313789399689,
       "residual": 0.0065966714188672474
+    },
+    "Yunara>Jhin": {
+      "gamesDecayed": 0.9821942805919238,
+      "residual": 0.04963612076364295
+    },
+    "Jhin>Yunara": {
+      "gamesDecayed": 0.9821942805919238,
+      "residual": -0.04963612076364296
     },
     "Ambessa>Qiyana": {
       "gamesDecayed": 0.28408307847708864,
@@ -46489,14 +46489,6 @@
       "gamesDecayed": 21.802191503925805,
       "residual": -0.3577931471231066
     },
-    "Corki>Aphelios": {
-      "gamesDecayed": 0.015272818408745333,
-      "residual": -0.0020218168969340974
-    },
-    "Aphelios>Corki": {
-      "gamesDecayed": 0.015272818408745333,
-      "residual": 0.002021816896934097
-    },
     "Aurora>Syndra": {
       "gamesDecayed": 0.9988232793848516,
       "residual": 0.12618825492699237
@@ -46512,6 +46504,14 @@
     "Thresh>Blitzcrank": {
       "gamesDecayed": 0.18503842929590228,
       "residual": -0.022821327310135347
+    },
+    "Corki>Aphelios": {
+      "gamesDecayed": 0.015272818408745333,
+      "residual": -0.0020218168969340974
+    },
+    "Aphelios>Corki": {
+      "gamesDecayed": 0.015272818408745333,
+      "residual": 0.002021816896934097
     },
     "Taliyah>Cassiopeia": {
       "gamesDecayed": 8.292500422337975,
@@ -46545,14 +46545,6 @@
       "gamesDecayed": 8.591320321720286,
       "residual": -0.5472842476374393
     },
-    "Aphelios>Miss Fortune": {
-      "gamesDecayed": 0.006877405503548133,
-      "residual": 8.256394721537184e-05
-    },
-    "Miss Fortune>Aphelios": {
-      "gamesDecayed": 0.006877405503548133,
-      "residual": -8.256394721537181e-05
-    },
     "Akali>Syndra": {
       "gamesDecayed": 5.725940850964264,
       "residual": -0.0578839679108304
@@ -46560,6 +46552,14 @@
     "Syndra>Akali": {
       "gamesDecayed": 5.725940850964264,
       "residual": 0.05788396791083053
+    },
+    "Aphelios>Miss Fortune": {
+      "gamesDecayed": 0.006877405503548133,
+      "residual": 8.256394721537184e-05
+    },
+    "Miss Fortune>Aphelios": {
+      "gamesDecayed": 0.006877405503548133,
+      "residual": -8.256394721537181e-05
     },
     "Qiyana>Pantheon": {
       "gamesDecayed": 8.947003633179254,
@@ -46801,14 +46801,6 @@
       "gamesDecayed": 0.4168757284659579,
       "residual": -0.013437916001920805
     },
-    "Aphelios>Ashe": {
-      "gamesDecayed": 0.0065457690415000646,
-      "residual": -0.0005569187377504698
-    },
-    "Ashe>Aphelios": {
-      "gamesDecayed": 0.0065457690415000646,
-      "residual": 0.0005569187377504702
-    },
     "Thresh>Seraphine": {
       "gamesDecayed": 0.27531911530390424,
       "residual": -0.0340732517507965
@@ -46816,6 +46808,14 @@
     "Seraphine>Thresh": {
       "gamesDecayed": 0.27531911530390424,
       "residual": 0.034073251750796486
+    },
+    "Aphelios>Ashe": {
+      "gamesDecayed": 0.0065457690415000646,
+      "residual": -0.0005569187377504698
+    },
+    "Ashe>Aphelios": {
+      "gamesDecayed": 0.0065457690415000646,
+      "residual": 0.0005569187377504702
     },
     "Jarvan IV>Jayce": {
       "gamesDecayed": 13.60017404073019,
@@ -46865,14 +46865,6 @@
       "gamesDecayed": 1.4011129646061544,
       "residual": 0.030124197182785577
     },
-    "Yunara>Draven": {
-      "gamesDecayed": 0.0051612522704714515,
-      "residual": -0.0006494375406652563
-    },
-    "Draven>Yunara": {
-      "gamesDecayed": 0.0051612522704714515,
-      "residual": 0.000649437540665256
-    },
     "Vi>Dr. Mundo": {
       "gamesDecayed": 1.814304058286963,
       "residual": 0.22291821994508892
@@ -46888,6 +46880,14 @@
     "Viktor>Hwei": {
       "gamesDecayed": 1.9379270073552235,
       "residual": 0.03168918560232259
+    },
+    "Yunara>Draven": {
+      "gamesDecayed": 0.0051612522704714515,
+      "residual": -0.0006494375406652563
+    },
+    "Draven>Yunara": {
+      "gamesDecayed": 0.0051612522704714515,
+      "residual": 0.000649437540665256
     },
     "Karma>Pyke": {
       "gamesDecayed": 1.7290469834974929,
@@ -47281,14 +47281,6 @@
       "gamesDecayed": 0.31273602725861677,
       "residual": -0.03929792871228939
     },
-    "Zeri>Ashe": {
-      "gamesDecayed": 0.9774347767360617,
-      "residual": 0.10631112376067575
-    },
-    "Ashe>Zeri": {
-      "gamesDecayed": 0.9774347767360617,
-      "residual": -0.10631112376067564
-    },
     "Yuumi>Seraphine": {
       "gamesDecayed": 1.049133118888192,
       "residual": 0.07422689394214854
@@ -47296,6 +47288,14 @@
     "Seraphine>Yuumi": {
       "gamesDecayed": 1.049133118888192,
       "residual": -0.0742268939421485
+    },
+    "Zeri>Ashe": {
+      "gamesDecayed": 0.9774347767360617,
+      "residual": 0.10631112376067575
+    },
+    "Ashe>Zeri": {
+      "gamesDecayed": 0.9774347767360617,
+      "residual": -0.10631112376067564
     },
     "Dr. Mundo>Skarner": {
       "gamesDecayed": 25.47312234962969,
@@ -47497,14 +47497,6 @@
       "gamesDecayed": 0.48767019600794803,
       "residual": -0.01791131089673317
     },
-    "Tristana>Yunara": {
-      "gamesDecayed": 0.9293658445074937,
-      "residual": -0.11502255180829264
-    },
-    "Yunara>Tristana": {
-      "gamesDecayed": 0.9293658445074937,
-      "residual": 0.11502255180829261
-    },
     "Twisted Fate>Annie": {
       "gamesDecayed": 8.837087092532306,
       "residual": 0.9115903143921822
@@ -47512,6 +47504,14 @@
     "Annie>Twisted Fate": {
       "gamesDecayed": 8.837087092532306,
       "residual": -0.9115903143921823
+    },
+    "Tristana>Yunara": {
+      "gamesDecayed": 0.9293658445074937,
+      "residual": -0.11502255180829264
+    },
+    "Yunara>Tristana": {
+      "gamesDecayed": 0.9293658445074937,
+      "residual": 0.11502255180829261
     },
     "Mel>Sylas": {
       "gamesDecayed": 0.013016853614047062,
@@ -47529,14 +47529,6 @@
       "gamesDecayed": 3.9758202448069975,
       "residual": -0.23628735513716523
     },
-    "Mel>Aphelios": {
-      "gamesDecayed": 0.9008364596132509,
-      "residual": -0.11258399923557243
-    },
-    "Aphelios>Mel": {
-      "gamesDecayed": 0.9008364596132509,
-      "residual": 0.11258399923557241
-    },
     "Pyke>Thresh": {
       "gamesDecayed": 0.0015412225938744406,
       "residual": -0.0002081198977307784
@@ -47544,6 +47536,14 @@
     "Thresh>Pyke": {
       "gamesDecayed": 0.0015412225938744406,
       "residual": 0.00020811989773077835
+    },
+    "Mel>Aphelios": {
+      "gamesDecayed": 0.9008364596132509,
+      "residual": -0.11258399923557243
+    },
+    "Aphelios>Mel": {
+      "gamesDecayed": 0.9008364596132509,
+      "residual": 0.11258399923557241
     },
     "Viktor>Mel": {
       "gamesDecayed": 0.5107264829254283,
@@ -47865,14 +47865,6 @@
       "gamesDecayed": 0.32994537021366255,
       "residual": -0.018384785279400156
     },
-    "Senna>Ashe": {
-      "gamesDecayed": 0.32482611596870226,
-      "residual": 0.0035427622488392123
-    },
-    "Ashe>Senna": {
-      "gamesDecayed": 0.32482611596870226,
-      "residual": -0.003542762248839225
-    },
     "Shyvana>Xin Zhao": {
       "gamesDecayed": 0.032594923009263546,
       "residual": -0.004276696311502575
@@ -47880,6 +47872,14 @@
     "Xin Zhao>Shyvana": {
       "gamesDecayed": 0.032594923009263546,
       "residual": 0.004276696311502574
+    },
+    "Senna>Ashe": {
+      "gamesDecayed": 0.32482611596870226,
+      "residual": 0.0035427622488392123
+    },
+    "Ashe>Senna": {
+      "gamesDecayed": 0.32482611596870226,
+      "residual": -0.003542762248839225
     },
     "Anivia>Varus": {
       "gamesDecayed": 0.02556605928710364,
@@ -48073,14 +48073,6 @@
       "gamesDecayed": 0.049251401495274766,
       "residual": 0.006033437249252284
     },
-    "Aphelios>Zeri": {
-      "gamesDecayed": 1.0411338357890105,
-      "residual": -0.13031573466145835
-    },
-    "Zeri>Aphelios": {
-      "gamesDecayed": 1.0411338357890105,
-      "residual": 0.13031573466145832
-    },
     "Shyvana>Maokai": {
       "gamesDecayed": 0.049325001665308676,
       "residual": -0.0064078664557527445
@@ -48096,6 +48088,14 @@
     "Yuumi>Thresh": {
       "gamesDecayed": 0.04932500166502214,
       "residual": 0.006546610341110968
+    },
+    "Aphelios>Zeri": {
+      "gamesDecayed": 1.0411338357890105,
+      "residual": -0.13031573466145835
+    },
+    "Zeri>Aphelios": {
+      "gamesDecayed": 1.0411338357890105,
+      "residual": 0.13031573466145832
     },
     "Rek'Sai>Lee Sin": {
       "gamesDecayed": 0.3722842702529397,
@@ -48393,14 +48393,6 @@
       "gamesDecayed": 51.03268333567741,
       "residual": -0.18522597679969502
     },
-    "Ziggs>Kai'Sa": {
-      "gamesDecayed": 33.54837401972516,
-      "residual": -0.7042424242778552
-    },
-    "Kai'Sa>Ziggs": {
-      "gamesDecayed": 33.54837401972516,
-      "residual": 0.7042424242778553
-    },
     "Camille>Rell": {
       "gamesDecayed": 17.92766088826937,
       "residual": -0.12129346827185442
@@ -48409,13 +48401,13 @@
       "gamesDecayed": 17.92766088826937,
       "residual": 0.12129346827185404
     },
-    "Xerath>Syndra": {
-      "gamesDecayed": 5.6843038699214965,
-      "residual": 0.6444525542086919
+    "Ziggs>Kai'Sa": {
+      "gamesDecayed": 33.54837401972516,
+      "residual": -0.7042424242778552
     },
-    "Syndra>Xerath": {
-      "gamesDecayed": 5.6843038699214965,
-      "residual": -0.6444525542086921
+    "Kai'Sa>Ziggs": {
+      "gamesDecayed": 33.54837401972516,
+      "residual": 0.7042424242778553
     },
     "Lee Sin>Graves": {
       "gamesDecayed": 6.331188602740974,
@@ -48432,6 +48424,14 @@
     "Leona>Camille": {
       "gamesDecayed": 57.744341041479274,
       "residual": -0.43656188689671194
+    },
+    "Xerath>Syndra": {
+      "gamesDecayed": 5.6843038699214965,
+      "residual": 0.6444525542086919
+    },
+    "Syndra>Xerath": {
+      "gamesDecayed": 5.6843038699214965,
+      "residual": -0.6444525542086921
     },
     "Shen>Camille": {
       "gamesDecayed": 139.4528238990984,
@@ -48465,14 +48465,6 @@
       "gamesDecayed": 5.746792232209451,
       "residual": 0.6405856145911187
     },
-    "Varus>Xerath": {
-      "gamesDecayed": 24.025796631529687,
-      "residual": 0.4056203082831261
-    },
-    "Xerath>Varus": {
-      "gamesDecayed": 24.025796631529687,
-      "residual": -0.4056203082831261
-    },
     "Qiyana>Naafiri": {
       "gamesDecayed": 14.212858888329581,
       "residual": -0.6839125180063684
@@ -48489,6 +48481,14 @@
       "gamesDecayed": 18.796693257039827,
       "residual": -0.042383604886442695
     },
+    "Varus>Xerath": {
+      "gamesDecayed": 24.025796631529687,
+      "residual": 0.4056203082831261
+    },
+    "Xerath>Varus": {
+      "gamesDecayed": 24.025796631529687,
+      "residual": -0.4056203082831261
+    },
     "Milio>Rell": {
       "gamesDecayed": 15.199327027315103,
       "residual": -0.814992627365861
@@ -48496,14 +48496,6 @@
     "Rell>Milio": {
       "gamesDecayed": 15.199327027315103,
       "residual": 0.8149926273658615
-    },
-    "Xerath>Mel": {
-      "gamesDecayed": 5.952201599544986,
-      "residual": 0.6479403391110523
-    },
-    "Mel>Xerath": {
-      "gamesDecayed": 5.952201599544986,
-      "residual": -0.6479403391110523
     },
     "Akali>Locke": {
       "gamesDecayed": 16.439392714650875,
@@ -48521,6 +48513,14 @@
       "gamesDecayed": 13.683627207907893,
       "residual": -0.05575263190840606
     },
+    "Xerath>Mel": {
+      "gamesDecayed": 5.952201599544986,
+      "residual": 0.6479403391110523
+    },
+    "Mel>Xerath": {
+      "gamesDecayed": 5.952201599544986,
+      "residual": -0.6479403391110523
+    },
     "Vayne>Aurora": {
       "gamesDecayed": 6.197370288226707,
       "residual": 0.5348846876131896
@@ -48528,14 +48528,6 @@
     "Aurora>Vayne": {
       "gamesDecayed": 6.197370288226707,
       "residual": -0.5348846876131901
-    },
-    "Sivir>Ziggs": {
-      "gamesDecayed": 17.91727280579703,
-      "residual": 0.5398400540465094
-    },
-    "Ziggs>Sivir": {
-      "gamesDecayed": 17.91727280579703,
-      "residual": -0.5398400540465089
     },
     "Cassiopeia>Locke": {
       "gamesDecayed": 21.765541458067155,
@@ -48545,13 +48537,13 @@
       "gamesDecayed": 21.765541458067155,
       "residual": -0.5477248453942196
     },
-    "Syndra>Seraphine": {
-      "gamesDecayed": 6.424368240894419,
-      "residual": -0.5835275147597172
+    "Sivir>Ziggs": {
+      "gamesDecayed": 17.91727280579703,
+      "residual": 0.5398400540465094
     },
-    "Seraphine>Syndra": {
-      "gamesDecayed": 6.424368240894419,
-      "residual": 0.5835275147597171
+    "Ziggs>Sivir": {
+      "gamesDecayed": 17.91727280579703,
+      "residual": -0.5398400540465089
     },
     "Jayce>Naafiri": {
       "gamesDecayed": 6.452840966695154,
@@ -48560,6 +48552,14 @@
     "Naafiri>Jayce": {
       "gamesDecayed": 6.452840966695154,
       "residual": 0.7063273416489518
+    },
+    "Syndra>Seraphine": {
+      "gamesDecayed": 6.424368240894419,
+      "residual": -0.5835275147597172
+    },
+    "Seraphine>Syndra": {
+      "gamesDecayed": 6.424368240894419,
+      "residual": 0.5835275147597171
     },
     "Aurora>Locke": {
       "gamesDecayed": 8.275730028263082,
@@ -48649,14 +48649,6 @@
       "gamesDecayed": 7.801227950231221,
       "residual": 0.5826990829687976
     },
-    "Mel>Caitlyn": {
-      "gamesDecayed": 9.320357390320183,
-      "residual": 0.5683687385796972
-    },
-    "Caitlyn>Mel": {
-      "gamesDecayed": 9.320357390320183,
-      "residual": -0.568368738579697
-    },
     "Vex>Akali": {
       "gamesDecayed": 8.156046964639202,
       "residual": 0.5737647627281872
@@ -48672,6 +48664,14 @@
     "Nautilus>Pyke": {
       "gamesDecayed": 8.942582823350712,
       "residual": -0.5376855991230479
+    },
+    "Mel>Caitlyn": {
+      "gamesDecayed": 9.320357390320183,
+      "residual": 0.5683687385796972
+    },
+    "Caitlyn>Mel": {
+      "gamesDecayed": 9.320357390320183,
+      "residual": -0.568368738579697
     },
     "Ambessa>Olaf": {
       "gamesDecayed": 43.62904669017604,
@@ -48705,14 +48705,6 @@
       "gamesDecayed": 11.01580020904044,
       "residual": 1.1077356405903571
     },
-    "Xerath>Draven": {
-      "gamesDecayed": 17.56764672672055,
-      "residual": -1.4465726597763218
-    },
-    "Draven>Xerath": {
-      "gamesDecayed": 17.56764672672055,
-      "residual": 1.4465726597763215
-    },
     "Renekton>Dr. Mundo": {
       "gamesDecayed": 25.18801414622736,
       "residual": -0.9723739934464691
@@ -48720,6 +48712,14 @@
     "Dr. Mundo>Renekton": {
       "gamesDecayed": 25.18801414622736,
       "residual": 0.972373993446469
+    },
+    "Xerath>Draven": {
+      "gamesDecayed": 17.56764672672055,
+      "residual": -1.4465726597763218
+    },
+    "Draven>Xerath": {
+      "gamesDecayed": 17.56764672672055,
+      "residual": 1.4465726597763215
     },
     "Milio>Camille": {
       "gamesDecayed": 40.40891323218925,
@@ -48737,14 +48737,6 @@
       "gamesDecayed": 22.37489425905193,
       "residual": 0.8741529035947765
     },
-    "Lucian>Draven": {
-      "gamesDecayed": 18.599526799582303,
-      "residual": 1.3152280117844284
-    },
-    "Draven>Lucian": {
-      "gamesDecayed": 18.599526799582303,
-      "residual": -1.3152280117844326
-    },
     "Skarner>Qiyana": {
       "gamesDecayed": 18.128768063632354,
       "residual": 1.5505202058178347
@@ -48760,6 +48752,14 @@
     "Syndra>Locke": {
       "gamesDecayed": 21.216332098689946,
       "residual": -0.8158174534639804
+    },
+    "Lucian>Draven": {
+      "gamesDecayed": 18.599526799582303,
+      "residual": 1.3152280117844284
+    },
+    "Draven>Lucian": {
+      "gamesDecayed": 18.599526799582303,
+      "residual": -1.3152280117844326
     },
     "Olaf>Dr. Mundo": {
       "gamesDecayed": 18.247828369607106,
@@ -48953,14 +48953,6 @@
       "gamesDecayed": 0.0006981581987719485,
       "residual": -9.524329147032053e-05
     },
-    "Ezreal>Yasuo": {
-      "gamesDecayed": 0.001186991920004169,
-      "residual": 4.5470610718710036e-05
-    },
-    "Yasuo>Ezreal": {
-      "gamesDecayed": 0.001186991920004169,
-      "residual": -4.547061071871005e-05
-    },
     "Gragas>Garen": {
       "gamesDecayed": 3.28306264115623e-20,
       "residual": -4.232232208462506e-21
@@ -48968,6 +48960,14 @@
     "Garen>Gragas": {
       "gamesDecayed": 3.28306264115623e-20,
       "residual": 4.232232208462505e-21
+    },
+    "Ezreal>Yasuo": {
+      "gamesDecayed": 0.001186991920004169,
+      "residual": 4.5470610718710036e-05
+    },
+    "Yasuo>Ezreal": {
+      "gamesDecayed": 0.001186991920004169,
+      "residual": -4.547061071871005e-05
     },
     "Hecarim>Vi": {
       "gamesDecayed": 0.009182840857416889,
@@ -49081,14 +49081,6 @@
       "gamesDecayed": 0.2937306224633067,
       "residual": 0.03864721761352102
     },
-    "Caitlyn>Jinx": {
-      "gamesDecayed": 0.29131961371485343,
-      "residual": -0.03652422060773679
-    },
-    "Jinx>Caitlyn": {
-      "gamesDecayed": 0.29131961371485343,
-      "residual": 0.036524220607736795
-    },
     "Zac>Wukong": {
       "gamesDecayed": 8.189672069225692e-07,
       "residual": -1.070300339248203e-07
@@ -49104,6 +49096,14 @@
     "Darius>Renekton": {
       "gamesDecayed": 0.9092697528357556,
       "residual": 0.11383568025056882
+    },
+    "Caitlyn>Jinx": {
+      "gamesDecayed": 0.29131961371485343,
+      "residual": -0.03652422060773679
+    },
+    "Jinx>Caitlyn": {
+      "gamesDecayed": 0.29131961371485343,
+      "residual": 0.036524220607736795
     },
     "Jayce>Dr. Mundo": {
       "gamesDecayed": 1.3806425407803111,
@@ -49193,14 +49193,6 @@
       "gamesDecayed": 0.026157038027170315,
       "residual": 0.0016771566543496727
     },
-    "Jinx>Varus": {
-      "gamesDecayed": 0.0011057537890682542,
-      "residual": -0.00014267606537379695
-    },
-    "Varus>Jinx": {
-      "gamesDecayed": 0.0011057537890682542,
-      "residual": 0.00014267606537379693
-    },
     "Skarner>Mordekaiser": {
       "gamesDecayed": 2.322179806381896e-17,
       "residual": 2.8393980677122644e-18
@@ -49208,6 +49200,14 @@
     "Mordekaiser>Skarner": {
       "gamesDecayed": 2.322179806381896e-17,
       "residual": -2.839398067712265e-18
+    },
+    "Jinx>Varus": {
+      "gamesDecayed": 0.0011057537890682542,
+      "residual": -0.00014267606537379695
+    },
+    "Varus>Jinx": {
+      "gamesDecayed": 0.0011057537890682542,
+      "residual": 0.00014267606537379693
     },
     "Lux>Yone": {
       "gamesDecayed": 1.5368364901550136e-19,
@@ -49425,14 +49425,6 @@
       "gamesDecayed": 8.008505985067325e-20,
       "residual": 1.1492378602232144e-20
     },
-    "Kog'Maw>Kalista": {
-      "gamesDecayed": 0.36296981786381394,
-      "residual": -0.04051913940592852
-    },
-    "Kalista>Kog'Maw": {
-      "gamesDecayed": 0.36296981786381394,
-      "residual": 0.04051913940592857
-    },
     "Ivern>Wukong": {
       "gamesDecayed": 0.27543653402159984,
       "residual": -0.036911100187273733
@@ -49448,6 +49440,14 @@
     "Rell>Amumu": {
       "gamesDecayed": 8.556640525794142e-08,
       "residual": 1.1116214325541164e-08
+    },
+    "Kog'Maw>Kalista": {
+      "gamesDecayed": 0.36296981786381394,
+      "residual": -0.04051913940592852
+    },
+    "Kalista>Kog'Maw": {
+      "gamesDecayed": 0.36296981786381394,
+      "residual": 0.04051913940592857
     },
     "Yone>Xerath": {
       "gamesDecayed": 8.029125669476712e-20,
@@ -49609,14 +49609,6 @@
       "gamesDecayed": 1.2457951342009264e-18,
       "residual": -3.255545467327634e-20
     },
-    "Xayah>Vayne": {
-      "gamesDecayed": 1.378083424640038e-13,
-      "residual": -1.7219595755178954e-14
-    },
-    "Vayne>Xayah": {
-      "gamesDecayed": 1.378083424640038e-13,
-      "residual": 1.7219595755178954e-14
-    },
     "Orianna>Ornn": {
       "gamesDecayed": 4.817936880868096e-12,
       "residual": 6.000855893710808e-13
@@ -49624,6 +49616,14 @@
     "Ornn>Orianna": {
       "gamesDecayed": 4.817936880868096e-12,
       "residual": -6.000855893710809e-13
+    },
+    "Xayah>Vayne": {
+      "gamesDecayed": 1.378083424640038e-13,
+      "residual": -1.7219595755178954e-14
+    },
+    "Vayne>Xayah": {
+      "gamesDecayed": 1.378083424640038e-13,
+      "residual": 1.7219595755178954e-14
     },
     "Nidalee>Maokai": {
       "gamesDecayed": 1.0645056680104052e-13,
@@ -50009,14 +50009,6 @@
       "gamesDecayed": 1.03894418471822e-19,
       "residual": 1.3834909359636402e-20
     },
-    "Twitch>Sivir": {
-      "gamesDecayed": 0.3018076268028519,
-      "residual": -0.03815910691552305
-    },
-    "Sivir>Twitch": {
-      "gamesDecayed": 0.3018076268028519,
-      "residual": 0.03815910691552305
-    },
     "Rakan>Taric": {
       "gamesDecayed": 2.613107105014029e-07,
       "residual": 3.1404861947439056e-08
@@ -50024,6 +50016,14 @@
     "Taric>Rakan": {
       "gamesDecayed": 2.613107105014029e-07,
       "residual": -3.140486194743906e-08
+    },
+    "Twitch>Sivir": {
+      "gamesDecayed": 0.3018076268028519,
+      "residual": -0.03815910691552305
+    },
+    "Sivir>Twitch": {
+      "gamesDecayed": 0.3018076268028519,
+      "residual": 0.03815910691552305
     },
     "Viego>Diana": {
       "gamesDecayed": 4.0295628366784825e-15,
@@ -50217,14 +50217,6 @@
       "gamesDecayed": 0.0002550560239332545,
       "residual": -3.356772146913972e-05
     },
-    "Hwei>Varus": {
-      "gamesDecayed": 2.9640083500193194e-05,
-      "residual": -3.7367529458448885e-06
-    },
-    "Varus>Hwei": {
-      "gamesDecayed": 2.9640083500193194e-05,
-      "residual": 3.736752945844888e-06
-    },
     "Vi>Amumu": {
       "gamesDecayed": 1.226591443640431e-18,
       "residual": 1.5567194527742576e-19
@@ -50240,6 +50232,14 @@
     "Shen>Ornn": {
       "gamesDecayed": 0.14135356519605607,
       "residual": -0.018990831508171834
+    },
+    "Hwei>Varus": {
+      "gamesDecayed": 2.9640083500193194e-05,
+      "residual": -3.7367529458448885e-06
+    },
+    "Varus>Hwei": {
+      "gamesDecayed": 2.9640083500193194e-05,
+      "residual": 3.736752945844888e-06
     },
     "Xerath>Corki": {
       "gamesDecayed": 0.3800166934807101,
@@ -50257,14 +50257,6 @@
       "gamesDecayed": 0.004141559905707697,
       "residual": 0.0003008083752026218
     },
-    "Senna>Aphelios": {
-      "gamesDecayed": 0.2907439693276651,
-      "residual": 0.03658977871201281
-    },
-    "Aphelios>Senna": {
-      "gamesDecayed": 0.2907439693276651,
-      "residual": -0.03658977871201282
-    },
     "Ornn>Rell": {
       "gamesDecayed": 1.060230456491349e-16,
       "residual": -1.3720723268129394e-17
@@ -50272,6 +50264,14 @@
     "Rell>Ornn": {
       "gamesDecayed": 1.060230456491349e-16,
       "residual": 1.3720723268129391e-17
+    },
+    "Senna>Aphelios": {
+      "gamesDecayed": 0.2907439693276651,
+      "residual": 0.03658977871201281
+    },
+    "Aphelios>Senna": {
+      "gamesDecayed": 0.2907439693276651,
+      "residual": -0.03658977871201282
     },
     "Irelia>Syndra": {
       "gamesDecayed": 0.01897945695242651,
@@ -50281,14 +50281,6 @@
       "gamesDecayed": 0.01897945695242651,
       "residual": -0.0016322655938144951
     },
-    "Smolder>Lee Sin": {
-      "gamesDecayed": 1.1809044033218855e-19,
-      "residual": -1.3958758958379335e-20
-    },
-    "Lee Sin>Smolder": {
-      "gamesDecayed": 1.1809044033218855e-19,
-      "residual": 1.3958758958379332e-20
-    },
     "Rell>Senna": {
       "gamesDecayed": 2.5149341918414923,
       "residual": -0.11741100177662807
@@ -50297,13 +50289,13 @@
       "gamesDecayed": 2.5149341918414923,
       "residual": 0.11741100177662803
     },
-    "Ezreal>Vayne": {
-      "gamesDecayed": 0.11388285510892882,
-      "residual": -0.012321825539695507
+    "Smolder>Lee Sin": {
+      "gamesDecayed": 1.1809044033218855e-19,
+      "residual": -1.3958758958379335e-20
     },
-    "Vayne>Ezreal": {
-      "gamesDecayed": 0.11388285510892882,
-      "residual": 0.012321825539695491
+    "Lee Sin>Smolder": {
+      "gamesDecayed": 1.1809044033218855e-19,
+      "residual": 1.3958758958379332e-20
     },
     "Poppy>Lulu": {
       "gamesDecayed": 0.016529434642009056,
@@ -50312,6 +50304,14 @@
     "Lulu>Poppy": {
       "gamesDecayed": 0.016529434642009056,
       "residual": 0.0023135133641406644
+    },
+    "Ezreal>Vayne": {
+      "gamesDecayed": 0.11388285510892882,
+      "residual": -0.012321825539695507
+    },
+    "Vayne>Ezreal": {
+      "gamesDecayed": 0.11388285510892882,
+      "residual": 0.012321825539695491
     },
     "Aatrox>Maokai": {
       "gamesDecayed": 1.9165663035653203e-05,
@@ -50337,14 +50337,6 @@
       "gamesDecayed": 0.03389701944652104,
       "residual": -0.0013319188842662664
     },
-    "Kai'Sa>Hwei": {
-      "gamesDecayed": 2.3706926169026427e-16,
-      "residual": -3.2462224729131815e-17
-    },
-    "Hwei>Kai'Sa": {
-      "gamesDecayed": 2.3706926169026427e-16,
-      "residual": 3.2462224729131815e-17
-    },
     "Azir>Ezreal": {
       "gamesDecayed": 2.2281808704974183e-19,
       "residual": 3.0023283161700223e-20
@@ -50352,6 +50344,14 @@
     "Ezreal>Azir": {
       "gamesDecayed": 2.2281808704974183e-19,
       "residual": -3.002328316170023e-20
+    },
+    "Kai'Sa>Hwei": {
+      "gamesDecayed": 2.3706926169026427e-16,
+      "residual": -3.2462224729131815e-17
+    },
+    "Hwei>Kai'Sa": {
+      "gamesDecayed": 2.3706926169026427e-16,
+      "residual": 3.2462224729131815e-17
     },
     "Vel'Koz>Azir": {
       "gamesDecayed": 9.22105844562764e-07,
@@ -50441,14 +50441,6 @@
       "gamesDecayed": 1.396404611096199e-19,
       "residual": 1.8661254189056153e-20
     },
-    "Ezreal>Viktor": {
-      "gamesDecayed": 15.287325159513998,
-      "residual": 0.23084711913925707
-    },
-    "Viktor>Ezreal": {
-      "gamesDecayed": 15.287325159513998,
-      "residual": -0.2308471191392572
-    },
     "Hwei>Rell": {
       "gamesDecayed": 1.0810962337159964e-14,
       "residual": -1.3897328794267291e-15
@@ -50456,6 +50448,14 @@
     "Rell>Hwei": {
       "gamesDecayed": 1.0810962337159964e-14,
       "residual": 1.3897328794267285e-15
+    },
+    "Ezreal>Viktor": {
+      "gamesDecayed": 15.287325159513998,
+      "residual": 0.23084711913925707
+    },
+    "Viktor>Ezreal": {
+      "gamesDecayed": 15.287325159513998,
+      "residual": -0.2308471191392572
     },
     "Mel>Yone": {
       "gamesDecayed": 0.12921828396816787,
@@ -50472,14 +50472,6 @@
     "Volibear>Camille": {
       "gamesDecayed": 4.192037359235775e-14,
       "residual": -5.5403511772308844e-15
-    },
-    "Tristana>Jhin": {
-      "gamesDecayed": 0.8164895812081826,
-      "residual": -0.003498889789530572
-    },
-    "Jhin>Tristana": {
-      "gamesDecayed": 0.8164895812081826,
-      "residual": 0.0034988897895305766
     },
     "Ahri>Malphite": {
       "gamesDecayed": 8.75114853786378e-05,
@@ -50505,6 +50497,14 @@
       "gamesDecayed": 3.442726947113697e-18,
       "residual": -6.929479299773901e-20
     },
+    "Tristana>Jhin": {
+      "gamesDecayed": 0.8164895812081826,
+      "residual": -0.003498889789530572
+    },
+    "Jhin>Tristana": {
+      "gamesDecayed": 0.8164895812081826,
+      "residual": 0.0034988897895305766
+    },
     "Aurora>Tristana": {
       "gamesDecayed": 0.9698885107591089,
       "residual": 0.12334024836899941
@@ -50529,14 +50529,6 @@
       "gamesDecayed": 2.578344396828984e-05,
       "residual": 3.323905697418133e-06
     },
-    "Sivir>Ashe": {
-      "gamesDecayed": 0.08016587971145302,
-      "residual": 0.009990369039375105
-    },
-    "Ashe>Sivir": {
-      "gamesDecayed": 0.08016587971145302,
-      "residual": -0.009990369039375094
-    },
     "Ivern>Brand": {
       "gamesDecayed": 9.838989192944566e-12,
       "residual": 1.2303699406204723e-12
@@ -50552,6 +50544,14 @@
     "Smolder>Azir": {
       "gamesDecayed": 6.405573201769428e-14,
       "residual": -1.7670423382592382e-15
+    },
+    "Sivir>Ashe": {
+      "gamesDecayed": 0.08016587971145302,
+      "residual": 0.009990369039375105
+    },
+    "Ashe>Sivir": {
+      "gamesDecayed": 0.08016587971145302,
+      "residual": -0.009990369039375094
     },
     "Pantheon>Darius": {
       "gamesDecayed": 4.346660482146901e-17,
@@ -50657,14 +50657,6 @@
       "gamesDecayed": 0.003315498229015991,
       "residual": -0.0004465548924329067
     },
-    "Xayah>Draven": {
-      "gamesDecayed": 2.986612547744026e-10,
-      "residual": 1.7626627537033978e-11
-    },
-    "Draven>Xayah": {
-      "gamesDecayed": 2.986612547744026e-10,
-      "residual": -1.762662753703399e-11
-    },
     "Camille>Kennen": {
       "gamesDecayed": 2.5395202319772735e-07,
       "residual": 3.1480621039075526e-08
@@ -50680,6 +50672,14 @@
     "Renata Glasc>Gragas": {
       "gamesDecayed": 2.8965506421635234e-18,
       "residual": -3.848819957721415e-19
+    },
+    "Xayah>Draven": {
+      "gamesDecayed": 2.986612547744026e-10,
+      "residual": 1.7626627537033978e-11
+    },
+    "Draven>Xayah": {
+      "gamesDecayed": 2.986612547744026e-10,
+      "residual": -1.762662753703399e-11
     },
     "Cassiopeia>Tristana": {
       "gamesDecayed": 0.12294019915072533,
@@ -50697,14 +50697,6 @@
       "gamesDecayed": 0.002750976516368885,
       "residual": 0.00035573437058981694
     },
-    "Nilah>Zeri": {
-      "gamesDecayed": 8.331461809167762e-15,
-      "residual": 1.0695416239002714e-15
-    },
-    "Zeri>Nilah": {
-      "gamesDecayed": 8.331461809167762e-15,
-      "residual": -1.0695416239002716e-15
-    },
     "Senna>Yuumi": {
       "gamesDecayed": 2.791414742300302e-18,
       "residual": 3.5308767842081463e-19
@@ -50712,6 +50704,14 @@
     "Yuumi>Senna": {
       "gamesDecayed": 2.791414742300302e-18,
       "residual": -3.5308767842081473e-19
+    },
+    "Nilah>Zeri": {
+      "gamesDecayed": 8.331461809167762e-15,
+      "residual": 1.0695416239002714e-15
+    },
+    "Zeri>Nilah": {
+      "gamesDecayed": 8.331461809167762e-15,
+      "residual": -1.0695416239002716e-15
     },
     "Jax>Irelia": {
       "gamesDecayed": 7.817738408966343e-05,
@@ -50753,14 +50753,6 @@
       "gamesDecayed": 0.9085019295960753,
       "residual": -0.04930153437058725
     },
-    "Ezreal>Mel": {
-      "gamesDecayed": 2.0018671360863296,
-      "residual": -0.08084446891731295
-    },
-    "Mel>Ezreal": {
-      "gamesDecayed": 2.0018671360863296,
-      "residual": 0.08084446891731287
-    },
     "Syndra>Ambessa": {
       "gamesDecayed": 0.8906118525862582,
       "residual": -0.1145443863816203
@@ -50769,13 +50761,13 @@
       "gamesDecayed": 0.8906118525862582,
       "residual": 0.1145443863816203
     },
-    "Varus>Singed": {
-      "gamesDecayed": 3.0265199325016728e-18,
-      "residual": 3.848611059010985e-19
+    "Ezreal>Mel": {
+      "gamesDecayed": 2.0018671360863296,
+      "residual": -0.08084446891731295
     },
-    "Singed>Varus": {
-      "gamesDecayed": 3.0265199325016728e-18,
-      "residual": -3.8486110590109862e-19
+    "Mel>Ezreal": {
+      "gamesDecayed": 2.0018671360863296,
+      "residual": 0.08084446891731287
     },
     "Ivern>Darius": {
       "gamesDecayed": 7.34323999008008e-18,
@@ -50784,6 +50776,14 @@
     "Darius>Ivern": {
       "gamesDecayed": 7.34323999008008e-18,
       "residual": 6.678053777764523e-20
+    },
+    "Varus>Singed": {
+      "gamesDecayed": 3.0265199325016728e-18,
+      "residual": 3.848611059010985e-19
+    },
+    "Singed>Varus": {
+      "gamesDecayed": 3.0265199325016728e-18,
+      "residual": -3.8486110590109862e-19
     },
     "Braum>Tahm Kench": {
       "gamesDecayed": 4.477599182875569e-06,
@@ -51177,14 +51177,6 @@
       "gamesDecayed": 0.2974745149992565,
       "residual": 0.036064905913208815
     },
-    "Tristana>Ashe": {
-      "gamesDecayed": 0.0003884427325405336,
-      "residual": 4.674009121206466e-06
-    },
-    "Ashe>Tristana": {
-      "gamesDecayed": 0.0003884427325405336,
-      "residual": -4.674009121206462e-06
-    },
     "Vladimir>Taliyah": {
       "gamesDecayed": 7.264195805550942e-07,
       "residual": -8.942889965054348e-08
@@ -51192,6 +51184,14 @@
     "Taliyah>Vladimir": {
       "gamesDecayed": 7.264195805550942e-07,
       "residual": 8.942889965054344e-08
+    },
+    "Tristana>Ashe": {
+      "gamesDecayed": 0.0003884427325405336,
+      "residual": 4.674009121206466e-06
+    },
+    "Ashe>Tristana": {
+      "gamesDecayed": 0.0003884427325405336,
+      "residual": -4.674009121206462e-06
     },
     "Urgot>Gnar": {
       "gamesDecayed": 1.4654989049708163,
@@ -51305,14 +51305,6 @@
       "gamesDecayed": 7.381596183625578e-17,
       "residual": 9.702924681145103e-18
     },
-    "Ashe>Seraphine": {
-      "gamesDecayed": 0.009090826397844257,
-      "residual": 0.00015763225299644828
-    },
-    "Seraphine>Ashe": {
-      "gamesDecayed": 0.009090826397844257,
-      "residual": -0.0001576322529964482
-    },
     "Cassiopeia>Ambessa": {
       "gamesDecayed": 0.003149353427745561,
       "residual": 0.00038379178656316944
@@ -51328,6 +51320,14 @@
     "Bard>Poppy": {
       "gamesDecayed": 0.3879879802952509,
       "residual": 0.04959208684676618
+    },
+    "Ashe>Seraphine": {
+      "gamesDecayed": 0.009090826397844257,
+      "residual": 0.00015763225299644828
+    },
+    "Seraphine>Ashe": {
+      "gamesDecayed": 0.009090826397844257,
+      "residual": -0.0001576322529964482
     },
     "Dr. Mundo>Sejuani": {
       "gamesDecayed": 0.003379052955123824,
@@ -51457,14 +51457,6 @@
       "gamesDecayed": 0.0028111390626079148,
       "residual": 7.829373999727926e-05
     },
-    "Miss Fortune>Kog'Maw": {
-      "gamesDecayed": 1.6128055496925708e-16,
-      "residual": -8.483353822793289e-19
-    },
-    "Kog'Maw>Miss Fortune": {
-      "gamesDecayed": 1.6128055496925708e-16,
-      "residual": 8.483353822793293e-19
-    },
     "Wukong>Rek'Sai": {
       "gamesDecayed": 0.00010468862358792843,
       "residual": -1.2570042945357899e-05
@@ -51480,6 +51472,14 @@
     "Garen>Gnar": {
       "gamesDecayed": 0.10256519131810093,
       "residual": -0.012685909421455503
+    },
+    "Miss Fortune>Kog'Maw": {
+      "gamesDecayed": 1.6128055496925708e-16,
+      "residual": -8.483353822793289e-19
+    },
+    "Kog'Maw>Miss Fortune": {
+      "gamesDecayed": 1.6128055496925708e-16,
+      "residual": 8.483353822793293e-19
     },
     "Taliyah>Xerath": {
       "gamesDecayed": 3.819913512870207e-11,
@@ -51665,14 +51665,6 @@
       "gamesDecayed": 8.51990050195059e-17,
       "residual": -1.0669270913753866e-17
     },
-    "Draven>Aphelios": {
-      "gamesDecayed": 8.823624529869817e-17,
-      "residual": 7.411101127427328e-18
-    },
-    "Aphelios>Draven": {
-      "gamesDecayed": 8.823624529869817e-17,
-      "residual": -7.411101127427326e-18
-    },
     "Olaf>Gragas": {
       "gamesDecayed": 1.0518371656524266,
       "residual": 0.1225452230176076
@@ -51688,6 +51680,14 @@
     "Thresh>Pantheon": {
       "gamesDecayed": 8.489505379517167e-17,
       "residual": -1.1005975758348666e-17
+    },
+    "Draven>Aphelios": {
+      "gamesDecayed": 8.823624529869817e-17,
+      "residual": 7.411101127427328e-18
+    },
+    "Aphelios>Draven": {
+      "gamesDecayed": 8.823624529869817e-17,
+      "residual": -7.411101127427326e-18
     },
     "Rumble>Shen": {
       "gamesDecayed": 18.712476131304424,
@@ -51737,14 +51737,6 @@
       "gamesDecayed": 2.1341487172551384e-12,
       "residual": -2.7819098678157936e-13
     },
-    "Jinx>Kalista": {
-      "gamesDecayed": 2.246029424181979e-06,
-      "residual": 3.0195925252713356e-07
-    },
-    "Kalista>Jinx": {
-      "gamesDecayed": 2.246029424181979e-06,
-      "residual": -3.019592525271336e-07
-    },
     "Mel>Hwei": {
       "gamesDecayed": 0.34328358450742114,
       "residual": 0.04573451237090322
@@ -51760,6 +51752,14 @@
     "Soraka>Alistar": {
       "gamesDecayed": 0.0035835571132388955,
       "residual": 0.00047666588293034627
+    },
+    "Jinx>Kalista": {
+      "gamesDecayed": 2.246029424181979e-06,
+      "residual": 3.0195925252713356e-07
+    },
+    "Kalista>Jinx": {
+      "gamesDecayed": 2.246029424181979e-06,
+      "residual": -3.019592525271336e-07
     },
     "Ziggs>Aatrox": {
       "gamesDecayed": 7.693342926470912,
@@ -51865,14 +51865,6 @@
       "gamesDecayed": 8.98644563802554e-17,
       "residual": -1.1146699966968953e-17
     },
-    "Miss Fortune>Draven": {
-      "gamesDecayed": 0.0012926152638109798,
-      "residual": -4.273876788028172e-05
-    },
-    "Draven>Miss Fortune": {
-      "gamesDecayed": 0.0012926152638109798,
-      "residual": 4.273876788028173e-05
-    },
     "Aurora>Dr. Mundo": {
       "gamesDecayed": 9.96528336171222e-05,
       "residual": 1.3529724620964217e-05
@@ -51880,6 +51872,14 @@
     "Dr. Mundo>Aurora": {
       "gamesDecayed": 9.96528336171222e-05,
       "residual": -1.352972462096422e-05
+    },
+    "Miss Fortune>Draven": {
+      "gamesDecayed": 0.0012926152638109798,
+      "residual": -4.273876788028172e-05
+    },
+    "Draven>Miss Fortune": {
+      "gamesDecayed": 0.0012926152638109798,
+      "residual": 4.273876788028173e-05
     },
     "Kled>Ornn": {
       "gamesDecayed": 0.3537272540764446,
@@ -52105,14 +52105,6 @@
       "gamesDecayed": 7.405477293255395e-05,
       "residual": 9.352758882638131e-06
     },
-    "Kai'Sa>Vayne": {
-      "gamesDecayed": 3.08434637678345e-05,
-      "residual": 2.7732891449313608e-06
-    },
-    "Vayne>Kai'Sa": {
-      "gamesDecayed": 3.08434637678345e-05,
-      "residual": -2.7732891449313608e-06
-    },
     "Yone>Nidalee": {
       "gamesDecayed": 9.960243012860018e-17,
       "residual": -1.2851448822371776e-17
@@ -52120,6 +52112,14 @@
     "Nidalee>Yone": {
       "gamesDecayed": 9.960243012860018e-17,
       "residual": 1.2851448822371772e-17
+    },
+    "Kai'Sa>Vayne": {
+      "gamesDecayed": 3.08434637678345e-05,
+      "residual": 2.7732891449313608e-06
+    },
+    "Vayne>Kai'Sa": {
+      "gamesDecayed": 3.08434637678345e-05,
+      "residual": -2.7732891449313608e-06
     },
     "Gnar>Akali": {
       "gamesDecayed": 1.7230567717982332,
@@ -52137,14 +52137,6 @@
       "gamesDecayed": 0.1059681003689378,
       "residual": -0.013526682317920431
     },
-    "Xerath>Tristana": {
-      "gamesDecayed": 1.0013802036379387e-16,
-      "residual": 1.2940363595608251e-17
-    },
-    "Tristana>Xerath": {
-      "gamesDecayed": 1.0013802036379387e-16,
-      "residual": -1.2940363595608254e-17
-    },
     "Leona>Tahm Kench": {
       "gamesDecayed": 0.32002840732405813,
       "residual": 0.0393105262857732
@@ -52152,6 +52144,14 @@
     "Tahm Kench>Leona": {
       "gamesDecayed": 0.32002840732405813,
       "residual": -0.03931052628577321
+    },
+    "Xerath>Tristana": {
+      "gamesDecayed": 1.0013802036379387e-16,
+      "residual": 1.2940363595608251e-17
+    },
+    "Tristana>Xerath": {
+      "gamesDecayed": 1.0013802036379387e-16,
+      "residual": -1.2940363595608254e-17
     },
     "Naafiri>Kayn": {
       "gamesDecayed": 1.2946660730008212e-16,
@@ -52185,14 +52185,6 @@
       "gamesDecayed": 1.2724342610166032e-16,
       "residual": 4.3216774459404184e-18
     },
-    "Zeri>Tristana": {
-      "gamesDecayed": 0.0003124285855925734,
-      "residual": 3.98813415620107e-05
-    },
-    "Tristana>Zeri": {
-      "gamesDecayed": 0.0003124285855925734,
-      "residual": -3.988134156201071e-05
-    },
     "Anivia>Sylas": {
       "gamesDecayed": 0.34567225197636897,
       "residual": -0.046623003766340515
@@ -52200,6 +52192,14 @@
     "Sylas>Anivia": {
       "gamesDecayed": 0.34567225197636897,
       "residual": 0.04662300376634051
+    },
+    "Zeri>Tristana": {
+      "gamesDecayed": 0.0003124285855925734,
+      "residual": 3.98813415620107e-05
+    },
+    "Tristana>Zeri": {
+      "gamesDecayed": 0.0003124285855925734,
+      "residual": -3.988134156201071e-05
     },
     "Senna>Kalista": {
       "gamesDecayed": 0.3670704614512455,
@@ -52393,14 +52393,6 @@
       "gamesDecayed": 0.6940724397455182,
       "residual": 0.004606965096932682
     },
-    "Yasuo>Jinx": {
-      "gamesDecayed": 1.114333337152136e-16,
-      "residual": 1.5023201502241653e-17
-    },
-    "Jinx>Yasuo": {
-      "gamesDecayed": 1.114333337152136e-16,
-      "residual": -1.5023201502241656e-17
-    },
     "Kindred>Dr. Mundo": {
       "gamesDecayed": 2.987962161773241e-05,
       "residual": 4.24337244868552e-06
@@ -52409,6 +52401,14 @@
       "gamesDecayed": 2.987962161773241e-05,
       "residual": -4.243372448685521e-06
     },
+    "Yasuo>Jinx": {
+      "gamesDecayed": 1.114333337152136e-16,
+      "residual": 1.5023201502241653e-17
+    },
+    "Jinx>Yasuo": {
+      "gamesDecayed": 1.114333337152136e-16,
+      "residual": -1.5023201502241656e-17
+    },
     "Viktor>Neeko": {
       "gamesDecayed": 1.1072237932511894e-16,
       "residual": -1.4318260480431908e-17
@@ -52416,14 +52416,6 @@
     "Neeko>Viktor": {
       "gamesDecayed": 1.1072237932511894e-16,
       "residual": 1.4318260480431908e-17
-    },
-    "Veigar>Varus": {
-      "gamesDecayed": 1.1088124049935925e-16,
-      "residual": -1.4037568967019443e-17
-    },
-    "Varus>Veigar": {
-      "gamesDecayed": 1.1088124049935925e-16,
-      "residual": 1.4037568967019443e-17
     },
     "Yorick>Nautilus": {
       "gamesDecayed": 1.1088124049935925e-16,
@@ -52440,6 +52432,14 @@
     "Zilean>Leona": {
       "gamesDecayed": 3.2771942630603677e-12,
       "residual": 4.464211310418549e-13
+    },
+    "Veigar>Varus": {
+      "gamesDecayed": 1.1088124049935925e-16,
+      "residual": -1.4037568967019443e-17
+    },
+    "Varus>Veigar": {
+      "gamesDecayed": 1.1088124049935925e-16,
+      "residual": 1.4037568967019443e-17
     },
     "Ashe>Draven": {
       "gamesDecayed": 0.27632506792664263,
@@ -52553,14 +52553,6 @@
       "gamesDecayed": 0.3449640220419538,
       "residual": 0.042688640185863366
     },
-    "Varus>Smolder": {
-      "gamesDecayed": 0.009471831887362864,
-      "residual": -0.00020090275707910168
-    },
-    "Smolder>Varus": {
-      "gamesDecayed": 0.009471831887362864,
-      "residual": 0.00020090275707910173
-    },
     "Ornn>Riven": {
       "gamesDecayed": 2.400719547595456e-15,
       "residual": 3.45465716321804e-16
@@ -52568,6 +52560,14 @@
     "Riven>Ornn": {
       "gamesDecayed": 2.400719547595456e-15,
       "residual": -3.454657163218041e-16
+    },
+    "Varus>Smolder": {
+      "gamesDecayed": 0.009471831887362864,
+      "residual": -0.00020090275707910168
+    },
+    "Smolder>Varus": {
+      "gamesDecayed": 0.009471831887362864,
+      "residual": 0.00020090275707910173
     },
     "Jax>Viego": {
       "gamesDecayed": 8.58065070222237e-07,
@@ -52673,14 +52673,6 @@
       "gamesDecayed": 2.886136520186633e-07,
       "residual": -3.5841645955815874e-08
     },
-    "Vel'Koz>Varus": {
-      "gamesDecayed": 2.59629928315443e-15,
-      "residual": 3.352142914153011e-16
-    },
-    "Varus>Vel'Koz": {
-      "gamesDecayed": 2.59629928315443e-15,
-      "residual": -3.352142914153012e-16
-    },
     "Galio>Neeko": {
       "gamesDecayed": 2.3680184738226497e-07,
       "residual": -3.033253327307629e-08
@@ -52688,6 +52680,14 @@
     "Neeko>Galio": {
       "gamesDecayed": 2.3680184738226497e-07,
       "residual": 3.033253327307629e-08
+    },
+    "Vel'Koz>Varus": {
+      "gamesDecayed": 2.59629928315443e-15,
+      "residual": 3.352142914153011e-16
+    },
+    "Varus>Vel'Koz": {
+      "gamesDecayed": 2.59629928315443e-15,
+      "residual": -3.352142914153012e-16
     },
     "Trundle>Dr. Mundo": {
       "gamesDecayed": 0.09530426495544408,
@@ -52777,14 +52777,6 @@
       "gamesDecayed": 2.8069906733443878e-15,
       "residual": -3.7223785983155616e-16
     },
-    "Jhin>Twitch": {
-      "gamesDecayed": 2.6806640084282472e-15,
-      "residual": 3.6389519229593143e-16
-    },
-    "Twitch>Jhin": {
-      "gamesDecayed": 2.6806640084282472e-15,
-      "residual": -3.6389519229593153e-16
-    },
     "Annie>Zoe": {
       "gamesDecayed": 0.0052792527119690765,
       "residual": -0.0007054189712895625
@@ -52792,6 +52784,14 @@
     "Zoe>Annie": {
       "gamesDecayed": 0.0052792527119690765,
       "residual": 0.0007054189712895623
+    },
+    "Jhin>Twitch": {
+      "gamesDecayed": 2.6806640084282472e-15,
+      "residual": 3.6389519229593143e-16
+    },
+    "Twitch>Jhin": {
+      "gamesDecayed": 2.6806640084282472e-15,
+      "residual": -3.6389519229593153e-16
     },
     "Naafiri>Diana": {
       "gamesDecayed": 0.00017058812026738668,
@@ -52817,14 +52817,6 @@
       "gamesDecayed": 2.702305782846897e-15,
       "residual": -3.3995120141202006e-16
     },
-    "Smolder>Ziggs": {
-      "gamesDecayed": 1.456640085309473e-10,
-      "residual": 1.9481053504495043e-11
-    },
-    "Ziggs>Smolder": {
-      "gamesDecayed": 1.456640085309473e-10,
-      "residual": -1.9481053504495046e-11
-    },
     "Alistar>Rumble": {
       "gamesDecayed": 3.4555836689587586e-15,
       "residual": 1.27787380443874e-16
@@ -52832,6 +52824,14 @@
     "Rumble>Alistar": {
       "gamesDecayed": 3.4555836689587586e-15,
       "residual": -1.2778738044387402e-16
+    },
+    "Smolder>Ziggs": {
+      "gamesDecayed": 1.456640085309473e-10,
+      "residual": 1.9481053504495043e-11
+    },
+    "Ziggs>Smolder": {
+      "gamesDecayed": 1.456640085309473e-10,
+      "residual": -1.9481053504495046e-11
     },
     "Gragas>Nidalee": {
       "gamesDecayed": 2.0738066697503707e-07,
@@ -52889,14 +52889,6 @@
       "gamesDecayed": 0.002629488475634673,
       "residual": 0.00033867345845428956
     },
-    "Caitlyn>Senna": {
-      "gamesDecayed": 0.1302016256006007,
-      "residual": -0.00386109934996147
-    },
-    "Senna>Caitlyn": {
-      "gamesDecayed": 0.1302016256006007,
-      "residual": 0.00386109934996147
-    },
     "Morgana>Tahm Kench": {
       "gamesDecayed": 5.627268702427096e-14,
       "residual": -7.987776063533285e-15
@@ -52904,6 +52896,14 @@
     "Tahm Kench>Morgana": {
       "gamesDecayed": 5.627268702427096e-14,
       "residual": 7.987776063533283e-15
+    },
+    "Caitlyn>Senna": {
+      "gamesDecayed": 0.1302016256006007,
+      "residual": -0.00386109934996147
+    },
+    "Senna>Caitlyn": {
+      "gamesDecayed": 0.1302016256006007,
+      "residual": 0.00386109934996147
     },
     "Neeko>Orianna": {
       "gamesDecayed": 2.437648990843191e-07,
@@ -53001,14 +53001,6 @@
       "gamesDecayed": 0.30346421183054895,
       "residual": -0.03678303290397513
     },
-    "Miss Fortune>Hwei": {
-      "gamesDecayed": 3.656422203741048e-15,
-      "residual": 4.67501292848977e-16
-    },
-    "Hwei>Miss Fortune": {
-      "gamesDecayed": 3.656422203741048e-15,
-      "residual": -4.67501292848977e-16
-    },
     "Shen>Jayce": {
       "gamesDecayed": 1.1319345620986598,
       "residual": -0.05530153692677189
@@ -53025,13 +53017,13 @@
       "gamesDecayed": 4.713413280960857e-11,
       "residual": -6.015931049695908e-12
     },
-    "K'Sante>Hwei": {
-      "gamesDecayed": 3.2942143455775313e-15,
-      "residual": -4.288056027248679e-16
+    "Miss Fortune>Hwei": {
+      "gamesDecayed": 3.656422203741048e-15,
+      "residual": 4.67501292848977e-16
     },
-    "Hwei>K'Sante": {
-      "gamesDecayed": 3.2942143455775313e-15,
-      "residual": 4.2880560272486777e-16
+    "Hwei>Miss Fortune": {
+      "gamesDecayed": 3.656422203741048e-15,
+      "residual": -4.67501292848977e-16
     },
     "Tristana>Qiyana": {
       "gamesDecayed": 3.2942143455775313e-15,
@@ -53041,13 +53033,13 @@
       "gamesDecayed": 3.2942143455775313e-15,
       "residual": 4.159809874992896e-16
     },
-    "Jhin>Mel": {
-      "gamesDecayed": 0.5903502519742054,
-      "residual": 0.02160513167266155
+    "K'Sante>Hwei": {
+      "gamesDecayed": 3.2942143455775313e-15,
+      "residual": -4.288056027248679e-16
     },
-    "Mel>Jhin": {
-      "gamesDecayed": 0.5903502519742054,
-      "residual": -0.02160513167266155
+    "Hwei>K'Sante": {
+      "gamesDecayed": 3.2942143455775313e-15,
+      "residual": 4.2880560272486777e-16
     },
     "Vi>Gragas": {
       "gamesDecayed": 3.3028625854482577e-15,
@@ -53064,6 +53056,14 @@
     "Ezreal>Akali": {
       "gamesDecayed": 3.3028625854482577e-15,
       "residual": -4.234617573153349e-16
+    },
+    "Jhin>Mel": {
+      "gamesDecayed": 0.5903502519742054,
+      "residual": 0.02160513167266155
+    },
+    "Mel>Jhin": {
+      "gamesDecayed": 0.5903502519742054,
+      "residual": -0.02160513167266155
     },
     "Vex>Karma": {
       "gamesDecayed": 3.3312425984906507e-15,
@@ -53153,14 +53153,6 @@
       "gamesDecayed": 0.00019164406534387762,
       "residual": 1.9227524836060908e-06
     },
-    "Ziggs>Senna": {
-      "gamesDecayed": 0.3336902270738251,
-      "residual": -0.005165457410362804
-    },
-    "Senna>Ziggs": {
-      "gamesDecayed": 0.3336902270738251,
-      "residual": 0.005165457410362808
-    },
     "Renekton>Cho'Gath": {
       "gamesDecayed": 0.010457804565881579,
       "residual": 0.0012973808054853428
@@ -53168,6 +53160,14 @@
     "Cho'Gath>Renekton": {
       "gamesDecayed": 0.010457804565881579,
       "residual": -0.001297380805485343
+    },
+    "Ziggs>Senna": {
+      "gamesDecayed": 0.3336902270738251,
+      "residual": -0.005165457410362804
+    },
+    "Senna>Ziggs": {
+      "gamesDecayed": 0.3336902270738251,
+      "residual": 0.005165457410362808
     },
     "Shen>Sett": {
       "gamesDecayed": 1.1351860848601661e-13,
@@ -53313,14 +53313,6 @@
       "gamesDecayed": 4.037614305206061e-15,
       "residual": 4.784652848534181e-16
     },
-    "Senna>Viktor": {
-      "gamesDecayed": 0.3548383106927971,
-      "residual": -0.0469825375282673
-    },
-    "Viktor>Senna": {
-      "gamesDecayed": 0.3548383106927971,
-      "residual": 0.046982537528267296
-    },
     "Ryze>Irelia": {
       "gamesDecayed": 7.893635253691493e-05,
       "residual": 1.0938835719951137e-05
@@ -53336,6 +53328,14 @@
     "Camille>Neeko": {
       "gamesDecayed": 0.11750593277432224,
       "residual": -0.0035517963860143558
+    },
+    "Senna>Viktor": {
+      "gamesDecayed": 0.3548383106927971,
+      "residual": -0.0469825375282673
+    },
+    "Viktor>Senna": {
+      "gamesDecayed": 0.3548383106927971,
+      "residual": 0.046982537528267296
     },
     "Lux>Ryze": {
       "gamesDecayed": 3.759150726843931e-15,
@@ -53385,14 +53385,6 @@
       "gamesDecayed": 16.036710895947508,
       "residual": 0.034186577621908576
     },
-    "Syndra>Tristana": {
-      "gamesDecayed": 0.0002796107977158174,
-      "residual": 3.5993293710665536e-05
-    },
-    "Tristana>Syndra": {
-      "gamesDecayed": 0.0002796107977158174,
-      "residual": -3.5993293710665536e-05
-    },
     "Yone>Renekton": {
       "gamesDecayed": 4.3323739941979257e-13,
       "residual": 5.519035441439729e-14
@@ -53400,6 +53392,14 @@
     "Renekton>Yone": {
       "gamesDecayed": 4.3323739941979257e-13,
       "residual": -5.5190354414397464e-14
+    },
+    "Syndra>Tristana": {
+      "gamesDecayed": 0.0002796107977158174,
+      "residual": 3.5993293710665536e-05
+    },
+    "Tristana>Syndra": {
+      "gamesDecayed": 0.0002796107977158174,
+      "residual": -3.5993293710665536e-05
     },
     "Vex>Aurora": {
       "gamesDecayed": 1.5341794242145738e-10,
@@ -53657,14 +53657,6 @@
       "gamesDecayed": 0.48990147630851405,
       "residual": 0.014680834148044226
     },
-    "Aphelios>Varus": {
-      "gamesDecayed": 1.874398837151344e-05,
-      "residual": -3.5923525876198495e-07
-    },
-    "Varus>Aphelios": {
-      "gamesDecayed": 1.874398837151344e-05,
-      "residual": 3.592352587619848e-07
-    },
     "Aurora>Irelia": {
       "gamesDecayed": 0.01966725991588561,
       "residual": 0.0009440443953755202
@@ -53672,6 +53664,14 @@
     "Irelia>Aurora": {
       "gamesDecayed": 0.01966725991588561,
       "residual": -0.0009440443953755198
+    },
+    "Aphelios>Varus": {
+      "gamesDecayed": 1.874398837151344e-05,
+      "residual": -3.5923525876198495e-07
+    },
+    "Varus>Aphelios": {
+      "gamesDecayed": 1.874398837151344e-05,
+      "residual": 3.592352587619848e-07
     },
     "Yasuo>Renekton": {
       "gamesDecayed": 8.760919390368573e-05,
@@ -53729,14 +53729,6 @@
       "gamesDecayed": 1.0956508407617888e-13,
       "residual": -1.3364842066770285e-14
     },
-    "Jinx>Hwei": {
-      "gamesDecayed": 1.0614700915882524e-13,
-      "residual": -1.425052978209e-14
-    },
-    "Hwei>Jinx": {
-      "gamesDecayed": 1.0614700915882524e-13,
-      "residual": 1.4250529782089997e-14
-    },
     "Master Yi>Sejuani": {
       "gamesDecayed": 1.0614669865285323e-13,
       "residual": -1.4030743369049285e-14
@@ -53752,6 +53744,14 @@
     "Vladimir>Shen": {
       "gamesDecayed": 1.0645349455052041e-13,
       "residual": 1.4865325066235977e-14
+    },
+    "Jinx>Hwei": {
+      "gamesDecayed": 1.0614700915882524e-13,
+      "residual": -1.425052978209e-14
+    },
+    "Hwei>Jinx": {
+      "gamesDecayed": 1.0614700915882524e-13,
+      "residual": 1.4250529782089997e-14
     },
     "Malphite>Aatrox": {
       "gamesDecayed": 3.0083126749494275e-06,
@@ -54001,14 +54001,6 @@
       "gamesDecayed": 2.967757913036051e-11,
       "residual": -3.8952029579421624e-12
     },
-    "Twitch>Smolder": {
-      "gamesDecayed": 1.3806849893586988e-13,
-      "residual": -1.888906573630751e-14
-    },
-    "Smolder>Twitch": {
-      "gamesDecayed": 1.3806849893586988e-13,
-      "residual": 1.8889065736307506e-14
-    },
     "Lissandra>Galio": {
       "gamesDecayed": 1.3762568622649156e-13,
       "residual": -1.7959564076271417e-14
@@ -54016,6 +54008,14 @@
     "Galio>Lissandra": {
       "gamesDecayed": 1.3762568622649156e-13,
       "residual": 1.7959564076271417e-14
+    },
+    "Twitch>Smolder": {
+      "gamesDecayed": 1.3806849893586988e-13,
+      "residual": -1.888906573630751e-14
+    },
+    "Smolder>Twitch": {
+      "gamesDecayed": 1.3806849893586988e-13,
+      "residual": 1.8889065736307506e-14
     },
     "Anivia>Ahri": {
       "gamesDecayed": 1.5894173538926133,
@@ -54081,14 +54081,6 @@
       "gamesDecayed": 8.713202286639627,
       "residual": 0.8620141875078678
     },
-    "Kog'Maw>Jhin": {
-      "gamesDecayed": 9.620596647033767e-05,
-      "residual": 1.2495164649187515e-05
-    },
-    "Jhin>Kog'Maw": {
-      "gamesDecayed": 9.620596647033767e-05,
-      "residual": -1.2495164649187516e-05
-    },
     "Yorick>Malphite": {
       "gamesDecayed": 5.740116403729465e-13,
       "residual": -1.5720678756385726e-14
@@ -54096,6 +54088,14 @@
     "Malphite>Yorick": {
       "gamesDecayed": 5.740116403729465e-13,
       "residual": 1.5720678756385726e-14
+    },
+    "Kog'Maw>Jhin": {
+      "gamesDecayed": 9.620596647033767e-05,
+      "residual": 1.2495164649187515e-05
+    },
+    "Jhin>Kog'Maw": {
+      "gamesDecayed": 9.620596647033767e-05,
+      "residual": -1.2495164649187516e-05
     },
     "Sylas>Rumble": {
       "gamesDecayed": 2.604688107408379e-12,
@@ -54129,14 +54129,6 @@
       "gamesDecayed": 1.3813746901379436e-13,
       "residual": -1.8905299216145476e-14
     },
-    "Hwei>Seraphine": {
-      "gamesDecayed": 1.408867691759475e-13,
-      "residual": 1.9571281649425186e-14
-    },
-    "Seraphine>Hwei": {
-      "gamesDecayed": 1.408867691759475e-13,
-      "residual": -1.9571281649425186e-14
-    },
     "Xin Zhao>Diana": {
       "gamesDecayed": 5.7278463690556564e-08,
       "residual": -7.3857944070034195e-09
@@ -54144,6 +54136,14 @@
     "Diana>Xin Zhao": {
       "gamesDecayed": 5.7278463690556564e-08,
       "residual": 7.3857944070034195e-09
+    },
+    "Hwei>Seraphine": {
+      "gamesDecayed": 1.408867691759475e-13,
+      "residual": 1.9571281649425186e-14
+    },
+    "Seraphine>Hwei": {
+      "gamesDecayed": 1.408867691759475e-13,
+      "residual": -1.9571281649425186e-14
     },
     "Udyr>Trundle": {
       "gamesDecayed": 1.4598950477725815e-11,
@@ -54313,14 +54313,6 @@
       "gamesDecayed": 3.945380873421612,
       "residual": -0.00454799815207138
     },
-    "Twitch>Zeri": {
-      "gamesDecayed": 3.284924360469447e-12,
-      "residual": -4.3086506906178847e-13
-    },
-    "Zeri>Twitch": {
-      "gamesDecayed": 3.284924360469447e-12,
-      "residual": 4.3086506906178826e-13
-    },
     "Ornn>Dr. Mundo": {
       "gamesDecayed": 0.9052357478210996,
       "residual": 0.1183419169266934
@@ -54328,6 +54320,14 @@
     "Dr. Mundo>Ornn": {
       "gamesDecayed": 0.9052357478210996,
       "residual": -0.11834191692669342
+    },
+    "Twitch>Zeri": {
+      "gamesDecayed": 3.284924360469447e-12,
+      "residual": -4.3086506906178847e-13
+    },
+    "Zeri>Twitch": {
+      "gamesDecayed": 3.284924360469447e-12,
+      "residual": 4.3086506906178826e-13
     },
     "Yone>Ziggs": {
       "gamesDecayed": 0.010160510404683102,
@@ -54401,14 +54401,6 @@
       "gamesDecayed": 2.1696077840578882e-10,
       "residual": -1.0911525126449992e-12
     },
-    "Yunara>Vayne": {
-      "gamesDecayed": 0.00018376467302906122,
-      "residual": 2.054130643236336e-06
-    },
-    "Vayne>Yunara": {
-      "gamesDecayed": 0.00018376467302906122,
-      "residual": -2.054130643236338e-06
-    },
     "Viego>Galio": {
       "gamesDecayed": 6.609657440839663e-11,
       "residual": 8.890559314303337e-12
@@ -54416,6 +54408,14 @@
     "Galio>Viego": {
       "gamesDecayed": 6.609657440839663e-11,
       "residual": -8.890559314303338e-12
+    },
+    "Yunara>Vayne": {
+      "gamesDecayed": 0.00018376467302906122,
+      "residual": 2.054130643236336e-06
+    },
+    "Vayne>Yunara": {
+      "gamesDecayed": 0.00018376467302906122,
+      "residual": -2.054130643236338e-06
     },
     "Poppy>Ivern": {
       "gamesDecayed": 3.2488766235922693e-12,
@@ -54673,14 +54673,6 @@
       "gamesDecayed": 2.3194519975143957e-06,
       "residual": -2.9040443100467243e-07
     },
-    "Seraphine>Lucian": {
-      "gamesDecayed": 1.1327900770794446,
-      "residual": 0.14239286001980658
-    },
-    "Lucian>Seraphine": {
-      "gamesDecayed": 1.1327900770794446,
-      "residual": -0.14239286001980664
-    },
     "Darius>Fiora": {
       "gamesDecayed": 4.134954590743884e-12,
       "residual": -5.348388139844105e-13
@@ -54696,6 +54688,14 @@
     "Nami>Senna": {
       "gamesDecayed": 0.0002572707155841139,
       "residual": 3.398790544053585e-05
+    },
+    "Seraphine>Lucian": {
+      "gamesDecayed": 1.1327900770794446,
+      "residual": 0.14239286001980658
+    },
+    "Lucian>Seraphine": {
+      "gamesDecayed": 1.1327900770794446,
+      "residual": -0.14239286001980664
     },
     "Yone>Vex": {
       "gamesDecayed": 1.5512969540198473e-10,
@@ -54761,14 +54761,6 @@
       "gamesDecayed": 1.588001016798266,
       "residual": -0.01575914997258211
     },
-    "Senna>Lulu": {
-      "gamesDecayed": 7.740435254793072e-05,
-      "residual": 9.780437962928259e-06
-    },
-    "Lulu>Senna": {
-      "gamesDecayed": 7.740435254793072e-05,
-      "residual": -9.780437962928259e-06
-    },
     "Blitzcrank>Twitch": {
       "gamesDecayed": 4.276783384495655e-12,
       "residual": 5.347717329447188e-13
@@ -54776,6 +54768,14 @@
     "Twitch>Blitzcrank": {
       "gamesDecayed": 4.276783384495655e-12,
       "residual": -5.347717329447189e-13
+    },
+    "Senna>Lulu": {
+      "gamesDecayed": 7.740435254793072e-05,
+      "residual": 9.780437962928259e-06
+    },
+    "Lulu>Senna": {
+      "gamesDecayed": 7.740435254793072e-05,
+      "residual": -9.780437962928259e-06
     },
     "Ryze>Vayne": {
       "gamesDecayed": 4.418923326278177e-12,
@@ -54801,14 +54801,6 @@
       "gamesDecayed": 4.418923326278177e-12,
       "residual": -5.79295606319563e-13
     },
-    "Rumble>Yunara": {
-      "gamesDecayed": 4.4290451814748354e-12,
-      "residual": 5.639968452455767e-13
-    },
-    "Yunara>Rumble": {
-      "gamesDecayed": 4.4290451814748354e-12,
-      "residual": -5.639968452455768e-13
-    },
     "Riven>Yorick": {
       "gamesDecayed": 4.4290451814748354e-12,
       "residual": 5.263711871108077e-13
@@ -54824,6 +54816,14 @@
     "Nautilus>Senna": {
       "gamesDecayed": 0.13057514861973804,
       "residual": 0.01759394324663917
+    },
+    "Rumble>Yunara": {
+      "gamesDecayed": 4.4290451814748354e-12,
+      "residual": 5.639968452455767e-13
+    },
+    "Yunara>Rumble": {
+      "gamesDecayed": 4.4290451814748354e-12,
+      "residual": -5.639968452455768e-13
     },
     "Ziggs>Kog'Maw": {
       "gamesDecayed": 0.3552821642792782,
@@ -54929,14 +54929,6 @@
       "gamesDecayed": 0.13145910503667588,
       "residual": 0.016716346786640073
     },
-    "Riven>Zeri": {
-      "gamesDecayed": 4.587761736629948e-12,
-      "residual": -6.538261197750169e-13
-    },
-    "Zeri>Riven": {
-      "gamesDecayed": 4.587761736629948e-12,
-      "residual": 6.538261197750167e-13
-    },
     "Corki>Renekton": {
       "gamesDecayed": 4.587761736629948e-12,
       "residual": -5.894922855118294e-13
@@ -54944,6 +54936,14 @@
     "Renekton>Corki": {
       "gamesDecayed": 4.587761736629948e-12,
       "residual": 5.894922855118293e-13
+    },
+    "Riven>Zeri": {
+      "gamesDecayed": 4.587761736629948e-12,
+      "residual": -6.538261197750169e-13
+    },
+    "Zeri>Riven": {
+      "gamesDecayed": 4.587761736629948e-12,
+      "residual": 6.538261197750167e-13
     },
     "Nautilus>Blitzcrank": {
       "gamesDecayed": 1.4196156403033214e-10,
@@ -54969,14 +54969,6 @@
       "gamesDecayed": 9.516177918010345e-11,
       "residual": 7.048336235652244e-12
     },
-    "Ashe>Smolder": {
-      "gamesDecayed": 0.006345719299260251,
-      "residual": -5.956466113954867e-05
-    },
-    "Smolder>Ashe": {
-      "gamesDecayed": 0.006345719299260251,
-      "residual": 5.956466113954853e-05
-    },
     "Milio>Gragas": {
       "gamesDecayed": 4.660835637676997e-12,
       "residual": 5.954239612156576e-13
@@ -54984,6 +54976,14 @@
     "Gragas>Milio": {
       "gamesDecayed": 4.660835637676997e-12,
       "residual": -5.954239612156578e-13
+    },
+    "Ashe>Smolder": {
+      "gamesDecayed": 0.006345719299260251,
+      "residual": -5.956466113954867e-05
+    },
+    "Smolder>Ashe": {
+      "gamesDecayed": 0.006345719299260251,
+      "residual": 5.956466113954853e-05
     },
     "Hecarim>Poppy": {
       "gamesDecayed": 4.976719650880609e-12,
@@ -55233,14 +55233,6 @@
       "gamesDecayed": 7.146504027851263e-12,
       "residual": 9.974521773024502e-13
     },
-    "Ezreal>Samira": {
-      "gamesDecayed": 0.0004582795723524763,
-      "residual": 6.111048713259749e-05
-    },
-    "Samira>Ezreal": {
-      "gamesDecayed": 0.0004582795723524763,
-      "residual": -6.11104871325975e-05
-    },
     "Yorick>Volibear": {
       "gamesDecayed": 0.0024718421556313595,
       "residual": -0.00031420739478508597
@@ -55248,6 +55240,14 @@
     "Volibear>Yorick": {
       "gamesDecayed": 0.0024718421556313595,
       "residual": 0.0003142073947850858
+    },
+    "Ezreal>Samira": {
+      "gamesDecayed": 0.0004582795723524763,
+      "residual": 6.111048713259749e-05
+    },
+    "Samira>Ezreal": {
+      "gamesDecayed": 0.0004582795723524763,
+      "residual": -6.11104871325975e-05
     },
     "Diana>Viktor": {
       "gamesDecayed": 0.0006969118651556282,
@@ -56105,14 +56105,6 @@
       "gamesDecayed": 0.0028834815288106734,
       "residual": -0.00038542298598143973
     },
-    "Lucian>Samira": {
-      "gamesDecayed": 0.004124120048309275,
-      "residual": -0.0005442930336954837
-    },
-    "Samira>Lucian": {
-      "gamesDecayed": 0.004124120048309275,
-      "residual": 0.0005442930336954837
-    },
     "Udyr>Volibear": {
       "gamesDecayed": 2.996938542821864e-07,
       "residual": 4.145181458640687e-08
@@ -56128,6 +56120,14 @@
     "Gangplank>Sion": {
       "gamesDecayed": 3.3629508661324954e-05,
       "residual": -2.5373388012658124e-06
+    },
+    "Lucian>Samira": {
+      "gamesDecayed": 0.004124120048309275,
+      "residual": -0.0005442930336954837
+    },
+    "Samira>Lucian": {
+      "gamesDecayed": 0.004124120048309275,
+      "residual": 0.0005442930336954837
     },
     "Rell>Pantheon": {
       "gamesDecayed": 1.1017805149053714,
@@ -56249,14 +56249,6 @@
       "gamesDecayed": 0.005584720282872372,
       "residual": -0.000685047017978088
     },
-    "Yunara>Kalista": {
-      "gamesDecayed": 17.64286763341393,
-      "residual": -1.5017058112909911
-    },
-    "Kalista>Yunara": {
-      "gamesDecayed": 17.64286763341393,
-      "residual": 1.501705811290991
-    },
     "Gwen>Illaoi": {
       "gamesDecayed": 1.3740628502987712e-05,
       "residual": 1.7503914538534859e-06
@@ -56264,6 +56256,14 @@
     "Illaoi>Gwen": {
       "gamesDecayed": 1.3740628502987712e-05,
       "residual": -1.7503914538534867e-06
+    },
+    "Yunara>Kalista": {
+      "gamesDecayed": 17.64286763341393,
+      "residual": -1.5017058112909911
+    },
+    "Kalista>Yunara": {
+      "gamesDecayed": 17.64286763341393,
+      "residual": 1.501705811290991
     },
     "Dr. Mundo>Lee Sin": {
       "gamesDecayed": 0.2968485177383222,
@@ -56305,14 +56305,6 @@
       "gamesDecayed": 6.216795811302614e-06,
       "residual": -7.453442762971578e-07
     },
-    "Seraphine>Ezreal": {
-      "gamesDecayed": 0.3698310666636348,
-      "residual": -0.015795011519472425
-    },
-    "Ezreal>Seraphine": {
-      "gamesDecayed": 0.3698310666636348,
-      "residual": 0.015795011519472425
-    },
     "Leona>Yuumi": {
       "gamesDecayed": 0.0022371184481876187,
       "residual": 0.0002889049060644184
@@ -56321,13 +56313,13 @@
       "gamesDecayed": 0.0022371184481876187,
       "residual": -0.0002889049060644184
     },
-    "Yunara>Seraphine": {
-      "gamesDecayed": 0.006414171230804481,
-      "residual": 5.556758508795089e-05
+    "Seraphine>Ezreal": {
+      "gamesDecayed": 0.3698310666636348,
+      "residual": -0.015795011519472425
     },
-    "Seraphine>Yunara": {
-      "gamesDecayed": 0.006414171230804481,
-      "residual": -5.556758508795096e-05
+    "Ezreal>Seraphine": {
+      "gamesDecayed": 0.3698310666636348,
+      "residual": 0.015795011519472425
     },
     "Ashe>Nautilus": {
       "gamesDecayed": 6.708101125726174e-06,
@@ -56336,6 +56328,14 @@
     "Nautilus>Ashe": {
       "gamesDecayed": 6.708101125726174e-06,
       "residual": 9.461000086037622e-07
+    },
+    "Yunara>Seraphine": {
+      "gamesDecayed": 0.006414171230804481,
+      "residual": 5.556758508795089e-05
+    },
+    "Seraphine>Yunara": {
+      "gamesDecayed": 0.006414171230804481,
+      "residual": -5.556758508795096e-05
     },
     "Zaahen>Mordekaiser": {
       "gamesDecayed": 0.004130995156825941,
@@ -57657,14 +57657,6 @@
       "gamesDecayed": 1.5398656331209464,
       "residual": 0.00026044150415203493
     },
-    "Smolder>Samira": {
-      "gamesDecayed": 0.0009066677261994747,
-      "residual": -0.0001110568911967825
-    },
-    "Samira>Smolder": {
-      "gamesDecayed": 0.0009066677261994747,
-      "residual": 0.00011105689119678248
-    },
     "Renekton>Garen": {
       "gamesDecayed": 0.0009830807609270977,
       "residual": -7.104458699837416e-05
@@ -57680,6 +57672,14 @@
     "Sylas>Nami": {
       "gamesDecayed": 0.0009066677397815763,
       "residual": 0.0001187340221531145
+    },
+    "Smolder>Samira": {
+      "gamesDecayed": 0.0009066677261994747,
+      "residual": -0.0001110568911967825
+    },
+    "Samira>Smolder": {
+      "gamesDecayed": 0.0009066677261994747,
+      "residual": 0.00011105689119678248
     },
     "Rek'Sai>Qiyana": {
       "gamesDecayed": 0.0029841761791163683,
@@ -57753,14 +57753,6 @@
       "gamesDecayed": 0.15080734910253107,
       "residual": 0.012448817621082041
     },
-    "Jhin>Samira": {
-      "gamesDecayed": 0.0009882765171233218,
-      "residual": -0.00012210154877364795
-    },
-    "Samira>Jhin": {
-      "gamesDecayed": 0.0009882765171233218,
-      "residual": 0.00012210154877364792
-    },
     "Brand>Annie": {
       "gamesDecayed": 0.0009882765171233218,
       "residual": -0.00011767866790797844
@@ -57768,6 +57760,14 @@
     "Annie>Brand": {
       "gamesDecayed": 0.0009882765171233218,
       "residual": 0.00011767866790797842
+    },
+    "Jhin>Samira": {
+      "gamesDecayed": 0.0009882765171233218,
+      "residual": -0.00012210154877364795
+    },
+    "Samira>Jhin": {
+      "gamesDecayed": 0.0009882765171233218,
+      "residual": 0.00012210154877364792
     },
     "Rumble>Twisted Fate": {
       "gamesDecayed": 0.1702463929522969,
@@ -58041,14 +58041,6 @@
       "gamesDecayed": 0.009688738374940435,
       "residual": 0.0012344294801629407
     },
-    "Cassiopeia>Jhin": {
-      "gamesDecayed": 0.6533130415788373,
-      "residual": -0.012730814431782495
-    },
-    "Jhin>Cassiopeia": {
-      "gamesDecayed": 0.6533130415788373,
-      "residual": 0.012730814431782492
-    },
     "Irelia>Viktor": {
       "gamesDecayed": 0.010623095110303677,
       "residual": 0.0012929617789639478
@@ -58056,6 +58048,14 @@
     "Viktor>Irelia": {
       "gamesDecayed": 0.010623095110303677,
       "residual": -0.001292961778963948
+    },
+    "Cassiopeia>Jhin": {
+      "gamesDecayed": 0.6533130415788373,
+      "residual": -0.012730814431782495
+    },
+    "Jhin>Cassiopeia": {
+      "gamesDecayed": 0.6533130415788373,
+      "residual": 0.012730814431782492
     },
     "Skarner>K'Sante": {
       "gamesDecayed": 0.007650926018577175,
@@ -58065,14 +58065,6 @@
       "gamesDecayed": 0.007650926018577175,
       "residual": 0.001051722906754277
     },
-    "Brand>Jinx": {
-      "gamesDecayed": 0.007811001887153416,
-      "residual": -0.0009699119614443869
-    },
-    "Jinx>Brand": {
-      "gamesDecayed": 0.007811001887153416,
-      "residual": 0.0009699119614443869
-    },
     "Akshan>LeBlanc": {
       "gamesDecayed": 0.007811001887153416,
       "residual": -0.0010252733525964212
@@ -58080,6 +58072,14 @@
     "LeBlanc>Akshan": {
       "gamesDecayed": 0.007811001887153416,
       "residual": 0.0010252733525964208
+    },
+    "Brand>Jinx": {
+      "gamesDecayed": 0.007811001887153416,
+      "residual": -0.0009699119614443869
+    },
+    "Jinx>Brand": {
+      "gamesDecayed": 0.007811001887153416,
+      "residual": 0.0009699119614443869
     },
     "LeBlanc>Zoe": {
       "gamesDecayed": 0.1565495063168983,
@@ -58425,14 +58425,6 @@
       "gamesDecayed": 0.22758100230757744,
       "residual": -0.02033914911767737
     },
-    "Taliyah>Varus": {
-      "gamesDecayed": 0.07394008699486725,
-      "residual": -0.009618963011003782
-    },
-    "Varus>Taliyah": {
-      "gamesDecayed": 0.07394008699486725,
-      "residual": 0.009618963011003782
-    },
     "Gnar>Zaahen": {
       "gamesDecayed": 2.3477942796658877,
       "residual": 0.08210545088197917
@@ -58440,6 +58432,14 @@
     "Zaahen>Gnar": {
       "gamesDecayed": 2.3477942796658877,
       "residual": -0.08210545088197925
+    },
+    "Taliyah>Varus": {
+      "gamesDecayed": 0.07394008699486725,
+      "residual": -0.009618963011003782
+    },
+    "Varus>Taliyah": {
+      "gamesDecayed": 0.07394008699486725,
+      "residual": 0.009618963011003782
     },
     "Gnar>Shyvana": {
       "gamesDecayed": 0.08282780125263414,
@@ -58465,14 +58465,6 @@
       "gamesDecayed": 0.1160922228396496,
       "residual": -0.014287686675387993
     },
-    "Lucian>Mel": {
-      "gamesDecayed": 0.5085972878152094,
-      "residual": -0.009094549607910696
-    },
-    "Mel>Lucian": {
-      "gamesDecayed": 0.5085972878152094,
-      "residual": 0.0090945496079107
-    },
     "Lee Sin>Shyvana": {
       "gamesDecayed": 0.08200059034282477,
       "residual": 0.010097519660726646
@@ -58488,6 +58480,14 @@
     "Pantheon>Milio": {
       "gamesDecayed": 0.07902210140218786,
       "residual": -0.010300401501889322
+    },
+    "Lucian>Mel": {
+      "gamesDecayed": 0.5085972878152094,
+      "residual": -0.009094549607910696
+    },
+    "Mel>Lucian": {
+      "gamesDecayed": 0.5085972878152094,
+      "residual": 0.0090945496079107
     },
     "Neeko>Tahm Kench": {
       "gamesDecayed": 0.08109642215812356,
@@ -58681,14 +58681,6 @@
       "gamesDecayed": 0.11334000343821081,
       "residual": 0.014346661786799919
     },
-    "Cassiopeia>Ezreal": {
-      "gamesDecayed": 10.20219693106135,
-      "residual": -0.5386267731999997
-    },
-    "Ezreal>Cassiopeia": {
-      "gamesDecayed": 10.20219693106135,
-      "residual": 0.5386267731999997
-    },
     "Ambessa>Vex": {
       "gamesDecayed": 0.17307102553464737,
       "residual": 0.023716541231220266
@@ -58696,6 +58688,14 @@
     "Vex>Ambessa": {
       "gamesDecayed": 0.17307102553464737,
       "residual": -0.02371654123122027
+    },
+    "Cassiopeia>Ezreal": {
+      "gamesDecayed": 10.20219693106135,
+      "residual": -0.5386267731999997
+    },
+    "Ezreal>Cassiopeia": {
+      "gamesDecayed": 10.20219693106135,
+      "residual": 0.5386267731999997
     },
     "Trundle>Leona": {
       "gamesDecayed": 1.0735276996668626,
@@ -58849,14 +58849,6 @@
       "gamesDecayed": 0.13151649825135042,
       "residual": -0.01698366498147932
     },
-    "Xayah>Sylas": {
-      "gamesDecayed": 0.13559703022399444,
-      "residual": 0.017293159185013427
-    },
-    "Sylas>Xayah": {
-      "gamesDecayed": 0.13559703022399444,
-      "residual": -0.01729315918501343
-    },
     "Tristana>Dr. Mundo": {
       "gamesDecayed": 0.1355970302239944,
       "residual": 0.01841927419569332
@@ -58864,6 +58856,14 @@
     "Dr. Mundo>Tristana": {
       "gamesDecayed": 0.1355970302239944,
       "residual": -0.01841927419569333
+    },
+    "Xayah>Sylas": {
+      "gamesDecayed": 0.13559703022399444,
+      "residual": 0.017293159185013427
+    },
+    "Sylas>Xayah": {
+      "gamesDecayed": 0.13559703022399444,
+      "residual": -0.01729315918501343
     },
     "Viktor>Varus": {
       "gamesDecayed": 1.3520533575023759,
@@ -58937,14 +58937,6 @@
       "gamesDecayed": 4.909905309907835,
       "residual": 0.07443953090394818
     },
-    "Aphelios>Cho'Gath": {
-      "gamesDecayed": 0.896434558192741,
-      "residual": -0.11759188813846
-    },
-    "Cho'Gath>Aphelios": {
-      "gamesDecayed": 0.896434558192741,
-      "residual": 0.11759188813845997
-    },
     "Yasuo>Neeko": {
       "gamesDecayed": 0.896434558192741,
       "residual": -0.1109729793592389
@@ -58961,6 +58953,14 @@
       "gamesDecayed": 0.896434558192741,
       "residual": 0.10971803427238673
     },
+    "Aphelios>Cho'Gath": {
+      "gamesDecayed": 0.896434558192741,
+      "residual": -0.11759188813846
+    },
+    "Cho'Gath>Aphelios": {
+      "gamesDecayed": 0.896434558192741,
+      "residual": 0.11759188813845997
+    },
     "Syndra>LeBlanc": {
       "gamesDecayed": 3.1576183631870345,
       "residual": 0.16514676775187817
@@ -58969,14 +58969,6 @@
       "gamesDecayed": 3.1576183631870345,
       "residual": -0.1651467677518781
     },
-    "Cassiopeia>Yunara": {
-      "gamesDecayed": 0.8975136165408774,
-      "residual": 0.1086385503146815
-    },
-    "Yunara>Cassiopeia": {
-      "gamesDecayed": 0.8975136165408774,
-      "residual": -0.10863855031468152
-    },
     "Olaf>Kayn": {
       "gamesDecayed": 0.8975136165408774,
       "residual": 0.1070701961258127
@@ -58984,6 +58976,14 @@
     "Kayn>Olaf": {
       "gamesDecayed": 0.8975136165408774,
       "residual": -0.10707019612581273
+    },
+    "Cassiopeia>Yunara": {
+      "gamesDecayed": 0.8975136165408774,
+      "residual": 0.1086385503146815
+    },
+    "Yunara>Cassiopeia": {
+      "gamesDecayed": 0.8975136165408774,
+      "residual": -0.10863855031468152
     },
     "Xayah>Xerath": {
       "gamesDecayed": 0.898718938520186,
@@ -59033,14 +59033,6 @@
       "gamesDecayed": 16.90598978060973,
       "residual": 0.25579782061982015
     },
-    "Lucian>Yasuo": {
-      "gamesDecayed": 0.860721684700929,
-      "residual": 0.10468693972786239
-    },
-    "Yasuo>Lucian": {
-      "gamesDecayed": 0.860721684700929,
-      "residual": -0.10468693972786242
-    },
     "Milio>Shen": {
       "gamesDecayed": 2.0811897466276847,
       "residual": 0.103662679656154
@@ -59048,6 +59040,14 @@
     "Shen>Milio": {
       "gamesDecayed": 2.0811897466276847,
       "residual": -0.10366267965615406
+    },
+    "Lucian>Yasuo": {
+      "gamesDecayed": 0.860721684700929,
+      "residual": 0.10468693972786239
+    },
+    "Yasuo>Lucian": {
+      "gamesDecayed": 0.860721684700929,
+      "residual": -0.10468693972786242
     },
     "Vayne>Anivia": {
       "gamesDecayed": 1.2393423983032588,
@@ -59441,14 +59441,6 @@
       "gamesDecayed": 0.05454431278550521,
       "residual": 0.006743662769961431
     },
-    "Jhin>Sion": {
-      "gamesDecayed": 2.731887819424973e-19,
-      "residual": -3.458752576658988e-20
-    },
-    "Sion>Jhin": {
-      "gamesDecayed": 2.731887819424973e-19,
-      "residual": 3.458752576658987e-20
-    },
     "Nocturne>Brand": {
       "gamesDecayed": 3.015072771425157e-06,
       "residual": 3.690379652024618e-07
@@ -59464,6 +59456,14 @@
     "Senna>Blitzcrank": {
       "gamesDecayed": 6.600343674993165e-19,
       "residual": -3.835728814775612e-21
+    },
+    "Jhin>Sion": {
+      "gamesDecayed": 2.731887819424973e-19,
+      "residual": -3.458752576658988e-20
+    },
+    "Sion>Jhin": {
+      "gamesDecayed": 2.731887819424973e-19,
+      "residual": 3.458752576658987e-20
     },
     "Sejuani>Diana": {
       "gamesDecayed": 0.00028719186594048073,
@@ -59521,14 +59521,6 @@
       "gamesDecayed": 2.8747644838824514e-19,
       "residual": -4.029468482726147e-20
     },
-    "Hwei>Ashe": {
-      "gamesDecayed": 2.9585279074321106e-19,
-      "residual": 4.1812584350645205e-20
-    },
-    "Ashe>Hwei": {
-      "gamesDecayed": 2.9585279074321106e-19,
-      "residual": -4.181258435064522e-20
-    },
     "Pyke>Pantheon": {
       "gamesDecayed": 2.9585279074321106e-19,
       "residual": 3.821937311545843e-20
@@ -59536,6 +59528,14 @@
     "Pantheon>Pyke": {
       "gamesDecayed": 2.9585279074321106e-19,
       "residual": -3.8219373115458435e-20
+    },
+    "Hwei>Ashe": {
+      "gamesDecayed": 2.9585279074321106e-19,
+      "residual": 4.1812584350645205e-20
+    },
+    "Ashe>Hwei": {
+      "gamesDecayed": 2.9585279074321106e-19,
+      "residual": -4.181258435064522e-20
     },
     "Tryndamere>Yone": {
       "gamesDecayed": 2.9816861355062404e-19,
@@ -60001,14 +60001,6 @@
       "gamesDecayed": 1.6223223391018066e-17,
       "residual": 6.696680257555581e-20
     },
-    "Ornn>Kai'Sa": {
-      "gamesDecayed": 7.660451752870707e-18,
-      "residual": 1.0423364883594016e-18
-    },
-    "Kai'Sa>Ornn": {
-      "gamesDecayed": 7.660451752870707e-18,
-      "residual": -1.0423364883594018e-18
-    },
     "Nidalee>Pantheon": {
       "gamesDecayed": 0.0002968274069860381,
       "residual": -4.028261992589314e-05
@@ -60024,6 +60016,14 @@
     "Leona>Senna": {
       "gamesDecayed": 8.995942559409481e-17,
       "residual": -1.1571474992515397e-17
+    },
+    "Ornn>Kai'Sa": {
+      "gamesDecayed": 7.660451752870707e-18,
+      "residual": 1.0423364883594016e-18
+    },
+    "Kai'Sa>Ornn": {
+      "gamesDecayed": 7.660451752870707e-18,
+      "residual": -1.0423364883594018e-18
     },
     "Kayle>Rumble": {
       "gamesDecayed": 7.897949782495808e-18,
@@ -60905,14 +60905,6 @@
       "gamesDecayed": 0.002840041747752128,
       "residual": 0.00017219078899289607
     },
-    "Seraphine>Caitlyn": {
-      "gamesDecayed": 0.09390591608924417,
-      "residual": -0.002907501732227185
-    },
-    "Caitlyn>Seraphine": {
-      "gamesDecayed": 0.09390591608924417,
-      "residual": 0.0029075017322271837
-    },
     "Malphite>Swain": {
       "gamesDecayed": 3.4024767385968966e-16,
       "residual": -4.2140243893713865e-17
@@ -60920,6 +60912,14 @@
     "Swain>Malphite": {
       "gamesDecayed": 3.4024767385968966e-16,
       "residual": 4.2140243893713846e-17
+    },
+    "Seraphine>Caitlyn": {
+      "gamesDecayed": 0.09390591608924417,
+      "residual": -0.002907501732227185
+    },
+    "Caitlyn>Seraphine": {
+      "gamesDecayed": 0.09390591608924417,
+      "residual": 0.0029075017322271837
     },
     "Riven>Sion": {
       "gamesDecayed": 0.027670283039325522,
@@ -61113,14 +61113,6 @@
       "gamesDecayed": 1.4253176175097252e-11,
       "residual": 9.93432407584244e-13
     },
-    "Vayne>Senna": {
-      "gamesDecayed": 7.844143770169611e-15,
-      "residual": 9.58426566442202e-16
-    },
-    "Senna>Vayne": {
-      "gamesDecayed": 7.844143770169611e-15,
-      "residual": -9.584265664422023e-16
-    },
     "Gragas>Trundle": {
       "gamesDecayed": 7.844143770169611e-15,
       "residual": 1.0788531223435259e-15
@@ -61136,6 +61128,14 @@
     "Tahm Kench>Pyke": {
       "gamesDecayed": 0.007283246554219613,
       "residual": 0.0010329540404593594
+    },
+    "Vayne>Senna": {
+      "gamesDecayed": 7.844143770169611e-15,
+      "residual": 9.58426566442202e-16
+    },
+    "Senna>Vayne": {
+      "gamesDecayed": 7.844143770169611e-15,
+      "residual": -9.584265664422023e-16
     },
     "Tristana>Ambessa": {
       "gamesDecayed": 8.367394500473446e-15,
@@ -61257,14 +61257,6 @@
       "gamesDecayed": 7.473380326178787e-14,
       "residual": 1.0619593400834658e-14
     },
-    "Zeri>Alistar": {
-      "gamesDecayed": 1.0826373731246832e-14,
-      "residual": 1.4795739648954516e-15
-    },
-    "Alistar>Zeri": {
-      "gamesDecayed": 1.0826373731246832e-14,
-      "residual": -1.4795739648954522e-15
-    },
     "Rell>Mel": {
       "gamesDecayed": 2.1664570326811347e-14,
       "residual": -1.303344238656325e-16
@@ -61272,6 +61264,14 @@
     "Mel>Rell": {
       "gamesDecayed": 2.1664570326811347e-14,
       "residual": 1.3033442386563242e-16
+    },
+    "Zeri>Alistar": {
+      "gamesDecayed": 1.0826373731246832e-14,
+      "residual": 1.4795739648954516e-15
+    },
+    "Alistar>Zeri": {
+      "gamesDecayed": 1.0826373731246832e-14,
+      "residual": -1.4795739648954522e-15
     },
     "Skarner>Udyr": {
       "gamesDecayed": 1.0835803669175122e-14,
@@ -61337,14 +61337,6 @@
       "gamesDecayed": 1.5427893742788812e-12,
       "residual": 6.372656127172393e-14
     },
-    "Akshan>Varus": {
-      "gamesDecayed": 3.272946284014866e-13,
-      "residual": -4.226484578155191e-14
-    },
-    "Varus>Akshan": {
-      "gamesDecayed": 3.272946284014866e-13,
-      "residual": 4.2264845781551894e-14
-    },
     "Darius>Vi": {
       "gamesDecayed": 3.272946284014866e-13,
       "residual": -4.212738422306809e-14
@@ -61352,6 +61344,14 @@
     "Vi>Darius": {
       "gamesDecayed": 3.272946284014866e-13,
       "residual": 4.2127384223068076e-14
+    },
+    "Akshan>Varus": {
+      "gamesDecayed": 3.272946284014866e-13,
+      "residual": -4.226484578155191e-14
+    },
+    "Varus>Akshan": {
+      "gamesDecayed": 3.272946284014866e-13,
+      "residual": 4.2264845781551894e-14
     },
     "Vayne>Teemo": {
       "gamesDecayed": 0.0028823540911891337,
@@ -61361,14 +61361,6 @@
       "gamesDecayed": 0.0028823540911891337,
       "residual": -0.0003503976720300936
     },
-    "Nautilus>Yunara": {
-      "gamesDecayed": 3.3008624269851825e-13,
-      "residual": -4.249207652978298e-14
-    },
-    "Yunara>Nautilus": {
-      "gamesDecayed": 3.3008624269851825e-13,
-      "residual": 4.249207652978297e-14
-    },
     "Kai'Sa>Rell": {
       "gamesDecayed": 3.3008624269851825e-13,
       "residual": -4.429451917586958e-14
@@ -61377,13 +61369,13 @@
       "gamesDecayed": 3.3008624269851825e-13,
       "residual": 4.429451917586957e-14
     },
-    "Alistar>Jhin": {
-      "gamesDecayed": 3.305118568201782e-13,
-      "residual": -4.668401598878929e-14
+    "Nautilus>Yunara": {
+      "gamesDecayed": 3.3008624269851825e-13,
+      "residual": -4.249207652978298e-14
     },
-    "Jhin>Alistar": {
-      "gamesDecayed": 3.305118568201782e-13,
-      "residual": 4.668401598878928e-14
+    "Yunara>Nautilus": {
+      "gamesDecayed": 3.3008624269851825e-13,
+      "residual": 4.249207652978297e-14
     },
     "Corki>Poppy": {
       "gamesDecayed": 3.305118568201782e-13,
@@ -61392,6 +61384,14 @@
     "Poppy>Corki": {
       "gamesDecayed": 3.305118568201782e-13,
       "residual": 4.1061613817403316e-14
+    },
+    "Alistar>Jhin": {
+      "gamesDecayed": 3.305118568201782e-13,
+      "residual": -4.668401598878929e-14
+    },
+    "Jhin>Alistar": {
+      "gamesDecayed": 3.305118568201782e-13,
+      "residual": 4.668401598878928e-14
     },
     "Syndra>Smolder": {
       "gamesDecayed": 3.350244899840962e-13,
@@ -61681,14 +61681,6 @@
       "gamesDecayed": 4.5093469590495954e-13,
       "residual": 6.140549796672589e-14
     },
-    "Varus>Vayne": {
-      "gamesDecayed": 0.0002147601364111783,
-      "residual": -2.6448793571567835e-05
-    },
-    "Vayne>Varus": {
-      "gamesDecayed": 0.0002147601364111783,
-      "residual": 2.6448793571567832e-05
-    },
     "Morgana>Corki": {
       "gamesDecayed": 2.367549820779004e-11,
       "residual": 1.0175821618825144e-13
@@ -61696,6 +61688,14 @@
     "Corki>Morgana": {
       "gamesDecayed": 2.367549820779004e-11,
       "residual": -1.0175821618825139e-13
+    },
+    "Varus>Vayne": {
+      "gamesDecayed": 0.0002147601364111783,
+      "residual": -2.6448793571567835e-05
+    },
+    "Vayne>Varus": {
+      "gamesDecayed": 0.0002147601364111783,
+      "residual": 2.6448793571567832e-05
     },
     "Morgana>Azir": {
       "gamesDecayed": 1.0121523949770266e-11,
@@ -62193,14 +62193,6 @@
       "gamesDecayed": 0.9277436753303392,
       "residual": -0.12486948002765275
     },
-    "Xayah>Kog'Maw": {
-      "gamesDecayed": 0.9655793739200556,
-      "residual": -0.13082754698614268
-    },
-    "Kog'Maw>Xayah": {
-      "gamesDecayed": 0.9655793739200556,
-      "residual": 0.13082754698614263
-    },
     "LeBlanc>Ezreal": {
       "gamesDecayed": 9.206813427233808e-07,
       "residual": 1.2113220978821717e-07
@@ -62208,6 +62200,14 @@
     "Ezreal>LeBlanc": {
       "gamesDecayed": 9.206813427233808e-07,
       "residual": -1.2113220978821722e-07
+    },
+    "Xayah>Kog'Maw": {
+      "gamesDecayed": 0.9655793739200556,
+      "residual": -0.13082754698614268
+    },
+    "Kog'Maw>Xayah": {
+      "gamesDecayed": 0.9655793739200556,
+      "residual": 0.13082754698614263
     },
     "Gnar>Dr. Mundo": {
       "gamesDecayed": 0.6780235851127665,
@@ -62737,14 +62737,6 @@
       "gamesDecayed": 0.00029232695464121165,
       "residual": -3.608975132036884e-05
     },
-    "Taliyah>Kalista": {
-      "gamesDecayed": 0.2930599091509216,
-      "residual": -0.03762693616713137
-    },
-    "Kalista>Taliyah": {
-      "gamesDecayed": 0.2930599091509216,
-      "residual": 0.037626936167131364
-    },
     "Zaahen>Briar": {
       "gamesDecayed": 0.0002954154844866968,
       "residual": 3.7499176376007374e-05
@@ -62760,6 +62752,14 @@
     "Sylas>Rell": {
       "gamesDecayed": 0.0002954154844866968,
       "residual": -3.908385557880826e-05
+    },
+    "Taliyah>Kalista": {
+      "gamesDecayed": 0.2930599091509216,
+      "residual": -0.03762693616713137
+    },
+    "Kalista>Taliyah": {
+      "gamesDecayed": 0.2930599091509216,
+      "residual": 0.037626936167131364
     },
     "Nautilus>Sona": {
       "gamesDecayed": 0.0003055617656391759,
@@ -62833,14 +62833,6 @@
       "gamesDecayed": 0.0020597829016571188,
       "residual": 0.0002770871491718341
     },
-    "Twitch>Karma": {
-      "gamesDecayed": 0.00206213547060954,
-      "residual": 0.00026709640683506464
-    },
-    "Karma>Twitch": {
-      "gamesDecayed": 0.00206213547060954,
-      "residual": -0.0002670964068350647
-    },
     "Talon>Kindred": {
       "gamesDecayed": 0.00206213547060954,
       "residual": 0.00024599938611878826
@@ -62848,6 +62840,14 @@
     "Kindred>Talon": {
       "gamesDecayed": 0.00206213547060954,
       "residual": -0.0002459993861187883
+    },
+    "Twitch>Karma": {
+      "gamesDecayed": 0.00206213547060954,
+      "residual": 0.00026709640683506464
+    },
+    "Karma>Twitch": {
+      "gamesDecayed": 0.00206213547060954,
+      "residual": -0.0002670964068350647
     },
     "Nasus>Vladimir": {
       "gamesDecayed": 0.002064075129673964,
@@ -63265,14 +63265,6 @@
       "gamesDecayed": 0.026829357868130694,
       "residual": 0.0014688304719033976
     },
-    "Veigar>Yunara": {
-      "gamesDecayed": 0.003634818358244599,
-      "residual": -0.0004687289576003041
-    },
-    "Yunara>Veigar": {
-      "gamesDecayed": 0.003634818358244599,
-      "residual": 0.00046872895760030397
-    },
     "Malphite>Mordekaiser": {
       "gamesDecayed": 0.003634818358244599,
       "residual": -0.0005023603244336778
@@ -63280,6 +63272,14 @@
     "Mordekaiser>Malphite": {
       "gamesDecayed": 0.003634818358244599,
       "residual": 0.0005023603244336777
+    },
+    "Veigar>Yunara": {
+      "gamesDecayed": 0.003634818358244599,
+      "residual": -0.0004687289576003041
+    },
+    "Yunara>Veigar": {
+      "gamesDecayed": 0.003634818358244599,
+      "residual": 0.00046872895760030397
     },
     "Darius>Zac": {
       "gamesDecayed": 0.00375325155258419,
@@ -63433,14 +63433,6 @@
       "gamesDecayed": 0.023193111143954545,
       "residual": 0.002887524496102615
     },
-    "Seraphine>Yasuo": {
-      "gamesDecayed": 0.02315761714256783,
-      "residual": 0.0028487768297414677
-    },
-    "Yasuo>Seraphine": {
-      "gamesDecayed": 0.02315761714256783,
-      "residual": -0.0028487768297414686
-    },
     "Alistar>Senna": {
       "gamesDecayed": 0.023160845984625762,
       "residual": 0.002960559533980221
@@ -63448,6 +63440,14 @@
     "Senna>Alistar": {
       "gamesDecayed": 0.023160845984625762,
       "residual": -0.002960559533980222
+    },
+    "Seraphine>Yasuo": {
+      "gamesDecayed": 0.02315761714256783,
+      "residual": 0.0028487768297414677
+    },
+    "Yasuo>Seraphine": {
+      "gamesDecayed": 0.02315761714256783,
+      "residual": -0.0028487768297414686
     },
     "Syndra>Senna": {
       "gamesDecayed": 0.023296582196870756,
@@ -64057,14 +64057,6 @@
       "gamesDecayed": 8.578294128371224e-06,
       "residual": -1.0613556392833779e-06
     },
-    "Vayne>Jinx": {
-      "gamesDecayed": 7.820757802045806e-19,
-      "residual": -1.1080211151010548e-19
-    },
-    "Jinx>Vayne": {
-      "gamesDecayed": 7.820757802045806e-19,
-      "residual": 1.1080211151010548e-19
-    },
     "Cho'Gath>Sejuani": {
       "gamesDecayed": 7.820757802045806e-19,
       "residual": -9.944535449082114e-20
@@ -64072,6 +64064,14 @@
     "Sejuani>Cho'Gath": {
       "gamesDecayed": 7.820757802045806e-19,
       "residual": 9.944535449082114e-20
+    },
+    "Vayne>Jinx": {
+      "gamesDecayed": 7.820757802045806e-19,
+      "residual": -1.1080211151010548e-19
+    },
+    "Jinx>Vayne": {
+      "gamesDecayed": 7.820757802045806e-19,
+      "residual": 1.1080211151010548e-19
     },
     "Taric>Janna": {
       "gamesDecayed": 7.823557805603928e-19,
@@ -64345,14 +64345,6 @@
       "gamesDecayed": 2.185311273449973e-17,
       "residual": -2.744875238740122e-18
     },
-    "Nilah>Ezreal": {
-      "gamesDecayed": 2.19898526848698e-17,
-      "residual": -2.9271304507726665e-18
-    },
-    "Ezreal>Nilah": {
-      "gamesDecayed": 2.19898526848698e-17,
-      "residual": 2.9271304507726657e-18
-    },
     "Taric>Pantheon": {
       "gamesDecayed": 2.1889048923136007e-17,
       "residual": -2.6891233196017897e-18
@@ -64360,6 +64352,14 @@
     "Pantheon>Taric": {
       "gamesDecayed": 2.1889048923136007e-17,
       "residual": 2.689123319601789e-18
+    },
+    "Nilah>Ezreal": {
+      "gamesDecayed": 2.19898526848698e-17,
+      "residual": -2.9271304507726665e-18
+    },
+    "Ezreal>Nilah": {
+      "gamesDecayed": 2.19898526848698e-17,
+      "residual": 2.9271304507726657e-18
     },
     "Naafiri>Ahri": {
       "gamesDecayed": 2.245576582746059e-17,
@@ -64881,14 +64881,6 @@
       "gamesDecayed": 2.2392632571223534e-06,
       "residual": -2.9894352515598337e-07
     },
-    "Samira>Aphelios": {
-      "gamesDecayed": 7.37735242083215e-16,
-      "residual": -1.0095149208436661e-16
-    },
-    "Aphelios>Samira": {
-      "gamesDecayed": 7.37735242083215e-16,
-      "residual": 1.0095149208436659e-16
-    },
     "Diana>Hwei": {
       "gamesDecayed": 7.37735242083215e-16,
       "residual": -9.990507024970102e-17
@@ -64896,6 +64888,14 @@
     "Hwei>Diana": {
       "gamesDecayed": 7.37735242083215e-16,
       "residual": 9.990507024970102e-17
+    },
+    "Samira>Aphelios": {
+      "gamesDecayed": 7.37735242083215e-16,
+      "residual": -1.0095149208436661e-16
+    },
+    "Aphelios>Samira": {
+      "gamesDecayed": 7.37735242083215e-16,
+      "residual": 1.0095149208436659e-16
     },
     "Kennen>Cho'Gath": {
       "gamesDecayed": 7.979916543752012e-16,
@@ -65361,14 +65361,6 @@
       "gamesDecayed": 0.004010157957396769,
       "residual": -0.0005708939167163323
     },
-    "Yasuo>Ziggs": {
-      "gamesDecayed": 1.0385273820065826e-12,
-      "residual": -1.3674161417782998e-13
-    },
-    "Ziggs>Yasuo": {
-      "gamesDecayed": 1.0385273820065826e-12,
-      "residual": 1.3674161417782993e-13
-    },
     "Gragas>Pyke": {
       "gamesDecayed": 1.0385273820065826e-12,
       "residual": -1.3115724827842684e-13
@@ -65376,6 +65368,14 @@
     "Pyke>Gragas": {
       "gamesDecayed": 1.0385273820065826e-12,
       "residual": 1.311572482784268e-13
+    },
+    "Yasuo>Ziggs": {
+      "gamesDecayed": 1.0385273820065826e-12,
+      "residual": -1.3674161417782998e-13
+    },
+    "Ziggs>Yasuo": {
+      "gamesDecayed": 1.0385273820065826e-12,
+      "residual": 1.3674161417782993e-13
     },
     "Viego>Sion": {
       "gamesDecayed": 1.0350498051004023e-12,
@@ -65745,12 +65745,12 @@
       "gamesDecayed": 1.526417822905e-09,
       "residual": 1.9274193288948083e-10
     },
-    "Varus>Varus": {
-      "gamesDecayed": 2.7587166615256973e-08,
-      "residual": 0.0
-    },
     "Jayce>Jayce": {
       "gamesDecayed": 1.9639445716191024e-07,
+      "residual": 0.0
+    },
+    "Varus>Varus": {
+      "gamesDecayed": 2.7587166615256973e-08,
       "residual": 0.0
     },
     "Rumble>Rumble": {
@@ -66945,14 +66945,6 @@
       "gamesDecayed": 5.839283890819706e-06,
       "residual": 7.457187158287356e-07
     },
-    "Aphelios>Vayne": {
-      "gamesDecayed": 7.569406738111844e-06,
-      "residual": 1.0959702995879591e-06
-    },
-    "Vayne>Aphelios": {
-      "gamesDecayed": 7.569406738111844e-06,
-      "residual": -1.0959702995879594e-06
-    },
     "Aurora>Tryndamere": {
       "gamesDecayed": 0.0027959827720133337,
       "residual": 0.0003717392439419741
@@ -66960,6 +66952,14 @@
     "Tryndamere>Aurora": {
       "gamesDecayed": 0.0027959827720133337,
       "residual": -0.00037173924394197415
+    },
+    "Aphelios>Vayne": {
+      "gamesDecayed": 7.569406738111844e-06,
+      "residual": 1.0959702995879591e-06
+    },
+    "Vayne>Aphelios": {
+      "gamesDecayed": 7.569406738111844e-06,
+      "residual": -1.0959702995879594e-06
     },
     "Lee Sin>Ornn": {
       "gamesDecayed": 7.82956951393299e-06,
@@ -67433,14 +67433,6 @@
       "gamesDecayed": 0.07557645650243357,
       "residual": 0.0097513996616189
     },
-    "Caitlyn>Syndra": {
-      "gamesDecayed": 1.3146519053657502,
-      "residual": 0.01926841596938478
-    },
-    "Syndra>Caitlyn": {
-      "gamesDecayed": 1.3146519053657502,
-      "residual": -0.019268415969384767
-    },
     "Swain>Gnar": {
       "gamesDecayed": 0.1801353257650697,
       "residual": -0.023707267271036173
@@ -67448,6 +67440,14 @@
     "Gnar>Swain": {
       "gamesDecayed": 0.1801353257650697,
       "residual": 0.023707267271036163
+    },
+    "Caitlyn>Syndra": {
+      "gamesDecayed": 1.3146519053657502,
+      "residual": 0.01926841596938478
+    },
+    "Syndra>Caitlyn": {
+      "gamesDecayed": 1.3146519053657502,
+      "residual": -0.019268415969384767
     },
     "Lux>Jhin": {
       "gamesDecayed": 0.2437707540050273,
@@ -67481,14 +67481,6 @@
       "gamesDecayed": 0.12420847653559966,
       "residual": -0.01518586394664714
     },
-    "Caitlyn>Viktor": {
-      "gamesDecayed": 2.3435029624069057,
-      "residual": -0.02672419735389187
-    },
-    "Viktor>Caitlyn": {
-      "gamesDecayed": 2.3435029624069057,
-      "residual": 0.026724197353891897
-    },
     "Darius>Naafiri": {
       "gamesDecayed": 0.12436140967778728,
       "residual": 0.016446168540400884
@@ -67496,6 +67488,14 @@
     "Naafiri>Darius": {
       "gamesDecayed": 0.12436140967778728,
       "residual": -0.01644616854040089
+    },
+    "Caitlyn>Viktor": {
+      "gamesDecayed": 2.3435029624069057,
+      "residual": -0.02672419735389187
+    },
+    "Viktor>Caitlyn": {
+      "gamesDecayed": 2.3435029624069057,
+      "residual": 0.026724197353891897
     },
     "Gangplank>Zeri": {
       "gamesDecayed": 0.8691548785006586,
@@ -67577,14 +67577,6 @@
       "gamesDecayed": 0.9608922305179856,
       "residual": -0.12163692674968264
     },
-    "Corki>Tahm Kench": {
-      "gamesDecayed": 0.8706260605427042,
-      "residual": -0.11725884918012257
-    },
-    "Tahm Kench>Corki": {
-      "gamesDecayed": 0.8706260605427042,
-      "residual": 0.11725884918012254
-    },
     "Pantheon>Mordekaiser": {
       "gamesDecayed": 0.8706260605427042,
       "residual": -0.11717685530216858
@@ -67600,6 +67592,14 @@
     "Varus>Cassiopeia": {
       "gamesDecayed": 0.8706260605427042,
       "residual": 0.11558379547689769
+    },
+    "Corki>Tahm Kench": {
+      "gamesDecayed": 0.8706260605427042,
+      "residual": -0.11725884918012257
+    },
+    "Tahm Kench>Corki": {
+      "gamesDecayed": 0.8706260605427042,
+      "residual": 0.11725884918012254
     },
     "Zaahen>Anivia": {
       "gamesDecayed": 0.8982342821941256,
@@ -67745,14 +67745,6 @@
       "gamesDecayed": 7.786106429785121e-20,
       "residual": 9.09687329959806e-21
     },
-    "Tahm Kench>Miss Fortune": {
-      "gamesDecayed": 7.791670716534994e-20,
-      "residual": -9.514634649702183e-21
-    },
-    "Miss Fortune>Tahm Kench": {
-      "gamesDecayed": 7.791670716534994e-20,
-      "residual": 9.514634649702182e-21
-    },
     "Senna>Zilean": {
       "gamesDecayed": 7.791670716534994e-20,
       "residual": -1.0821051397171206e-20
@@ -67760,6 +67752,14 @@
     "Zilean>Senna": {
       "gamesDecayed": 7.791670716534994e-20,
       "residual": 1.0821051397171206e-20
+    },
+    "Tahm Kench>Miss Fortune": {
+      "gamesDecayed": 7.791670716534994e-20,
+      "residual": -9.514634649702183e-21
+    },
+    "Miss Fortune>Tahm Kench": {
+      "gamesDecayed": 7.791670716534994e-20,
+      "residual": 9.514634649702182e-21
     },
     "Fiddlesticks>Zyra": {
       "gamesDecayed": 1.0795446647766474e-19,
@@ -68185,14 +68185,6 @@
       "gamesDecayed": 2.20817933594477e-16,
       "residual": -2.7212660159842338e-17
     },
-    "Lucian>Vayne": {
-      "gamesDecayed": 2.2102234345341553e-16,
-      "residual": 3.061922076619991e-17
-    },
-    "Vayne>Lucian": {
-      "gamesDecayed": 2.2102234345341553e-16,
-      "residual": -3.061922076619992e-17
-    },
     "Syndra>Ivern": {
       "gamesDecayed": 2.2102234345341553e-16,
       "residual": 2.922570088764355e-17
@@ -68200,6 +68192,14 @@
     "Ivern>Syndra": {
       "gamesDecayed": 2.2102234345341553e-16,
       "residual": -2.922570088764355e-17
+    },
+    "Lucian>Vayne": {
+      "gamesDecayed": 2.2102234345341553e-16,
+      "residual": 3.061922076619991e-17
+    },
+    "Vayne>Lucian": {
+      "gamesDecayed": 2.2102234345341553e-16,
+      "residual": -3.061922076619992e-17
     },
     "Aurora>Poppy": {
       "gamesDecayed": 2.6039958760358895e-16,
@@ -68417,14 +68417,6 @@
       "gamesDecayed": 1.3987983408856804e-11,
       "residual": -1.8017711815226673e-12
     },
-    "Ezreal>Heimerdinger": {
-      "gamesDecayed": 1.3074744797361466e-11,
-      "residual": -1.7019495011803944e-12
-    },
-    "Heimerdinger>Ezreal": {
-      "gamesDecayed": 1.3074744797361466e-11,
-      "residual": 1.701949501180394e-12
-    },
     "Zac>Leona": {
       "gamesDecayed": 1.3074744797361466e-11,
       "residual": -1.6662553336971714e-12
@@ -68432,6 +68424,14 @@
     "Leona>Zac": {
       "gamesDecayed": 1.3074744797361466e-11,
       "residual": 1.6662553336971706e-12
+    },
+    "Ezreal>Heimerdinger": {
+      "gamesDecayed": 1.3074744797361466e-11,
+      "residual": -1.7019495011803944e-12
+    },
+    "Heimerdinger>Ezreal": {
+      "gamesDecayed": 1.3074744797361466e-11,
+      "residual": 1.701949501180394e-12
     },
     "Brand>Zed": {
       "gamesDecayed": 1.3090633188242412e-11,
@@ -68777,14 +68777,6 @@
       "gamesDecayed": 0.002010567912149736,
       "residual": -0.0002823087478890059
     },
-    "Draven>Hwei": {
-      "gamesDecayed": 0.002075082282002359,
-      "residual": -0.0002896222962983832
-    },
-    "Hwei>Draven": {
-      "gamesDecayed": 0.002075082282002359,
-      "residual": 0.0002896222962983831
-    },
     "Karma>Syndra": {
       "gamesDecayed": 0.002075082282002359,
       "residual": -0.0002707487493960564
@@ -68792,6 +68784,14 @@
     "Syndra>Karma": {
       "gamesDecayed": 0.002075082282002359,
       "residual": 0.00027074874939605635
+    },
+    "Draven>Hwei": {
+      "gamesDecayed": 0.002075082282002359,
+      "residual": -0.0002896222962983832
+    },
+    "Hwei>Draven": {
+      "gamesDecayed": 0.002075082282002359,
+      "residual": 0.0002896222962983831
     },
     "Urgot>Xin Zhao": {
       "gamesDecayed": 0.0022183955814686837,
@@ -69545,14 +69545,6 @@
       "gamesDecayed": 7.9870319395385345e-16,
       "residual": -1.0936154175196258e-16
     },
-    "Nilah>Ashe": {
-      "gamesDecayed": 8.005794723205217e-16,
-      "residual": -1.0120474492172056e-16
-    },
-    "Ashe>Nilah": {
-      "gamesDecayed": 8.005794723205217e-16,
-      "residual": 1.0120474492172054e-16
-    },
     "Gangplank>Gragas": {
       "gamesDecayed": 8.005794723205217e-16,
       "residual": -1.1447926311378688e-16
@@ -69560,6 +69552,14 @@
     "Gragas>Gangplank": {
       "gamesDecayed": 8.005794723205217e-16,
       "residual": 1.1447926311378686e-16
+    },
+    "Nilah>Ashe": {
+      "gamesDecayed": 8.005794723205217e-16,
+      "residual": -1.0120474492172056e-16
+    },
+    "Ashe>Nilah": {
+      "gamesDecayed": 8.005794723205217e-16,
+      "residual": 1.0120474492172054e-16
     },
     "K'Sante>Braum": {
       "gamesDecayed": 8.26500529593174e-16,
