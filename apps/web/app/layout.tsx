@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { DDragonVersionProvider } from "@/lib/ddragon";
 import "./globals.css";
 
@@ -17,6 +18,7 @@ export default function RootLayout({
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col bg-slate-950 text-slate-100">
         <DDragonVersionProvider>{children}</DDragonVersionProvider>
+        <Analytics />
       </body>
     </html>
   );
