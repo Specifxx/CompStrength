@@ -57,6 +57,13 @@ export interface ModelFile {
     playerEloWeight?: number;
     profWeight?: number;
   };
+  // Dedicated coefficients for DRAFT-ONLY prediction (no teams selected).
+  // Fit on score + matchup with synergy deliberately excluded -- without
+  // team features present the in-sample-fit synergy residual gets
+  // over-trusted (measured: score+synergy scores WORSE than score alone on
+  // held-out games). Absent on older snapshots -- fall back to
+  // `coefficients` with the team terms naturally zero.
+  draftOnlyCoefficients?: ModelFile["coefficients"];
   metrics: {
     logLoss: number;
     accuracy: number;

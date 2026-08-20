@@ -236,22 +236,16 @@ def _fit_snapshot_and_predict(
         player_elo_diffs,
         prof_diffs,
     )
-    # Draft-only companion fit (team AND player features zeroed -- both ride
-    # on the optional team selection) for the honest "you don't know the
-    # teams" metrics. Cheap: only the LR refits; all the expensive feature
-    # computation above is shared.
-    draft_only_result = (
-        train_model.train_model(
-            restricted_train_games,
-            champion_strength,
-            synergy_residuals,
-            matchup_residuals,
-            champion_presence,
-            None,
-            loo_score_diffs,
-        )
-        if team_elo_diffs
-        else model_result
+    # Draft-only companion coefficients for the honest "you don't know the
+    # teams" metrics. These now come from the SAME dedicated fit the shipped
+    # model.json carries (score + matchup, synergy excluded -- see
+    # train_model._fit_draft_only), so the reported draftOnlyAccuracy is
+    # exactly what the live no-team mode achieves rather than a separate
+    # backtest-only construction.
+    draft_only_coefficients = (
+        model_result.draft_only_coefficients
+        if team_elo_diffs and model_result.draft_only_coefficients
+        else model_result.coefficients
     )
 
     predictions: list[tuple[float, int, str, str, float]] = []
@@ -292,9 +286,9 @@ def _fit_snapshot_and_predict(
         )
         draft_only_proba = (
             _predict_proba(
-                draft_only_result.coefficients,
+                draft_only_coefficients,
                 score_diff,
-                synergy_diff,
+                synergy_diff,  # weight is 0.0 in the draft-only block
                 matchup_diff,
                 presence_diff,
                 0.0,

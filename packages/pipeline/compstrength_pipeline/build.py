@@ -572,6 +572,12 @@ def _build_model_payload(model_result: train_model.ModelResult) -> dict:
         "trainedAt": datetime.now(timezone.utc).isoformat(),
         "trainingGames": model_result.training_games,
         "coefficients": model_result.coefficients,
+        # Dedicated fit for the no-teams-selected path (score + matchup +
+        # bias; synergy measured harmful there -- see
+        # train_model.ModelResult.draft_only_coefficients). The frontend uses
+        # this block when no team context is available and falls back to
+        # `coefficients` with zeroed team features when it's absent.
+        "draftOnlyCoefficients": model_result.draft_only_coefficients,
         "metrics": model_result.metrics,
     }
 

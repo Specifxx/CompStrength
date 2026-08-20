@@ -134,6 +134,16 @@ class ModelResult:
     coefficients: dict[str, float]
     metrics: dict[str, object] = field(default_factory=dict)
     training_games: int = 0
+    # Dedicated coefficients for DRAFT-ONLY prediction (no teams selected).
+    # Reusing the full model's coefficients with team features zeroed is
+    # measurably worse: those weights were fit WITH team features present,
+    # and without them the in-sample-fit synergy residual gets over-trusted.
+    # Measured on the leak-free walk-forward harness (17,211 games), the
+    # best draft-only feature set is score_diff + matchup_diff with synergy
+    # EXCLUDED: overall 55.11%/0.6860 vs 54.64%/0.6875 for
+    # full-coefficients-with-zeros, current season 56.23%/0.6830 vs
+    # 56.04%/0.6833. Keys mirror `coefficients` (synergyWeight fixed 0.0).
+    draft_only_coefficients: dict[str, float] = field(default_factory=dict)
 
 
 def compute_score_diff(
@@ -377,6 +387,7 @@ def train_model(
                 "note": "No training games available; model is an untrained placeholder.",
             },
             training_games=0,
+            draft_only_coefficients=_fit_draft_only(training, np.array([])),
         )
 
     X = training[FEATURE_COLUMNS].to_numpy()
@@ -409,7 +420,12 @@ def train_model(
             + "Only one label class present in training data (all wins or all "
             "losses for blue side); all feature weights fixed at 0.",
         }
-        return ModelResult(coefficients=coefficients, metrics=metrics, training_games=n)
+        return ModelResult(
+            coefficients=coefficients,
+            metrics=metrics,
+            training_games=n,
+            draft_only_coefficients=_fit_draft_only(training, y),
+        )
 
     # Strong L2 (C=0.001): see module docstring for the walk-forward tuning
     # that picked this -- the synergy/matchup features leak in-sample, so
@@ -456,4 +472,55 @@ def train_model(
         "intercept": 0.0,
     }
 
-    return ModelResult(coefficients=coefficients, metrics=metrics, training_games=n)
+    return ModelResult(
+        coefficients=coefficients,
+        metrics=metrics,
+        training_games=n,
+        draft_only_coefficients=_fit_draft_only(training, y),
+    )
+
+
+# Feature set for the dedicated draft-only fit: synergy_diff is deliberately
+# EXCLUDED. It is fit in-sample on the same training games, and without team
+# features present to absorb shared variance the refit over-trusts it --
+# measured on the walk-forward harness, score+synergy scores WORSE than score
+# alone (55.68% vs 55.96% current-season), while score+matchup is the best
+# combination tried (see ModelResult.draft_only_coefficients).
+DRAFT_ONLY_FEATURE_COLUMNS = ["score_diff", "matchup_diff"]
+
+
+def _fit_draft_only(training: pd.DataFrame, y: np.ndarray) -> dict[str, float]:
+    """Fit the dedicated draft-only model (score + matchup + bias) on the
+    already-built training frame. Same regularization as the main model.
+
+    Returned keys mirror the main ``coefficients`` dict so downstream
+    consumers (predict.ts, backtest) can treat the two interchangeably;
+    weights for features the draft fit doesn't use are explicit 0.0.
+    """
+    neutral = {
+        "scoreDiffWeight": 0.0,
+        "synergyWeight": 0.0,
+        "matchupWeight": 0.0,
+        "presenceWeight": 0.0,
+        "teamEloWeight": 0.0,
+        "playerEloWeight": 0.0,
+        "profWeight": 0.0,
+        "blueSideBias": 0.0,
+        "intercept": 0.0,
+    }
+    if len(training) == 0 or len(np.unique(y)) < 2:
+        # Degenerate inputs: match the main fit's behaviour (bias-only).
+        if len(training) > 0:
+            constant_prob = float(np.clip(y.mean(), 0.01, 0.99))
+            neutral["blueSideBias"] = float(np.log(constant_prob / (1 - constant_prob)))
+        return neutral
+
+    X = training[DRAFT_ONLY_FEATURE_COLUMNS].to_numpy()
+    model = LogisticRegression(C=LOGISTIC_REGRESSION_C)
+    model.fit(X, y)
+    return {
+        **neutral,
+        "scoreDiffWeight": float(model.coef_[0][0]),
+        "matchupWeight": float(model.coef_[0][1]),
+        "blueSideBias": float(model.intercept_[0]),
+    }

@@ -333,6 +333,36 @@ export default function MethodologyPage() {
                 </li>
               </ul>
               <p>
+                <span className="text-slate-300">
+                  The draft-only mode now has its own dedicated fit.
+                </span>{" "}
+                Previously the no-teams prediction reused the full
+                model&apos;s coefficients with the team terms zeroed &mdash;
+                but those weights were fit <em>with</em> team features
+                present, and without them the pairwise-synergy term (which is
+                estimated in-sample) gets over-trusted. Measured on the
+                walk-forward harness, adding synergy to a draft-only fit makes
+                it <span className="text-rose-400">worse</span> than champion
+                strength alone (55.7% vs 56.0% current-season), while the
+                lane-matchup term helps. The shipped draft-only fit therefore
+                uses champion strength + lane matchups with synergy excluded:{" "}
+                <span className="text-emerald-400">56.2% vs 56.0%</span>{" "}
+                current-season and{" "}
+                <span className="text-emerald-400">55.1% vs 54.6%</span>{" "}
+                overall against the old zeroed-coefficients behaviour, with
+                better calibration on both slices. (The draft builder&apos;s
+                synergy-pick suggestion still ranks through the full
+                model&apos;s synergy weight &mdash; it&apos;s a relative
+                comparison among candidates, not a calibrated probability.)
+                We also tested a champion &ldquo;dominance&rdquo; rating
+                &mdash; margin-of-victory averaged per champion, the
+                champion-level analogue of the team-Elo margin weighting.
+                Rejected: log-loss identical to four decimals in every
+                configuration; dominance alone predicts 55.2%, nearly as well
+                as win rates do, confirming the two measure the same
+                underlying champion strength.
+              </p>
+              <p>
                 The honest conclusion: at the pro level, which champions get
                 drafted is a genuinely weak predictor once you can&apos;t see
                 who&apos;s piloting them. That&apos;s exactly why the

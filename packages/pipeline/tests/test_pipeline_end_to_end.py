@@ -113,6 +113,11 @@ def test_pipeline_end_to_end_writes_expected_files(output_dir: Path):
         "blueSideBias", "intercept",
     ):
         assert key in model_data["coefficients"]
+        assert key in model_data["draftOnlyCoefficients"]
+    # The dedicated draft-only fit deliberately EXCLUDES synergy (measured
+    # harmful without team features present) and all team/player terms.
+    for frozen in ("synergyWeight", "teamEloWeight", "playerEloWeight", "profWeight"):
+        assert model_data["draftOnlyCoefficients"][frozen] == 0.0
     for key in ("logLoss", "accuracy", "baselineAccuracy"):
         assert key in model_data["metrics"]
 

@@ -64,3 +64,34 @@ def test_presence_feature_off_gives_zero_weight():
     for key in ("scoreDiffWeight", "synergyWeight", "matchupWeight",
                 "presenceWeight", "blueSideBias", "intercept"):
         assert key in result.coefficients
+
+
+# --------------------------------------------------------------------------
+# Dedicated draft-only coefficient block
+# --------------------------------------------------------------------------
+
+
+def test_draft_only_block_shape_and_synergy_exclusion():
+    """train_model must return a draft-only block mirroring the coefficient
+    schema, with synergy (and all team/player weights) fixed at exactly 0 --
+    synergy is deliberately excluded from the draft-only fit (measured
+    harmful there; see DRAFT_ONLY_FEATURE_COLUMNS)."""
+    games = _tiny_games()
+    strength = {c: (0.5 if c.startswith("A") else -0.5) for c in
+                ["A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4", "B5"]}
+    result = train_model(games, strength, {"A1|A2": 0.1}, {"A1>B1": 0.2})
+
+    block = result.draft_only_coefficients
+    assert set(block) == set(result.coefficients)
+    for frozen in ("synergyWeight", "presenceWeight", "teamEloWeight",
+                   "playerEloWeight", "profWeight", "intercept"):
+        assert block[frozen] == 0.0
+
+
+def test_draft_only_block_neutral_on_empty_input():
+    empty = pd.DataFrame(
+        columns=["gameid", "side", "position", "champion", "result", "date"]
+    )
+    result = train_model(empty, {})
+    assert result.draft_only_coefficients["scoreDiffWeight"] == 0.0
+    assert result.draft_only_coefficients["blueSideBias"] == 0.0

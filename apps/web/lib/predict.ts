@@ -269,6 +269,16 @@ export function predictMatchup(
   const playerEloDiff = teamContext?.playerEloDiff ?? 0;
   const profDiff = teamContext?.profDiff ?? 0;
 
+  // With no team context, use the model's DEDICATED draft-only fit when the
+  // snapshot carries one: reusing the full coefficients with the team terms
+  // zeroed is measurably worse (they were fit WITH team features present,
+  // and without them the in-sample-fit synergy residual is over-trusted --
+  // its weight is 0 in the draft-only block). Older model.json snapshots
+  // without the block keep the previous behaviour.
+  const activeCoefficients =
+    !teamContext && model.draftOnlyCoefficients
+      ? model.draftOnlyCoefficients
+      : model.coefficients;
   const {
     scoreDiffWeight,
     blueSideBias,
@@ -279,7 +289,7 @@ export function predictMatchup(
     teamEloWeight = 0,
     playerEloWeight = 0,
     profWeight = 0,
-  } = model.coefficients;
+  } = activeCoefficients;
   const logit =
     intercept +
     scoreDiffWeight * (blueTeamScore - redTeamScore) +
@@ -355,6 +365,12 @@ function winProbabilityPartial(
     rFilled.reduce((s, c) => s + presenceOf(c), 0);
 
   const ctx = resolveTeamContext(teamOptions, blue, red);
+  // DELIBERATELY the full coefficient set, not draftOnlyCoefficients: this
+  // function only powers suggestPicks, whose "best synergy/counter" pick is
+  // ranked by how much the synergy/matchup tables move the probability. The
+  // draft-only block zeroes synergyWeight (it hurts calibrated accuracy),
+  // which would silence that ranking entirely; as a relative comparison
+  // among candidates it doesn't need the calibrated draft-only fit.
   const {
     scoreDiffWeight,
     blueSideBias,
