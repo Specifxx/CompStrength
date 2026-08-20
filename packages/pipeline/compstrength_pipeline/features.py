@@ -332,8 +332,13 @@ def compute_wr_strength(
     # queue alone can move a champion with no pro games. Contains NO pro-game
     # outcomes, so the leave-one-game-out logic below is unaffected. With
     # weight 0 or no solo data this reduces exactly to the flat prior.
+    # Solo-queue-derived quantities. Both the PRIOR (what the pro win rate is
+    # shrunk toward) and the DIRECT blend below need the same games-weighted
+    # solo mean, so compute the eligible set once if either is switched on.
     prior_mean: dict[str, float] = {}
-    if solo_prior and config.wr_prior_solo_weight > 0.0:
+    solo_component: dict[str, float] = {}
+    direct_weight = getattr(config, "solo_direct_weight", 0.0)
+    if solo_prior and (config.wr_prior_solo_weight > 0.0 or direct_weight > 0.0):
         eligible = {
             c: (wr, g)
             for c, (wr, g) in solo_prior.items()
@@ -341,19 +346,35 @@ def compute_wr_strength(
         }
         total_g = sum(g for _, g in eligible.values())
         if total_g > 0:
+            # Centering on the games-weighted mean cancels the source's
+            # rank-tier bias (its average champion is not exactly 50%).
             solo_mean = sum(wr * g for wr, g in eligible.values()) / total_g
-            clip = config.wr_prior_clip
-            weight = config.wr_prior_solo_weight
-            prior_mean = {
-                c: 0.5 + max(-clip, min(clip, weight * (wr - solo_mean)))
-                for c, (wr, _g) in eligible.items()
-            }
+            if config.wr_prior_solo_weight > 0.0:
+                clip = config.wr_prior_clip
+                weight = config.wr_prior_solo_weight
+                prior_mean = {
+                    c: 0.5 + max(-clip, min(clip, weight * (wr - solo_mean)))
+                    for c, (wr, _g) in eligible.items()
+                }
+            if direct_weight > 0.0:
+                # The solo signal expressed on the SAME units as the pro
+                # strength score, so the two can be mixed directly.
+                solo_component = {
+                    c: (wr - solo_mean) * scale for c, (wr, _g) in eligible.items()
+                }
 
     def _strength(champ: str, w_minus: float = 0.0, ww_minus: float = 0.0) -> float:
         w = w_tot.get(champ, 0.0) - w_minus
         ww = ww_tot.get(champ, 0.0) - ww_minus
         prior = prior_mean.get(champ, 0.5)
-        return ((ww + shrink * prior) / (w + shrink) - 0.5) * scale
+        pro_part = ((ww + shrink * prior) / (w + shrink) - 0.5) * scale
+        if direct_weight <= 0.0:
+            return pro_part
+        # Champions with no eligible solo sample keep the pure pro estimate
+        # rather than being dragged toward 0 by a missing component.
+        if champ not in solo_component:
+            return pro_part
+        return (1.0 - direct_weight) * pro_part + direct_weight * solo_component[champ]
 
     # Union with prior_mean keys so a champion with solo data but zero pro
     # games in the window still gets its prior-informed strength

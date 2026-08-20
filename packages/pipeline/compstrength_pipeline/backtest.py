@@ -179,7 +179,9 @@ def _fit_snapshot_and_predict(
     # Leakage-free as-of join: only solo-queue snapshots COMMITTED before
     # this fold's boundary are visible to this fold's prior.
     solo_prior = (
-        soloqueue_module.solo_winrates_asof(solo_history, reference_date)
+        soloqueue_module.solo_winrates_asof(
+            solo_history, reference_date, config.solo_patch_offset
+        )
         if solo_history
         else None
     )

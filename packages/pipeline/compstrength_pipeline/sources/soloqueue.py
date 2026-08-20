@@ -250,11 +250,28 @@ def load_solo_history(path: str | Path) -> list[tuple[pd.Timestamp, dict]]:
 
 
 def solo_winrates_asof(
-    history: list[tuple[pd.Timestamp, dict]], as_of
+    history: list[tuple[pd.Timestamp, dict]], as_of, patch_offset: int | None = None
 ) -> ChampionWinrates:
     """``{champion: (winrate, games)}`` from the LATEST snapshot committed at
     or before ``as_of`` (leakage rule: never read data from the future).
-    Empty dict when no snapshot predates ``as_of``."""
+    Empty dict when no snapshot predates ``as_of``.
+
+    Each snapshot stores ``[wins, matches, previousWins, previousMatches]``
+    per champion -- the live patch's numbers AND the patch before it.
+    ``patch_offset`` selects which:
+
+    * ``None`` (default): pool both patches. Biggest sample, but it smears
+      two different metas together.
+    * ``0``: the live solo-queue patch only.
+    * ``1``: the PREVIOUS solo-queue patch only. Solo queue runs ahead of pro
+      play -- leagues lock a patch for a week or a whole split, so when a new
+      patch ships, solo queue moves immediately and pro does not. Measured on
+      2026 data, the live solo patch is one ahead of the patch pro is
+      actually playing in 18 of 63 snapshots (29%) and level the rest of the
+      time. Offset 1 is therefore the right alignment exactly when it
+      matters (just after a patch drops) and one patch stale otherwise --
+      which is why the choice is a measured knob rather than an assumption.
+    """
     chosen = None
     for ts, champs in history:
         if ts <= as_of:
@@ -269,8 +286,13 @@ def solo_winrates_asof(
             w, m, pw, pm = (int(v) for v in vals[:4])
         except (TypeError, ValueError):
             continue
-        games = m + pm
+        if patch_offset == 0:
+            wins, games = w, m
+        elif patch_offset == 1:
+            wins, games = pw, pm
+        else:
+            wins, games = w + pw, m + pm
         if games <= 0:
             continue
-        result[str(name)] = ((w + pw) / games, games)
+        result[str(name)] = (wins / games, games)
     return result

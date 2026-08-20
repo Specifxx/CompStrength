@@ -350,7 +350,9 @@ def run_pipeline_on_data(
         REPO_ROOT / "data" / "soloqueue_history.json"
     )
     solo_prior = (
-        soloqueue_module.solo_winrates_asof(solo_history, reference_date)
+        soloqueue_module.solo_winrates_asof(
+            solo_history, reference_date, config.solo_patch_offset
+        )
         if solo_history
         else None
     )

@@ -196,6 +196,26 @@ class PipelineConfig:
     wr_prior_solo_weight: float = 0.0
     wr_prior_min_solo_games: int = 2000
     wr_prior_clip: float = 0.06
+    # DIRECT solo-queue emphasis, a different lever from the prior above.
+    # The prior only sets what a champion's pro win rate is SHRUNK TOWARD, so
+    # once a champion has plenty of pro games it barely binds -- which is why
+    # sweeping wr_prior_solo_weight measured as noise. This instead mixes the
+    # solo signal straight into the shipped strength score:
+    #
+    #   strength = (1 - w) * pro_strength + w * (solo_wr - solo_mean) * scale
+    #
+    # so w is literally "what fraction of champion strength is solo queue".
+    # 0.0 reproduces the pro-only behaviour exactly. Champions without an
+    # eligible solo sample (wr_prior_min_solo_games) keep the pure pro
+    # estimate rather than being pulled toward the mean by a missing term.
+    solo_direct_weight: float = 0.0
+    # Which patch of solo-queue data to read from each history snapshot (see
+    # sources.soloqueue.solo_winrates_asof). None pools the live patch and
+    # the one before it (largest sample, but smears two metas); 0 = live
+    # patch only; 1 = the PREVIOUS patch only, which aligns with pro play
+    # whenever solo queue has moved to a patch the leagues have not adopted
+    # yet (measured: 29% of 2026 snapshots).
+    solo_patch_offset: int | None = None
     # Player-level features (players.py), an OPTIONAL ADD-ON to the team
     # feature: per-player Elo (mean of the 5 starters, tracks WHO is actually
     # playing across roster moves) and player-champion proficiency (shrunk
@@ -298,6 +318,10 @@ class PipelineConfig:
             raise ValueError("player_season_carryover must be in [0, 1]")
         if self.prof_shrink_games <= 0:
             raise ValueError("prof_shrink_games must be positive")
+        if not (0.0 <= self.solo_direct_weight <= 1.0):
+            raise ValueError("solo_direct_weight must be in [0, 1]")
+        if self.solo_patch_offset not in (None, 0, 1):
+            raise ValueError("solo_patch_offset must be None, 0 or 1")
         if not (0.0 <= self.wr_prior_solo_weight <= 2.0):
             raise ValueError("wr_prior_solo_weight must be in [0, 2]")
         if self.wr_prior_min_solo_games < 0:
