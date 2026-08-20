@@ -208,14 +208,31 @@ class PipelineConfig:
     # 0.0 reproduces the pro-only behaviour exactly. Champions without an
     # eligible solo sample (wr_prior_min_solo_games) keep the pure pro
     # estimate rather than being pulled toward the mean by a missing term.
-    solo_direct_weight: float = 0.0
+    #
+    # MEASURED (19-config sweep + paired bootstrap + 4-arm full-pipeline A/B
+    # on identical fresh data, 17,739 games): the response is an inverted-U.
+    # w=0.15-0.50 all beat pro-only; w>=0.70 is WORSE than ignoring solo
+    # queue entirely (w=1.0 collapses to 53.2%, barely above base rate --
+    # solo winrates alone say almost nothing about pro outcomes). At the
+    # shipped w=0.30: draft-only 55.03% -> 55.22% / 0.6852 -> 0.6850,
+    # current-season 65.97% -> 66.00% / 0.6204 -> 0.6200, overall
+    # 64.73% -> 64.82% / 0.6311 -> 0.6309. The log-loss gain is
+    # statistically solid (paired bootstrap, 95% CI excludes zero, P>=0.99
+    # on both slices); the accuracy gain is directionally consistent.
+    solo_direct_weight: float = 0.30
     # Which patch of solo-queue data to read from each history snapshot (see
     # sources.soloqueue.solo_winrates_asof). None pools the live patch and
     # the one before it (largest sample, but smears two metas); 0 = live
     # patch only; 1 = the PREVIOUS patch only, which aligns with pro play
     # whenever solo queue has moved to a patch the leagues have not adopted
     # yet (measured: 29% of 2026 snapshots).
-    solo_patch_offset: int | None = None
+    #
+    # MEASURED at every weight: previous-patch and pooled are a statistical
+    # tie (identical log-loss to 4 decimals); both beat live-patch-only at
+    # every weight tried. Previous-patch is shipped: it won the draft-only
+    # slice in the full-pipeline A/B (55.22% vs 55.18%) and is the cleaner
+    # concept -- it is the patch pro play is most likely actually on.
+    solo_patch_offset: int | None = 1
     # Player-level features (players.py), an OPTIONAL ADD-ON to the team
     # feature: per-player Elo (mean of the 5 starters, tracks WHO is actually
     # playing across roster moves) and player-champion proficiency (shrunk

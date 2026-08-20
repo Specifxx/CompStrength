@@ -64,7 +64,11 @@ def test_solo_prior_moves_low_sample_champions():
 def test_solo_prior_clip_bounds_extremes():
     games, ref = _one_game("Ahri", "Zed")
     solo = {"Yone": (0.80, 50000), "Filler": (0.50, 1000000)}  # absurd 80% WR
-    cfg = PipelineConfig(wr_prior_solo_weight=1.5, wr_prior_clip=0.06)
+    # Pin the direct blend OFF: this test isolates the PRIOR path's clip,
+    # and solo_direct_weight (default 0.30) is a separate, unclipped lever.
+    cfg = PipelineConfig(
+        wr_prior_solo_weight=1.5, wr_prior_clip=0.06, solo_direct_weight=0.0
+    )
     s, _ = compute_wr_strength(games, ref, cfg, solo)
     # Prior mean capped at 0.56 -> strength <= 0.06 * scale.
     assert s["Yone"] <= 0.06 * cfg.strength_feature_scale + 1e-9
