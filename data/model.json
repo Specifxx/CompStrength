@@ -1,33 +1,33 @@
 {
   "version": 1,
-  "trainedAt": "2026-08-22T04:52:27.978722+00:00",
-  "trainingGames": 17841,
+  "trainedAt": "2026-08-23T04:54:16.963941+00:00",
+  "trainingGames": 17867,
   "coefficients": {
-    "scoreDiffWeight": 0.07501351025791562,
-    "synergyWeight": 0.036259396687471204,
-    "matchupWeight": 0.036375442777823834,
+    "scoreDiffWeight": 0.07352952957620738,
+    "synergyWeight": 0.039748400937098874,
+    "matchupWeight": 0.03970467253729538,
     "presenceWeight": 0.0,
-    "teamEloWeight": 0.046518410009918666,
-    "playerEloWeight": 0.04895354081454184,
-    "profWeight": 0.014196921984931906,
-    "blueSideBias": 0.14758183817990111,
+    "teamEloWeight": 0.046388413148360244,
+    "playerEloWeight": 0.049068321071160555,
+    "profWeight": 0.014458372004052845,
+    "blueSideBias": 0.14907146946176794,
     "intercept": 0.0
   },
   "draftOnlyCoefficients": {
-    "scoreDiffWeight": 0.08095266788926044,
+    "scoreDiffWeight": 0.0804284674498723,
     "synergyWeight": 0.0,
-    "matchupWeight": 0.053237802640001025,
+    "matchupWeight": 0.05663761074673217,
     "presenceWeight": 0.0,
     "teamEloWeight": 0.0,
     "playerEloWeight": 0.0,
     "profWeight": 0.0,
-    "blueSideBias": 0.14141347828881337,
+    "blueSideBias": 0.1426379740861905,
     "intercept": 0.0
   },
   "metrics": {
-    "logLoss": 0.6251543949459784,
-    "accuracy": 0.6490667563477384,
-    "baselineAccuracy": 0.5347233899445099,
+    "logLoss": 0.6250024882622102,
+    "accuracy": 0.6485140202608161,
+    "baselineAccuracy": 0.5350086752112834,
     "note": ""
   }
 }
