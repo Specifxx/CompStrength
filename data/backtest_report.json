@@ -1,285 +1,294 @@
 {
-  "generatedAt": "2026-11-09T13:02:26.626736+00:00",
+  "generatedAt": "2026-11-10T12:43:15.329505+00:00",
   "folds": 7,
-  "testGames": 17258,
+  "testGames": 17447,
   "metrics": {
-    "accuracy": 0.6441070807741337,
-    "logLoss": 0.6311232246184867,
-    "brierScore": 0.21983399692293124,
-    "baselineAccuracy": 0.5333758257040213,
-    "coinFlipLogLoss": 0.6931471805599453
+    "accuracy": 0.6448099959878489,
+    "logLoss": 0.6308499995510048,
+    "brierScore": 0.21967272918654576,
+    "baselineAccuracy": 0.5341319424542902,
+    "coinFlipLogLoss": 0.6931471805599454
   },
   "draftOnlyMetrics": {
-    "accuracy": 0.5439216595202225,
-    "logLoss": 0.6863881523480689,
-    "brierScore": 0.24663915955529989
+    "accuracy": 0.545537914827764,
+    "logLoss": 0.6862212955595494,
+    "brierScore": 0.2465550040828745
   },
   "currentSeasonMetrics": {
-    "testGames": 9683,
+    "testGames": 9898,
     "patchMajor": 16,
-    "accuracy": 0.6495920685737891,
-    "logLoss": 0.6238240251707731,
-    "baselineAccuracy": 0.5343385314468656,
-    "draftOnlyAccuracy": 0.5487968604771248,
-    "draftOnlyLogLoss": 0.6850045306691985
+    "accuracy": 0.652050919377652,
+    "logLoss": 0.6229086018632359,
+    "baselineAccuracy": 0.535259648413821,
+    "draftOnlyAccuracy": 0.5495049504950495,
+    "draftOnlyLogLoss": 0.6847834984952028
   },
   "teamFeatureUsed": true,
   "playerFeaturesUsed": true,
   "calibration": [
     {
       "bucket": "0.0-0.2",
-      "predictedMean": 0.13206185288918748,
-      "actualWinRate": 0.19547325102880658,
-      "count": 972
+      "predictedMean": 0.13196362311931056,
+      "actualWinRate": 0.19779116465863453,
+      "count": 996
     },
     {
       "bucket": "0.2-0.4",
-      "predictedMean": 0.31728958740014257,
-      "actualWinRate": 0.34556765163297043,
-      "count": 3215
+      "predictedMean": 0.31696754949247435,
+      "actualWinRate": 0.34126738794435857,
+      "count": 3235
     },
     {
       "bucket": "0.4-0.6",
-      "predictedMean": 0.5053322025190028,
-      "actualWinRate": 0.4847975810515706,
-      "count": 5953
+      "predictedMean": 0.5050674700559415,
+      "actualWinRate": 0.48843016480772433,
+      "count": 6007
     },
     {
       "bucket": "0.6-0.8",
-      "predictedMean": 0.6898895296958351,
-      "actualWinRate": 0.6661013755417373,
-      "count": 5307
+      "predictedMean": 0.6896206652723355,
+      "actualWinRate": 0.664983164983165,
+      "count": 5346
     },
     {
       "bucket": "0.8-1.0",
-      "predictedMean": 0.8678162667921627,
-      "actualWinRate": 0.8188845941468802,
-      "count": 1811
+      "predictedMean": 0.8681158952782888,
+      "actualWinRate": 0.8207192699946323,
+      "count": 1863
     }
   ],
   "dataComposition": {
-    "totalGames": 19724,
+    "totalGames": 19939,
     "byPatch": [
       {
-        "name": "16.20",
-        "games": 95,
+        "name": "16.22",
+        "games": 5,
         "recencyWeight": 1.0
       },
       {
-        "name": "16.18",
-        "games": 567,
+        "name": "16.20",
+        "games": 301,
         "recencyWeight": 0.5
+      },
+      {
+        "name": "16.18",
+        "games": 571,
+        "recencyWeight": 0.25
       },
       {
         "name": "16.17",
         "games": 797,
-        "recencyWeight": 0.25
+        "recencyWeight": 0.125
       },
       {
         "name": "16.16",
         "games": 648,
-        "recencyWeight": 0.125
+        "recencyWeight": 0.0625
       },
       {
         "name": "16.15",
         "games": 717,
-        "recencyWeight": 0.0625
+        "recencyWeight": 0.03125
       },
       {
         "name": "16.14",
         "games": 546,
-        "recencyWeight": 0.03125
+        "recencyWeight": 0.015625
       },
       {
         "name": "16.13",
         "games": 377,
-        "recencyWeight": 0.015625
+        "recencyWeight": 0.0078125
       },
       {
         "name": "16.12",
         "games": 27,
-        "recencyWeight": 0.0078125
+        "recencyWeight": 0.00390625
       },
       {
         "name": "16.11",
         "games": 383,
-        "recencyWeight": 0.00390625
+        "recencyWeight": 0.001953125
       },
       {
         "name": "16.10",
         "games": 795,
-        "recencyWeight": 0.001953125
+        "recencyWeight": 0.0009765625
       },
       {
         "name": "16.09",
         "games": 747,
-        "recencyWeight": 0.0009765625
+        "recencyWeight": 0.00048828125
       },
       {
         "name": "16.08",
         "games": 700,
-        "recencyWeight": 0.00048828125
+        "recencyWeight": 0.000244140625
       },
       {
         "name": "16.07",
         "games": 730,
-        "recencyWeight": 0.000244140625
+        "recencyWeight": 0.0001220703125
       },
       {
         "name": "16.06",
         "games": 326,
-        "recencyWeight": 0.0001220703125
+        "recencyWeight": 6.103515625e-05
       },
       {
         "name": "16.05",
         "games": 306,
-        "recencyWeight": 6.103515625e-05
+        "recencyWeight": 3.0517578125e-05
       },
       {
         "name": "16.04",
         "games": 320,
-        "recencyWeight": 3.0517578125e-05
+        "recencyWeight": 1.52587890625e-05
       },
       {
         "name": "16.03",
         "games": 623,
-        "recencyWeight": 1.52587890625e-05
+        "recencyWeight": 7.62939453125e-06
       },
       {
         "name": "16.02",
         "games": 546,
-        "recencyWeight": 7.62939453125e-06
+        "recencyWeight": 3.814697265625e-06
       },
       {
         "name": "16.01",
         "games": 433,
-        "recencyWeight": 3.814697265625e-06
+        "recencyWeight": 1.9073486328125e-06
       },
       {
         "name": "15.24",
         "games": 78,
-        "recencyWeight": 1.9073486328125e-06
+        "recencyWeight": 9.5367431640625e-07
       },
       {
         "name": "15.23",
         "games": 56,
-        "recencyWeight": 9.5367431640625e-07
+        "recencyWeight": 4.76837158203125e-07
       },
       {
         "name": "15.22",
         "games": 19,
-        "recencyWeight": 4.76837158203125e-07
+        "recencyWeight": 2.384185791015625e-07
       },
       {
         "name": "15.21",
         "games": 60,
-        "recencyWeight": 2.384185791015625e-07
+        "recencyWeight": 1.1920928955078125e-07
       },
       {
         "name": "15.20",
         "games": 192,
-        "recencyWeight": 1.1920928955078125e-07
+        "recencyWeight": 5.960464477539063e-08
       },
       {
         "name": "15.19",
         "games": 378,
-        "recencyWeight": 5.960464477539063e-08
+        "recencyWeight": 2.9802322387695312e-08
       },
       {
         "name": "15.18",
         "games": 180,
-        "recencyWeight": 2.9802322387695312e-08
+        "recencyWeight": 1.4901161193847656e-08
       },
       {
         "name": "15.17",
         "games": 622,
-        "recencyWeight": 1.4901161193847656e-08
+        "recencyWeight": 7.450580596923828e-09
       },
       {
         "name": "15.16",
         "games": 613,
-        "recencyWeight": 7.450580596923828e-09
+        "recencyWeight": 3.725290298461914e-09
       },
       {
         "name": "15.15",
         "games": 637,
-        "recencyWeight": 3.725290298461914e-09
+        "recencyWeight": 1.862645149230957e-09
       },
       {
         "name": "15.14",
         "games": 598,
-        "recencyWeight": 1.862645149230957e-09
+        "recencyWeight": 9.313225746154785e-10
       },
       {
         "name": "15.13",
         "games": 385,
-        "recencyWeight": 9.313225746154785e-10
+        "recencyWeight": 4.656612873077393e-10
       },
       {
         "name": "15.12",
         "games": 166,
-        "recencyWeight": 4.656612873077393e-10
+        "recencyWeight": 2.3283064365386963e-10
       },
       {
         "name": "15.11",
         "games": 445,
-        "recencyWeight": 2.3283064365386963e-10
+        "recencyWeight": 1.1641532182693481e-10
       },
       {
         "name": "15.10",
         "games": 652,
-        "recencyWeight": 1.1641532182693481e-10
+        "recencyWeight": 5.820766091346741e-11
       },
       {
         "name": "15.09",
         "games": 875,
-        "recencyWeight": 5.820766091346741e-11
+        "recencyWeight": 2.9103830456733704e-11
       },
       {
         "name": "15.08",
         "games": 796,
-        "recencyWeight": 2.9103830456733704e-11
+        "recencyWeight": 1.4551915228366852e-11
       },
       {
         "name": "15.07",
         "games": 820,
-        "recencyWeight": 1.4551915228366852e-11
+        "recencyWeight": 7.275957614183426e-12
       },
       {
         "name": "15.06",
         "games": 464,
-        "recencyWeight": 7.275957614183426e-12
+        "recencyWeight": 3.637978807091713e-12
       },
       {
         "name": "15.05",
         "games": 214,
-        "recencyWeight": 3.637978807091713e-12
+        "recencyWeight": 1.8189894035458565e-12
       },
       {
         "name": "15.04",
         "games": 371,
-        "recencyWeight": 1.8189894035458565e-12
+        "recencyWeight": 9.094947017729282e-13
       },
       {
         "name": "15.03",
         "games": 569,
-        "recencyWeight": 9.094947017729282e-13
+        "recencyWeight": 4.547473508864641e-13
       },
       {
         "name": "15.02",
         "games": 536,
-        "recencyWeight": 4.547473508864641e-13
+        "recencyWeight": 2.2737367544323206e-13
       },
       {
         "name": "15.01",
         "games": 315,
-        "recencyWeight": 2.2737367544323206e-13
+        "recencyWeight": 1.1368683772161603e-13
       }
     ],
     "byLeague": [
       {
         "name": "LPL",
         "games": 1479
+      },
+      {
+        "name": "LAS",
+        "games": 1063
       },
       {
         "name": "LCK",
@@ -291,11 +300,7 @@
       },
       {
         "name": "EM",
-        "games": 957
-      },
-      {
-        "name": "LAS",
-        "games": 949
+        "games": 963
       },
       {
         "name": "LJL",
@@ -334,16 +339,16 @@
         "games": 469
       },
       {
+        "name": "HLL",
+        "games": 461
+      },
+      {
         "name": "NLC",
         "games": 459
       },
       {
         "name": "TCL",
         "games": 459
-      },
-      {
-        "name": "HLL",
-        "games": 456
       },
       {
         "name": "RL",
@@ -422,6 +427,10 @@
         "games": 208
       },
       {
+        "name": "WLDs",
+        "games": 202
+      },
+      {
         "name": "Asia Master",
         "games": 177
       },
@@ -436,10 +445,6 @@
       {
         "name": "NL",
         "games": 149
-      },
-      {
-        "name": "WLDs",
-        "games": 116
       },
       {
         "name": "WSCI",
@@ -459,7 +464,7 @@
       },
       {
         "name": "DCGI",
-        "games": 67
+        "games": 71
       },
       {
         "name": "AM",
@@ -507,90 +512,90 @@
     "byPatch": [
       {
         "name": "16.20",
-        "testGames": 95,
-        "accuracy": 0.6842105263157895,
-        "baselineAccuracy": 0.5368421052631579,
-        "logLoss": 0.5781835318746075,
-        "blueWinRate": 0.5368421052631579
+        "testGames": 301,
+        "accuracy": 0.6578073089700996,
+        "baselineAccuracy": 0.5647840531561462,
+        "logLoss": 0.5907751373522196,
+        "blueWinRate": 0.5647840531561462
       },
       {
         "name": "16.18",
-        "testGames": 567,
-        "accuracy": 0.6472663139329806,
-        "baselineAccuracy": 0.5044091710758378,
-        "logLoss": 0.6247028333978332,
-        "blueWinRate": 0.49559082892416223
+        "testGames": 571,
+        "accuracy": 0.6427320490367776,
+        "baselineAccuracy": 0.5061295971978984,
+        "logLoss": 0.6246082335989971,
+        "blueWinRate": 0.4938704028021016
       },
       {
         "name": "16.17",
         "testGames": 797,
         "accuracy": 0.6060225846925973,
         "baselineAccuracy": 0.5043914680050188,
-        "logLoss": 0.6576985231238848,
+        "logLoss": 0.6598422493110523,
         "blueWinRate": 0.5043914680050188
       },
       {
         "name": "16.16",
         "testGames": 648,
-        "accuracy": 0.6342592592592593,
+        "accuracy": 0.6419753086419753,
         "baselineAccuracy": 0.5941358024691358,
-        "logLoss": 0.6363593519978885,
+        "logLoss": 0.6366458979177151,
         "blueWinRate": 0.5941358024691358
       },
       {
         "name": "16.15",
         "testGames": 717,
-        "accuracy": 0.6373779637377964,
+        "accuracy": 0.6443514644351465,
         "baselineAccuracy": 0.5746164574616457,
-        "logLoss": 0.6220770852664604,
+        "logLoss": 0.6223562403292613,
         "blueWinRate": 0.5746164574616457
       },
       {
         "name": "16.14",
         "testGames": 546,
-        "accuracy": 0.6868131868131868,
+        "accuracy": 0.6776556776556777,
         "baselineAccuracy": 0.5384615384615384,
-        "logLoss": 0.6231220331821528,
+        "logLoss": 0.6230527942845399,
         "blueWinRate": 0.5384615384615384
       },
       {
         "name": "16.13",
         "testGames": 377,
-        "accuracy": 0.6657824933687002,
+        "accuracy": 0.6604774535809018,
         "baselineAccuracy": 0.5649867374005305,
-        "logLoss": 0.6191037892574045,
+        "logLoss": 0.6196656274591692,
         "blueWinRate": 0.5649867374005305
       },
       {
         "name": "16.11",
         "testGames": 383,
-        "accuracy": 0.5926892950391645,
+        "accuracy": 0.6135770234986945,
         "baselineAccuracy": 0.5744125326370757,
-        "logLoss": 0.6466312498182943,
+        "logLoss": 0.6443512747931411,
         "blueWinRate": 0.5744125326370757
       },
       {
         "name": "16.10",
         "testGames": 795,
-        "accuracy": 0.6578616352201258,
+        "accuracy": 0.6528301886792452,
         "baselineAccuracy": 0.5119496855345912,
-        "logLoss": 0.6160673821590325,
+        "logLoss": 0.614853426155149,
         "blueWinRate": 0.5119496855345912
       },
       {
         "name": "16.09",
         "testGames": 747,
-        "accuracy": 0.6626506024096386,
+        "accuracy": 0.6693440428380187,
         "baselineAccuracy": 0.5301204819277109,
-        "logLoss": 0.6153427424835279,
+        "logLoss": 0.6125141674394453,
         "blueWinRate": 0.5301204819277109
       },
       {
         "name": "16.08",
         "testGames": 700,
-        "accuracy": 0.6957142857142857,
+        "accuracy": 0.6942857142857143,
         "baselineAccuracy": 0.5328571428571428,
-        "logLoss": 0.5902853916411037,
+        "logLoss": 0.5890156038032418,
         "blueWinRate": 0.5328571428571428
       },
       {
@@ -598,15 +603,15 @@
         "testGames": 730,
         "accuracy": 0.6726027397260274,
         "baselineAccuracy": 0.5465753424657535,
-        "logLoss": 0.6082586765499416,
+        "logLoss": 0.6073509664888275,
         "blueWinRate": 0.5465753424657535
       },
       {
         "name": "16.06",
         "testGames": 326,
-        "accuracy": 0.7024539877300614,
+        "accuracy": 0.7208588957055214,
         "baselineAccuracy": 0.558282208588957,
-        "logLoss": 0.580054567582407,
+        "logLoss": 0.5814441755958403,
         "blueWinRate": 0.558282208588957
       },
       {
@@ -614,23 +619,23 @@
         "testGames": 306,
         "accuracy": 0.6862745098039216,
         "baselineAccuracy": 0.5490196078431373,
-        "logLoss": 0.6172550283241148,
+        "logLoss": 0.6156457226908872,
         "blueWinRate": 0.5490196078431373
       },
       {
         "name": "16.04",
         "testGames": 320,
-        "accuracy": 0.634375,
+        "accuracy": 0.63125,
         "baselineAccuracy": 0.51875,
-        "logLoss": 0.6216344929377687,
+        "logLoss": 0.6276331111898297,
         "blueWinRate": 0.48125
       },
       {
         "name": "16.03",
         "testGames": 623,
-        "accuracy": 0.6260032102728732,
+        "accuracy": 0.6420545746388443,
         "baselineAccuracy": 0.5345104333868379,
-        "logLoss": 0.6312889296526448,
+        "logLoss": 0.6296538394715264,
         "blueWinRate": 0.5345104333868379
       },
       {
@@ -638,31 +643,31 @@
         "testGames": 546,
         "accuracy": 0.6336996336996337,
         "baselineAccuracy": 0.5183150183150184,
-        "logLoss": 0.6299845448996325,
+        "logLoss": 0.6287010764158745,
         "blueWinRate": 0.5183150183150184
       },
       {
         "name": "16.01",
         "testGames": 433,
-        "accuracy": 0.6143187066974596,
+        "accuracy": 0.6212471131639723,
         "baselineAccuracy": 0.5173210161662818,
-        "logLoss": 0.6662794573757875,
+        "logLoss": 0.6644037772351946,
         "blueWinRate": 0.48267898383371827
       },
       {
         "name": "15.24",
         "testGames": 78,
-        "accuracy": 0.3717948717948718,
+        "accuracy": 0.3974358974358974,
         "baselineAccuracy": 0.5641025641025641,
-        "logLoss": 0.8347484008137473,
+        "logLoss": 0.8270977933956906,
         "blueWinRate": 0.4358974358974359
       },
       {
         "name": "15.23",
         "testGames": 56,
-        "accuracy": 0.6785714285714286,
+        "accuracy": 0.6607142857142857,
         "baselineAccuracy": 0.5535714285714286,
-        "logLoss": 0.6867765559038715,
+        "logLoss": 0.7134500689700024,
         "blueWinRate": 0.44642857142857145
       },
       {
@@ -670,31 +675,31 @@
         "testGames": 60,
         "accuracy": 0.7666666666666667,
         "baselineAccuracy": 0.6333333333333333,
-        "logLoss": 0.5710609571262487,
+        "logLoss": 0.5628121546242099,
         "blueWinRate": 0.6333333333333333
       },
       {
         "name": "15.20",
         "testGames": 192,
-        "accuracy": 0.6041666666666666,
+        "accuracy": 0.5885416666666666,
         "baselineAccuracy": 0.5,
-        "logLoss": 0.6301374403996698,
+        "logLoss": 0.6348649849626217,
         "blueWinRate": 0.5
       },
       {
         "name": "15.19",
         "testGames": 378,
-        "accuracy": 0.6058201058201058,
+        "accuracy": 0.6084656084656085,
         "baselineAccuracy": 0.5555555555555556,
-        "logLoss": 0.6779680713745407,
+        "logLoss": 0.6794640976245504,
         "blueWinRate": 0.5555555555555556
       },
       {
         "name": "15.18",
         "testGames": 180,
-        "accuracy": 0.6055555555555555,
+        "accuracy": 0.5944444444444444,
         "baselineAccuracy": 0.5055555555555555,
-        "logLoss": 0.6510080876154399,
+        "logLoss": 0.6467071632757371,
         "blueWinRate": 0.49444444444444446
       },
       {
@@ -702,265 +707,265 @@
         "testGames": 622,
         "accuracy": 0.5852090032154341,
         "baselineAccuracy": 0.5337620578778135,
-        "logLoss": 0.6819943272174379,
+        "logLoss": 0.6803585734049908,
         "blueWinRate": 0.5337620578778135
       },
       {
         "name": "15.16",
         "testGames": 613,
-        "accuracy": 0.6411092985318108,
+        "accuracy": 0.6508972267536705,
         "baselineAccuracy": 0.5236541598694943,
-        "logLoss": 0.6266916222945262,
+        "logLoss": 0.6256382258514122,
         "blueWinRate": 0.5236541598694943
       },
       {
         "name": "15.15",
         "testGames": 637,
-        "accuracy": 0.6562009419152276,
+        "accuracy": 0.6420722135007849,
         "baselineAccuracy": 0.5274725274725275,
-        "logLoss": 0.6128102584464107,
+        "logLoss": 0.6123140852508986,
         "blueWinRate": 0.5274725274725275
       },
       {
         "name": "15.14",
         "testGames": 598,
-        "accuracy": 0.6638795986622074,
+        "accuracy": 0.6605351170568562,
         "baselineAccuracy": 0.520066889632107,
-        "logLoss": 0.6470400253688184,
+        "logLoss": 0.6458000309588926,
         "blueWinRate": 0.520066889632107
       },
       {
         "name": "15.13",
         "testGames": 385,
-        "accuracy": 0.6051948051948052,
+        "accuracy": 0.6103896103896104,
         "baselineAccuracy": 0.5428571428571428,
-        "logLoss": 0.6675868782417077,
+        "logLoss": 0.6650037202543998,
         "blueWinRate": 0.5428571428571428
       },
       {
         "name": "15.12",
         "testGames": 166,
-        "accuracy": 0.5662650602409639,
+        "accuracy": 0.5843373493975904,
         "baselineAccuracy": 0.536144578313253,
-        "logLoss": 0.7366411835944717,
+        "logLoss": 0.7292915298578821,
         "blueWinRate": 0.536144578313253
       },
       {
         "name": "15.11",
         "testGames": 445,
-        "accuracy": 0.604494382022472,
+        "accuracy": 0.6067415730337079,
         "baselineAccuracy": 0.5168539325842697,
-        "logLoss": 0.6826167512017735,
+        "logLoss": 0.6808516147456972,
         "blueWinRate": 0.5168539325842697
       },
       {
         "name": "15.10",
         "testGames": 652,
-        "accuracy": 0.6303680981595092,
+        "accuracy": 0.6242331288343558,
         "baselineAccuracy": 0.5567484662576687,
-        "logLoss": 0.6326207410638739,
+        "logLoss": 0.6366308912448058,
         "blueWinRate": 0.5567484662576687
       },
       {
         "name": "15.09",
         "testGames": 875,
-        "accuracy": 0.6571428571428571,
+        "accuracy": 0.6628571428571428,
         "baselineAccuracy": 0.5222857142857142,
-        "logLoss": 0.6224823597238119,
+        "logLoss": 0.6248266332615042,
         "blueWinRate": 0.5222857142857142
       },
       {
         "name": "15.08",
         "testGames": 796,
-        "accuracy": 0.6809045226130653,
+        "accuracy": 0.6733668341708543,
         "baselineAccuracy": 0.5527638190954773,
-        "logLoss": 0.6011771437514486,
+        "logLoss": 0.6039578928397592,
         "blueWinRate": 0.5527638190954773
       },
       {
         "name": "15.07",
-        "testGames": 781,
-        "accuracy": 0.6632522407170295,
-        "baselineAccuracy": 0.5326504481434059,
-        "logLoss": 0.6147868232513682,
-        "blueWinRate": 0.5326504481434059
+        "testGames": 767,
+        "accuracy": 0.6597131681877445,
+        "baselineAccuracy": 0.5358539765319427,
+        "logLoss": 0.6151525943743908,
+        "blueWinRate": 0.5358539765319427
       },
       {
         "name": "15.06",
-        "testGames": 42,
-        "accuracy": 0.7619047619047619,
-        "baselineAccuracy": 0.5952380952380952,
-        "logLoss": 0.5282508052676883,
-        "blueWinRate": 0.5952380952380952
+        "testGames": 30,
+        "accuracy": 0.7,
+        "baselineAccuracy": 0.6666666666666666,
+        "logLoss": 0.6029415730779838,
+        "blueWinRate": 0.6666666666666666
       },
       {
-        "name": "Other (2 smaller)",
-        "testGames": 46,
-        "accuracy": 0.5869565217391305,
-        "baselineAccuracy": 0.5217391304347826,
-        "logLoss": 0.6650906584928972,
-        "blueWinRate": 0.4782608695652174
+        "name": "Other (3 smaller)",
+        "testGames": 51,
+        "accuracy": 0.5686274509803921,
+        "baselineAccuracy": 0.5098039215686274,
+        "logLoss": 0.6631337187616079,
+        "blueWinRate": 0.5098039215686274
       }
     ],
     "byLeague": [
       {
         "name": "LPL",
-        "testGames": 1282,
-        "accuracy": 0.6146645865834633,
-        "baselineAccuracy": 0.5304212168486739,
-        "logLoss": 0.6749294622936854,
-        "blueWinRate": 0.5304212168486739
+        "testGames": 1280,
+        "accuracy": 0.6125,
+        "baselineAccuracy": 0.53046875,
+        "logLoss": 0.6752206981917729,
+        "blueWinRate": 0.53046875
+      },
+      {
+        "name": "LAS",
+        "testGames": 999,
+        "accuracy": 0.7007007007007007,
+        "baselineAccuracy": 0.5195195195195195,
+        "logLoss": 0.5674620786009547,
+        "blueWinRate": 0.5195195195195195
       },
       {
         "name": "LCK",
-        "testGames": 929,
-        "accuracy": 0.6630785791173305,
-        "baselineAccuracy": 0.527448869752422,
-        "logLoss": 0.6297088729748753,
-        "blueWinRate": 0.527448869752422
+        "testGames": 927,
+        "accuracy": 0.6666666666666666,
+        "baselineAccuracy": 0.5285868392664509,
+        "logLoss": 0.6305892642362734,
+        "blueWinRate": 0.5285868392664509
       },
       {
         "name": "LCKC",
         "testGames": 900,
-        "accuracy": 0.5966666666666667,
+        "accuracy": 0.6022222222222222,
         "baselineAccuracy": 0.5277777777777778,
-        "logLoss": 0.6789021375114507,
+        "logLoss": 0.6762455874989053,
         "blueWinRate": 0.5277777777777778
       },
       {
-        "name": "LAS",
-        "testGames": 895,
-        "accuracy": 0.7061452513966481,
-        "baselineAccuracy": 0.5094972067039106,
-        "logLoss": 0.5674858968307945,
-        "blueWinRate": 0.5094972067039106
-      },
-      {
         "name": "EM",
-        "testGames": 883,
-        "accuracy": 0.6353340883352209,
-        "baselineAccuracy": 0.5537938844847112,
-        "logLoss": 0.6500957906747847,
-        "blueWinRate": 0.5537938844847112
+        "testGames": 889,
+        "accuracy": 0.6434195725534309,
+        "baselineAccuracy": 0.5511811023622047,
+        "logLoss": 0.649543661185403,
+        "blueWinRate": 0.5511811023622047
       },
       {
         "name": "LEC",
-        "testGames": 586,
-        "accuracy": 0.6604095563139932,
-        "baselineAccuracy": 0.5699658703071673,
-        "logLoss": 0.6275060557894971,
-        "blueWinRate": 0.5699658703071673
+        "testGames": 582,
+        "accuracy": 0.6580756013745704,
+        "baselineAccuracy": 0.570446735395189,
+        "logLoss": 0.6309208385148346,
+        "blueWinRate": 0.570446735395189
       },
       {
         "name": "LJL",
         "testGames": 580,
-        "accuracy": 0.7103448275862069,
+        "accuracy": 0.7172413793103448,
         "baselineAccuracy": 0.503448275862069,
-        "logLoss": 0.5512101603457003,
+        "logLoss": 0.5507893777041988,
         "blueWinRate": 0.503448275862069
       },
       {
         "name": "AL",
         "testGames": 550,
-        "accuracy": 0.6581818181818182,
+        "accuracy": 0.6563636363636364,
         "baselineAccuracy": 0.5472727272727272,
-        "logLoss": 0.606406974646231,
+        "logLoss": 0.6062782818778121,
         "blueWinRate": 0.5472727272727272
       },
       {
         "name": "PRM",
         "testGames": 531,
-        "accuracy": 0.6120527306967984,
+        "accuracy": 0.6177024482109228,
         "baselineAccuracy": 0.5630885122410546,
-        "logLoss": 0.6501068014522963,
+        "logLoss": 0.6499417002361564,
         "blueWinRate": 0.5630885122410546
       },
       {
         "name": "LFL",
         "testGames": 530,
-        "accuracy": 0.6320754716981132,
+        "accuracy": 0.6264150943396226,
         "baselineAccuracy": 0.5377358490566038,
-        "logLoss": 0.6575692310750686,
+        "logLoss": 0.6583539051421478,
         "blueWinRate": 0.5377358490566038
       },
       {
         "name": "NACL",
         "testGames": 528,
-        "accuracy": 0.625,
+        "accuracy": 0.6287878787878788,
         "baselineAccuracy": 0.5435606060606061,
-        "logLoss": 0.6461837467691647,
+        "logLoss": 0.6467970547750799,
         "blueWinRate": 0.5435606060606061
       },
       {
         "name": "LCP",
         "testGames": 485,
-        "accuracy": 0.6783505154639176,
+        "accuracy": 0.6721649484536083,
         "baselineAccuracy": 0.5505154639175258,
-        "logLoss": 0.6035397405078853,
+        "logLoss": 0.6063439613183067,
         "blueWinRate": 0.5505154639175258
       },
       {
         "name": "CD",
         "testGames": 485,
-        "accuracy": 0.6041237113402061,
+        "accuracy": 0.6082474226804123,
         "baselineAccuracy": 0.5030927835051546,
-        "logLoss": 0.6553648814609326,
+        "logLoss": 0.6576742613646244,
         "blueWinRate": 0.49690721649484537
       },
       {
         "name": "ROL",
         "testGames": 409,
-        "accuracy": 0.706601466992665,
+        "accuracy": 0.7041564792176039,
         "baselineAccuracy": 0.5672371638141809,
-        "logLoss": 0.5798000856705857,
+        "logLoss": 0.5795718958956944,
         "blueWinRate": 0.5672371638141809
       },
       {
         "name": "HC",
         "testGames": 392,
-        "accuracy": 0.5918367346938775,
+        "accuracy": 0.5994897959183674,
         "baselineAccuracy": 0.5382653061224489,
-        "logLoss": 0.6713997491829728,
+        "logLoss": 0.6708669985266382,
         "blueWinRate": 0.5382653061224489
+      },
+      {
+        "name": "HLL",
+        "testGames": 377,
+        "accuracy": 0.7082228116710876,
+        "baselineAccuracy": 0.5464190981432361,
+        "logLoss": 0.5680144047602547,
+        "blueWinRate": 0.5464190981432361
       },
       {
         "name": "LIT",
         "testGames": 375,
         "accuracy": 0.632,
         "baselineAccuracy": 0.5066666666666667,
-        "logLoss": 0.6373415597468549,
+        "logLoss": 0.6368779815502364,
         "blueWinRate": 0.5066666666666667
       },
       {
         "name": "NLC",
         "testGames": 375,
-        "accuracy": 0.7093333333333334,
+        "accuracy": 0.7013333333333334,
         "baselineAccuracy": 0.5413333333333333,
-        "logLoss": 0.5763793127857749,
+        "logLoss": 0.5777040977447951,
         "blueWinRate": 0.5413333333333333
-      },
-      {
-        "name": "HLL",
-        "testGames": 372,
-        "accuracy": 0.717741935483871,
-        "baselineAccuracy": 0.543010752688172,
-        "logLoss": 0.5685543770189954,
-        "blueWinRate": 0.543010752688172
       },
       {
         "name": "RL",
         "testGames": 368,
-        "accuracy": 0.6413043478260869,
+        "accuracy": 0.6385869565217391,
         "baselineAccuracy": 0.5217391304347826,
-        "logLoss": 0.6419636660210051,
+        "logLoss": 0.6431193934035665,
         "blueWinRate": 0.5217391304347826
       },
       {
         "name": "EBL",
         "testGames": 365,
-        "accuracy": 0.6657534246575343,
+        "accuracy": 0.673972602739726,
         "baselineAccuracy": 0.5287671232876712,
-        "logLoss": 0.5611546484635075,
+        "logLoss": 0.5655505468762435,
         "blueWinRate": 0.4712328767123288
       },
       {
@@ -968,159 +973,159 @@
         "testGames": 365,
         "accuracy": 0.6547945205479452,
         "baselineAccuracy": 0.5671232876712329,
-        "logLoss": 0.6115413138115351,
+        "logLoss": 0.6126721170595086,
         "blueWinRate": 0.5671232876712329
       },
       {
         "name": "HM",
         "testGames": 364,
-        "accuracy": 0.7197802197802198,
+        "accuracy": 0.7225274725274725,
         "baselineAccuracy": 0.5192307692307693,
-        "logLoss": 0.5276203517545865,
+        "logLoss": 0.5299058875919771,
         "blueWinRate": 0.5192307692307693
       },
       {
         "name": "LRN",
         "testGames": 314,
-        "accuracy": 0.6592356687898089,
+        "accuracy": 0.6624203821656051,
         "baselineAccuracy": 0.5063694267515924,
-        "logLoss": 0.6004698482663643,
+        "logLoss": 0.5992300416895888,
         "blueWinRate": 0.49363057324840764
       },
       {
         "name": "LRS",
         "testGames": 306,
-        "accuracy": 0.6111111111111112,
+        "accuracy": 0.5980392156862745,
         "baselineAccuracy": 0.5228758169934641,
-        "logLoss": 0.6502425781229761,
+        "logLoss": 0.6516533463121426,
         "blueWinRate": 0.5228758169934641
       },
       {
         "name": "CBLOL",
         "testGames": 299,
-        "accuracy": 0.6354515050167224,
+        "accuracy": 0.6287625418060201,
         "baselineAccuracy": 0.5819397993311036,
-        "logLoss": 0.6488192716379754,
+        "logLoss": 0.648647614009073,
         "blueWinRate": 0.5819397993311036
       },
       {
         "name": "PCS",
         "testGames": 289,
-        "accuracy": 0.6885813148788927,
+        "accuracy": 0.6851211072664359,
         "baselineAccuracy": 0.5224913494809689,
-        "logLoss": 0.5901053497468539,
+        "logLoss": 0.5866567049045311,
         "blueWinRate": 0.5224913494809689
       },
       {
         "name": "LCS",
         "testGames": 283,
-        "accuracy": 0.6466431095406361,
+        "accuracy": 0.6431095406360424,
         "baselineAccuracy": 0.5724381625441696,
-        "logLoss": 0.6410225718449357,
+        "logLoss": 0.6393867196156792,
         "blueWinRate": 0.5724381625441696
       },
       {
         "name": "LPLOL",
         "testGames": 280,
-        "accuracy": 0.6142857142857143,
+        "accuracy": 0.6357142857142857,
         "baselineAccuracy": 0.5357142857142857,
-        "logLoss": 0.6271863395488979,
+        "logLoss": 0.622361927307822,
         "blueWinRate": 0.5357142857142857
       },
       {
         "name": "EWC",
         "testGames": 265,
-        "accuracy": 0.6528301886792452,
+        "accuracy": 0.6566037735849056,
         "baselineAccuracy": 0.539622641509434,
-        "logLoss": 0.6443783216502946,
+        "logLoss": 0.647919318288955,
         "blueWinRate": 0.539622641509434
       },
       {
         "name": "VCS",
         "testGames": 241,
-        "accuracy": 0.5933609958506224,
+        "accuracy": 0.5809128630705395,
         "baselineAccuracy": 0.5518672199170125,
-        "logLoss": 0.6537919497822392,
+        "logLoss": 0.6521150643332994,
         "blueWinRate": 0.44813278008298757
       },
       {
         "name": "LES",
         "testGames": 208,
-        "accuracy": 0.7163461538461539,
+        "accuracy": 0.7211538461538461,
         "baselineAccuracy": 0.5048076923076923,
-        "logLoss": 0.5390298300033304,
+        "logLoss": 0.5364092046108291,
         "blueWinRate": 0.5048076923076923
       },
       {
+        "name": "WLDs",
+        "testGames": 202,
+        "accuracy": 0.5544554455445545,
+        "baselineAccuracy": 0.5396039603960396,
+        "logLoss": 0.6658664987244811,
+        "blueWinRate": 0.5396039603960396
+      },
+      {
         "name": "LTA S",
-        "testGames": 192,
-        "accuracy": 0.5572916666666666,
-        "baselineAccuracy": 0.515625,
-        "logLoss": 0.6913185057003294,
-        "blueWinRate": 0.515625
+        "testGames": 188,
+        "accuracy": 0.5797872340425532,
+        "baselineAccuracy": 0.5212765957446809,
+        "logLoss": 0.6867625578548735,
+        "blueWinRate": 0.5212765957446809
       },
       {
         "name": "LTA N",
-        "testGames": 188,
-        "accuracy": 0.6436170212765957,
-        "baselineAccuracy": 0.526595744680851,
-        "logLoss": 0.642299163303859,
-        "blueWinRate": 0.526595744680851
+        "testGames": 184,
+        "accuracy": 0.6521739130434783,
+        "baselineAccuracy": 0.532608695652174,
+        "logLoss": 0.6370011380711674,
+        "blueWinRate": 0.532608695652174
       },
       {
         "name": "LVP SL",
         "testGames": 183,
         "accuracy": 0.644808743169399,
         "baselineAccuracy": 0.6120218579234973,
-        "logLoss": 0.6669962275398323,
+        "logLoss": 0.6616070544028512,
         "blueWinRate": 0.6120218579234973
       },
       {
         "name": "Asia Master",
         "testGames": 177,
-        "accuracy": 0.5084745762711864,
+        "accuracy": 0.5141242937853108,
         "baselineAccuracy": 0.536723163841808,
-        "logLoss": 0.8016067903950014,
+        "logLoss": 0.7968723987805258,
         "blueWinRate": 0.536723163841808
       },
       {
         "name": "LFL2",
         "testGames": 157,
-        "accuracy": 0.5987261146496815,
+        "accuracy": 0.5859872611464968,
         "baselineAccuracy": 0.554140127388535,
-        "logLoss": 0.6702940826064775,
+        "logLoss": 0.6733977353098621,
         "blueWinRate": 0.554140127388535
       },
       {
         "name": "MSI",
         "testGames": 151,
-        "accuracy": 0.5894039735099338,
+        "accuracy": 0.6026490066225165,
         "baselineAccuracy": 0.5894039735099338,
-        "logLoss": 0.6550590598275057,
+        "logLoss": 0.654180528320641,
         "blueWinRate": 0.5894039735099338
       },
       {
         "name": "NL",
         "testGames": 149,
-        "accuracy": 0.7583892617449665,
+        "accuracy": 0.7449664429530202,
         "baselineAccuracy": 0.5167785234899329,
-        "logLoss": 0.5960285181160294,
+        "logLoss": 0.599468110604126,
         "blueWinRate": 0.5167785234899329
-      },
-      {
-        "name": "WLDs",
-        "testGames": 116,
-        "accuracy": 0.5258620689655172,
-        "baselineAccuracy": 0.5086206896551724,
-        "logLoss": 0.6812139058867679,
-        "blueWinRate": 0.5086206896551724
       },
       {
         "name": "HW",
         "testGames": 103,
         "accuracy": 0.6213592233009708,
         "baselineAccuracy": 0.5825242718446602,
-        "logLoss": 0.6464242588776811,
+        "logLoss": 0.642764541348361,
         "blueWinRate": 0.5825242718446602
       },
       {
@@ -1128,39 +1133,39 @@
         "testGames": 91,
         "accuracy": 0.6483516483516484,
         "baselineAccuracy": 0.5494505494505495,
-        "logLoss": 0.6089337858358701,
+        "logLoss": 0.6121717884083976,
         "blueWinRate": 0.5494505494505495
       },
       {
         "name": "WSCI",
         "testGames": 85,
-        "accuracy": 0.6235294117647059,
+        "accuracy": 0.6352941176470588,
         "baselineAccuracy": 0.5411764705882353,
-        "logLoss": 0.6537083568220468,
+        "logLoss": 0.6531950002838403,
         "blueWinRate": 0.5411764705882353
       },
       {
         "name": "DCup",
         "testGames": 78,
-        "accuracy": 0.3717948717948718,
+        "accuracy": 0.3974358974358974,
         "baselineAccuracy": 0.5641025641025641,
-        "logLoss": 0.8347484008137473,
+        "logLoss": 0.8270977933956906,
         "blueWinRate": 0.4358974358974359
       },
       {
         "name": "DCGI",
-        "testGames": 67,
-        "accuracy": 0.6119402985074627,
-        "baselineAccuracy": 0.5074626865671642,
-        "logLoss": 0.6612664088064657,
-        "blueWinRate": 0.5074626865671642
+        "testGames": 71,
+        "accuracy": 0.5774647887323944,
+        "baselineAccuracy": 0.5070422535211268,
+        "logLoss": 0.6672384436624292,
+        "blueWinRate": 0.49295774647887325
       },
       {
         "name": "AM",
         "testGames": 63,
         "accuracy": 0.5396825396825397,
         "baselineAccuracy": 0.5714285714285714,
-        "logLoss": 0.7137251767375736,
+        "logLoss": 0.6987806106628034,
         "blueWinRate": 0.5714285714285714
       },
       {
@@ -1168,47 +1173,47 @@
         "testGames": 61,
         "accuracy": 0.47540983606557374,
         "baselineAccuracy": 0.6065573770491803,
-        "logLoss": 0.8457668869643382,
+        "logLoss": 0.8589135333391362,
         "blueWinRate": 0.6065573770491803
       },
       {
         "name": "KeSPA",
         "testGames": 56,
-        "accuracy": 0.6785714285714286,
+        "accuracy": 0.6607142857142857,
         "baselineAccuracy": 0.5535714285714286,
-        "logLoss": 0.6867765559038715,
+        "logLoss": 0.7134500689700024,
         "blueWinRate": 0.44642857142857145
       },
       {
         "name": "PRMP",
         "testGames": 55,
-        "accuracy": 0.6,
+        "accuracy": 0.5818181818181818,
         "baselineAccuracy": 0.5636363636363636,
-        "logLoss": 0.6088355696033872,
+        "logLoss": 0.6150841596763649,
         "blueWinRate": 0.5636363636363636
       },
       {
         "name": "CT",
         "testGames": 50,
-        "accuracy": 0.66,
+        "accuracy": 0.68,
         "baselineAccuracy": 0.56,
-        "logLoss": 0.6457487335200266,
+        "logLoss": 0.6438264125846264,
         "blueWinRate": 0.56
       },
       {
         "name": "FST",
         "testGames": 45,
-        "accuracy": 0.7111111111111111,
+        "accuracy": 0.6888888888888889,
         "baselineAccuracy": 0.6666666666666666,
-        "logLoss": 0.5720402182638439,
+        "logLoss": 0.5777400954582448,
         "blueWinRate": 0.6666666666666666
       },
       {
         "name": "ASI",
         "testGames": 42,
-        "accuracy": 0.5238095238095238,
+        "accuracy": 0.5476190476190477,
         "baselineAccuracy": 0.5952380952380952,
-        "logLoss": 0.7347852353879013,
+        "logLoss": 0.7215402922461287,
         "blueWinRate": 0.40476190476190477
       },
       {
@@ -1216,18 +1221,18 @@
         "testGames": 40,
         "accuracy": 0.575,
         "baselineAccuracy": 0.6,
-        "logLoss": 0.681562346430636,
+        "logLoss": 0.6781891840019285,
         "blueWinRate": 0.4
       },
       {
         "name": "Other (4 smaller)",
         "testGames": 75,
-        "accuracy": 0.6933333333333334,
+        "accuracy": 0.68,
         "baselineAccuracy": 0.56,
-        "logLoss": 0.6458088798759998,
+        "logLoss": 0.6411222540012699,
         "blueWinRate": 0.56
       }
     ]
   },
-  "note": "Fold 1/8 skipped: insufficient train/test data (train_games=0, test_games=2466). Walk-forward validation on real Oracle's Elixir pro-match data (17,258 held-out games; newest patch 16.x = 2026 season). Each fold refits the entire pipeline using only games strictly before that fold, so there is no lookahead leakage. Draft-only prediction (champions picked, no in-game state) is a genuinely weak signal at the pro level -- treat accuracy a few points above the pick-majority baseline as expected, not a bug."
+  "note": "Fold 1/8 skipped: insufficient train/test data (train_games=0, test_games=2492). Walk-forward validation on real Oracle's Elixir pro-match data (17,447 held-out games; newest patch 16.x = 2026 season). Each fold refits the entire pipeline using only games strictly before that fold, so there is no lookahead leakage. Draft-only prediction (champions picked, no in-game state) is a genuinely weak signal at the pro level -- treat accuracy a few points above the pick-majority baseline as expected, not a bug."
 }
